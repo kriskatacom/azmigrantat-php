@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\View;
 use App\Models\User;
 
 class UserController extends BaseController
@@ -11,6 +12,20 @@ class UserController extends BaseController
     public function __construct()
     {
         $this->userModel = new User();
+    }
+
+    public function showLogin()
+    {
+        View::render('auth/login', [
+            'pageTitle' => 'Вход в профила - Аз мигрантът'
+        ]);
+    }
+
+    public function showRegister()
+    {
+        View::render('auth/register', [
+            'pageTitle' => 'Създаване на профил - Аз мигрантът'
+        ]);
     }
 
     public function index(): void

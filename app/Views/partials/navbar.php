@@ -13,10 +13,8 @@ $targetLang = ($currentLang === 'bg') ? 'en' : 'bg';
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 if ($currentLang === 'bg') {
-    // От BG към EN: добавяме префикс /en
     $targetUrl = '/en' . (rtrim($currentPath, '/') ?: '/');
 } else {
-    // От EN към BG: премахваме префикса /en
     $targetUrl = preg_replace('/^\/en/', '', $currentPath) ?: '/';
 }
 ?>
@@ -32,16 +30,41 @@ if ($currentLang === 'bg') {
         </div>
 
         <div class="flex items-center gap-6">
-            <button class="hover:text-primary-light transition">
-                <?php HelperService::icon('user-icon', 'text-white w-8 h-8'); ?>
-            </button>
-            <button class="hover:text-primary-light transition">
-                <?php HelperService::icon('menu-icon', 'text-white w-8 h-8'); ?>
+            <?php if ($user = \App\Models\User::auth()): ?>
+                <div class="relative group">
+                    <button class="flex items-center gap-2 hover:text-primary-light transition text-white">
+                        <span class="text-sm font-medium hidden md:block"><?= htmlspecialchars($user['name']) ?></span>
+                        <?php \App\Services\HelperService::icon('user-icon', 'text-white w-8 h-8 group-hover:text-primary-light'); ?>
+                    </button>
+
+                    <div class="absolute right-0 mt-2 w-48 bg-[#0a1622] border border-white/10 rounded-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                        <form action="/auth/logout" method="POST" class="w-full">
+                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition">
+                                Изход от профила
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="/auth/login" class="hover:text-primary-light transition group" title="Вход">
+                    <?php HelperService::icon('user-icon', 'text-white w-8 h-8 group-hover:scale-110 transition-transform'); ?>
+                </a>
+            <?php endif; ?>
+
+            <button class="hover:text-primary-light transition group">
+                <?php HelperService::icon('menu-icon', 'text-white w-8 h-8 group-hover:rotate-90 transition-transform duration-300'); ?>
             </button>
 
-            <a href="<?= $targetUrl ?>" class="hover:text-primary-light transition flex items-center gap-1">
-                <?php HelperService::icon('globe-icon', 'text-white w-8 h-8'); ?>
-                <span class="text-[10px] text-white font-bold uppercase"><?= $targetLang ?></span>
+            <a href="<?= $targetUrl ?>" class="hover:text-primary-light transition flex items-center gap-1 group">
+                <div class="relative">
+                    <?php HelperService::icon('globe-icon', 'text-white w-8 h-8 group-hover:animate-spin-slow'); ?>
+                    <span class="absolute -top-1 -right-1 flex h-4 w-4">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-light opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-4 w-4 bg-primary-light text-[8px] items-center justify-center text-black font-bold uppercase">
+                            <?= $targetLang ?>
+                        </span>
+                    </span>
+                </div>
             </a>
         </div>
     </div>

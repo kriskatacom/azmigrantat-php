@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\View;
+use App\Models\User;
 
 abstract class BaseController
 {
@@ -27,5 +28,28 @@ abstract class BaseController
     protected function render(string $view, array $data = []): void
     {
         View::render($view, $data);
+    }
+
+    protected function middleware(string $type = 'auth', array $except = [])
+    {
+        $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        foreach ($except as $method) {
+            if (str_contains($currentUri, $method)) {
+                return;
+            }
+        }
+
+        $user = \App\Models\User::auth();
+
+        if ($type === 'auth' && !$user) {
+            header('Location: /login');
+            exit;
+        }
+
+        if ($type === 'guest' && $user) {
+            header('Location: /');
+            exit;
+        }
     }
 }

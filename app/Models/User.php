@@ -21,8 +21,9 @@ class User extends Model
         $results = $this->where('email', $email);
         $user = $results[0] ?? null;
 
-        if ($user && password_verify($password, $user['password'])) {
-            unset($user['password']);
+        if ($user && password_verify($password, $user['password_hash'])) {
+            unset($user['password_hash']);
+
             $this->setSession($user);
             return $user;
         }
