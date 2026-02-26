@@ -1,0 +1,14 @@
+# .htaccess за PHP MVC с чисти URL адреси
+
+# Включваме rewrite engine
+RewriteEngine On
+
+# Ако директория или файл съществува, използваме го директно
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Всички останали заявки се пренасочват към index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# QSA = Query String Append (прехвърля GET параметрите)
+# L = Last rule, спира обработката на допълнителни правила
