@@ -11,8 +11,8 @@ class HomeController
         View::render('index/home', ['title' => 'Начало']);
     }
 
-    public function about()
+    public function travel()
     {
-        View::render('index/about', ['title' => 'За нас']);
+        View::render('index/travel', ['title' => 'Пътуване']);
     }
 }

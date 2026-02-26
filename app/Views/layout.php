@@ -1,20 +1,17 @@
+<?php
+    use App\Core\View;
+?>
 <!DOCTYPE html>
 <html lang="bg">
 
 <head>
     <meta charset="UTF-8">
     <title><?= $title ?? "My PHP MVC" ?></title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/min/tailwind.css">
 </head>
 
 <body>
-    <header>
-        <nav>
-            <a href="/">Начало</a> |
-            <a href="/about">За нас</a> |
-            <a href="/users">Потребители</a>
-        </nav>
-    </header>
+    <?php View::loadPartial('partials/navbar'); ?>
 
     <main>
         <?= $content ?>

@@ -1,6 +1,6 @@
 <?php
 return [
     '/'       => ['controller' => 'HomeController', 'method' => 'index'],
-    '/about'       => ['controller' => 'HomeController', 'method' => 'about'],
+    '/travel'       => ['controller' => 'HomeController', 'method' => 'travel'],
     '/users'  => ['controller' => 'UserController', 'method' => 'index'],
 ];
