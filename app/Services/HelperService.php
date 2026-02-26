@@ -4,13 +4,6 @@ namespace App\Services;
 
 class HelperService
 {
-    /**
-     * Рендира SVG икона директно в HTML.
-     *
-     * @param string $name Името на файла в public/assets/icons/
-     * @param string $class Tailwind класове
-     * @return string
-     */
     public static function icon(string $name, string $class = "w-6 h-6"): void
     {
         $filePath = dirname(__DIR__, 2) . "/app/icons/{$name}.php";
@@ -24,11 +17,6 @@ class HelperService
         }
     }
 
-    /**
-     * Генерира класове за линк в зависимост от това дали е активен.
-     * * @param string $path Пътят, който проверяваме (напр. '/travel')
-     * @return string Tailwind класове
-     */
     public static function navLinkClasses(string $path): string
     {
         $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -41,6 +29,69 @@ class HelperService
 
     public static function isHome(): bool
     {
-        return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === '/';
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $path = rtrim($path, '/');
+
+        return $path === '' || $path === '/en';
+    }
+
+    public static function trans(string $key): string
+    {
+        $lang = $_SESSION['lang'] ?? 'bg';
+        $path = dirname(__DIR__, 2) . "/app/Languages/{$lang}.php";
+
+        if (file_exists($path)) {
+            $translations = include $path;
+            return $translations[$key] ?? $key;
+        }
+
+        return $key;
+    }
+
+    public static function initLanguage(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (isset($_GET['lang'])) {
+            $requestedLang = $_GET['lang'];
+
+            if (in_array($requestedLang, ['bg', 'en'])) {
+                $_SESSION['lang'] = $requestedLang;
+            }
+
+            $cleanUrl = strtok($_SERVER['REQUEST_URI'], '?');
+            header("Location: " . $cleanUrl);
+            exit;
+        }
+
+        if (!isset($_SESSION['lang'])) {
+            $_SESSION['lang'] = 'bg';
+        }
+    }
+
+    public static function url(string $path): string
+    {
+        $lang = $_SESSION['lang'] ?? 'bg';
+        $path = ltrim($path, '/');
+
+        if ($lang === 'en') {
+            return "/en/{$path}";
+        }
+
+        return "/{$path}";
+    }
+
+    public static function getLangFromUrl(): string
+    {
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $parts = explode('/', trim($uri, '/'));
+
+        if (isset($parts[0]) && in_array($parts[0], ['bg', 'en'])) {
+            return $parts[0];
+        }
+
+        return 'bg';
     }
 }

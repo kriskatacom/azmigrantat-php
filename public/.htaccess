@@ -1,12 +1,18 @@
-# Включваме rewrite модул
 RewriteEngine On
+RewriteBase /
 
-# Assets (CSS, JS, изображения)
-RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+# 1. Защита: Ако някой се опита да достъпи директно папка public, го спираме (опционално)
+# RewriteRule ^public/(.*)$ /$1 [L,NC,R=301]
 
-# Ако файлът/директорията не съществува
+# 2. Assets: Гарантираме, че заявките за активи винаги сочат към правилната папка, 
+# без значение дали в URL има /bg/ или /en/
+RewriteRule ^(bg|en)/assets/(.*)$ public/assets/$2 [L,NC]
+RewriteRule ^assets/(.*)$ public/assets/$1 [L,NC]
+
+# 3. Автоматично пренасочване от началната страница към /bg/ (ако няма език)
+RewriteRule ^$ /bg/ [L,R=301]
+
+# 4. Основно рутиране
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
-# Всички останали заявки да отиват към index.php
 RewriteRule ^(.*)$ index.php [QSA,L]

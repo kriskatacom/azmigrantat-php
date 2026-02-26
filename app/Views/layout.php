@@ -1,5 +1,8 @@
 <?php
-    use App\Core\View;
+
+use App\Core\View;
+use App\Services\HelperService;
+
 ?>
 <!DOCTYPE html>
 <html lang="bg">
