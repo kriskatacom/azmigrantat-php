@@ -15,32 +15,47 @@ abstract class Model
         $this->db = Database::getConnection();
     }
 
-    public function create(array $data): bool {
+    public function create(array $data): bool
+    {
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
-        
+
         $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
         $stmt = $this->db->prepare($sql);
-        
+
         return $stmt->execute($data);
     }
 
-    public function update(int $id, array $data): bool {
+    public function update(int $id, array $data): bool
+    {
         $fields = "";
         foreach ($data as $key => $value) {
             $fields .= "{$key} = :{$key}, ";
         }
         $fields = rtrim($fields, ', ');
-        
+
         $data['id'] = $id;
         $sql = "UPDATE {$this->table} SET {$fields} WHERE id = :id";
-        
+
         return $stmt = $this->db->prepare($sql)->execute($data);
     }
 
-    public function all(): array
+    public function all(array $options = []): array
     {
-        $stmt = $this->db->query("SELECT * FROM {$this->table} ORDER BY id DESC");
+        $columns = isset($options['columns']) ? implode(', ', $options['columns']) : '*';
+
+        $orderBy = $options['order'] ?? 'id DESC';
+
+        $sql = "SELECT {$columns} FROM {$this->table} ORDER BY {$orderBy}";
+
+        if (isset($options['limit'])) {
+            $sql .= " LIMIT " . (int)$options['limit'];
+            if (isset($options['offset'])) {
+                $sql .= " OFFSET " . (int)$options['offset'];
+            }
+        }
+
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll();
     }
 
@@ -66,14 +81,23 @@ abstract class Model
         return $stmt->fetchAll();
     }
 
+    public function count(): int
+    {
+        return (int)$this->db->query("SELECT COUNT(*) FROM {$this->table}")->fetchColumn();
+    }
+
     public function generateUuid(): string
     {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
             mt_rand(0, 0x0fff) | 0x4000,
             mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
         );
     }
 }

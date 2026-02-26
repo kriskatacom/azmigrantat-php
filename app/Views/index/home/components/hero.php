@@ -3,11 +3,10 @@
 use App\Services\HelperService;
 ?>
 <section class="relative h-screen min-h-125 w-full flex items-center justify-center">
-    <img src="/assets/images/azmigrantat-hero-background.webp"
+    <img src="<?= $heroImage ?? '/assets/images/azmigrantat-hero-background.webp' ?>"
         class="absolute inset-0 w-full h-full object-cover"
         alt="<?= HelperService::trans('hero_alt_text') ?>"
-        title="<?= HelperService::trans('hero_alt_text') ?>"
-    >
+        title="<?= HelperService::trans('hero_alt_text') ?>">
 
     <div class="absolute inset-0 bg-black/40"></div>
 
@@ -19,7 +18,7 @@ use App\Services\HelperService;
         </h1>
 
         <div class="mt-8">
-            <a href="/travel" class="bg-primary-light text-primary-dark font-bold px-8 py-3 rounded-full hover:bg-white transition-all">
+            <a href="/travel" class="bg-primary-light text-primary-dark font-bold px-8 py-3 rounded-full hover:bg-white transition-all shadow-lg">
                 <?= HelperService::trans('hero_button') ?>
             </a>
         </div>
