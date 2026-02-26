@@ -12,7 +12,14 @@ class View
         include __DIR__ . '/../Views/' . $view . '.php';
         $content = ob_get_clean();
 
-        include __DIR__ . '/../Views/layout.php';
+        $layoutName = $data['layout'] ?? 'layout';
+        $layoutPath = __DIR__ . '/../Views/layouts/' . $layoutName . '.php';
+
+        if (file_exists($layoutPath)) {
+            include $layoutPath;
+        } else {
+            include __DIR__ . '/../Views/layouts/layout.php';
+        }
     }
 
     public static function loadPartial($path, $data = [])

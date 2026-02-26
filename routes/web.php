@@ -9,6 +9,7 @@ $router->get('/', ['controller' => 'HomeController', 'method' => 'index']);
 $router->get('/travel', ['controller' => 'HomeController', 'method' => 'travel']);
 $router->get('/auth/login', ['controller' => 'AuthController', 'method' => 'showLogin']);
 $router->get('/auth/register', ['controller' => 'AuthController', 'method' => 'showRegister']);
+$router->get('/admin/dashboard', ['controller' => 'AdminController', 'method' => 'dashboard']);
 
 // POST заявки (Обработка на форми)
 $router->post('/auth/login', ['controller' => 'AuthController', 'method' => 'login']);

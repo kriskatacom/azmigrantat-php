@@ -34,12 +34,14 @@ class AuthController extends BaseController
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
-        $userModel = new User();
-
-        $user = $userModel->login($email, $password);
+        $user = $this->userModel->login($email, $password);
 
         if ($user) {
-            header('Location: /');
+            if (isset($user['role']) && $user['role'] === 'admin') {
+                header('Location: /admin/dashboard');
+            } else {
+                header('Location: /');
+            }
             exit;
         } else {
             $_SESSION['error'] = "Невалиден имейл или парола!";

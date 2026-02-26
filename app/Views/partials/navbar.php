@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Services\HelperService;
 
 $isHome = HelperService::isHome();
@@ -30,14 +31,21 @@ if ($currentLang === 'bg') {
         </div>
 
         <div class="flex items-center gap-6">
-            <?php if ($user = \App\Models\User::auth()): ?>
+            <?php if ($user = User::auth()): ?>
                 <div class="relative group">
                     <button class="flex items-center gap-2 hover:text-primary-light transition text-white">
                         <span class="text-sm font-medium hidden md:block"><?= htmlspecialchars($user['name']) ?></span>
-                        <?php \App\Services\HelperService::icon('user-icon', 'text-white w-8 h-8 group-hover:text-primary-light'); ?>
+                        <?php HelperService::icon('user-icon', 'text-white w-8 h-8 group-hover:text-primary-light'); ?>
                     </button>
 
                     <div class="absolute right-0 mt-2 w-48 bg-[#0a1622] border border-white/10 rounded-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+
+                        <?php if ($user['role'] === 'admin'): ?>
+                            <a href="/admin/dashboard" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition border-b border-white/5 mb-1">
+                                Админ панел
+                            </a>
+                        <?php endif; ?>
+
                         <form action="/auth/logout" method="POST" class="w-full">
                             <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition">
                                 Изход от профила

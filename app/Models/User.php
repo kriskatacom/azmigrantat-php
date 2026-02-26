@@ -37,6 +37,7 @@ class User extends Model
             'id'    => $user['id'],
             'name'  => $user['name'],
             'email' => $user['email'],
+            'role' => $user['role'],
             'is_logged_in' => true
         ];
     }
