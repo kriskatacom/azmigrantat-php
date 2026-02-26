@@ -1,0 +1,22 @@
+CREATE TABLE `users` (
+  `id` char(36) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `email_verified` tinyint(1) NOT NULL DEFAULT 0,
+  `password_hash` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `role` enum('user','moderator','admin','entrepreneur') NOT NULL DEFAULT 'user',
+  `profile_image` text DEFAULT NULL,
+  `bio` text DEFAULT NULL,
+  `last_login` datetime(3) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `deleted_at` datetime(3) DEFAULT NULL,
+  `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updated_at` datetime(3) NOT NULL DEFAULT current_timestamp(3) ON UPDATE current_timestamp(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `username` (`username`),
+  KEY `users_email_idx` (`email`),
+  KEY `users_username_idx` (`username`),
+  KEY `users_role_idx` (`role`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci

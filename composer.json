@@ -5,5 +5,8 @@
             "App\\": "app/"
         }
     },
-    "require": {}
+    "require": {},
+    "scripts": {
+        "setup-db": "php console.php db:setup"
+    }
 }

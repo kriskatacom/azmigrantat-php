@@ -1,21 +1,33 @@
 <?php
 
-namespace App\Models;
+namespace App\Controllers;
 
-require_once __DIR__ . '/../Models/User.php';
+use App\Models\User;
 
-class UserController
+class UserController extends BaseController
 {
-    private $userModel;
+    private User $userModel;
 
     public function __construct()
     {
         $this->userModel = new User();
     }
 
-    public function index()
+    public function index(): void
     {
-        header('Content-Type: application/json');
-        echo json_encode($this->userModel->all());
+        $users = $this->userModel->all();
+
+        $this->json($users);
+    }
+
+    public function show(int $id): void
+    {
+        $user = $this->userModel->find($id);
+
+        if (!$user) {
+            $this->json(['message' => 'User not found'], 404);
+        }
+
+        $this->json($user);
     }
 }
