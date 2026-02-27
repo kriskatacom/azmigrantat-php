@@ -3,6 +3,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Services\DatabaseService;
+use App\Services\SeedService;
 
 $command = $argv[1] ?? null;
 
@@ -21,4 +22,9 @@ if ($command === 'db:setup') {
     } catch (Exception $e) {
         echo "🔥 ГРЕШКА: " . $e->getMessage() . "\n";
     }
+}
+
+if ($command === 'seed:users') {
+    $seeder = new SeedService();
+    $seeder->seedUsers(100);
 }

@@ -11,38 +11,41 @@ class UserController extends BaseController
 
     public function __construct()
     {
+        $this->middleware('admin');
         $this->userModel = new User();
     }
 
-    public function showLogin()
+    public function index()
     {
-        View::render('auth/login', [
-            'pageTitle' => 'Вход в профила - Аз мигрантът'
-        ]);
-    }
+        $this->middleware('admin');
 
-    public function showRegister()
-    {
-        View::render('auth/register', [
-            'pageTitle' => 'Създаване на профил - Аз мигрантът'
-        ]);
-    }
+        $page = (int)($_GET['page'] ?? 1);
+        $perPage = (int)($_GET['per_page'] ?? 5);
 
-    public function index(): void
-    {
-        $users = $this->userModel->all();
-
-        $this->json($users);
-    }
-
-    public function show(int $id): void
-    {
-        $user = $this->userModel->find($id);
-
-        if (!$user) {
-            $this->json(['message' => 'User not found'], 404);
+        if (!in_array($perPage, [5, 10, 20, 50, 100])) {
+            $perPage = 10;
         }
 
-        $this->json($user);
+        $offset = ($page - 1) * $perPage;
+
+        $users = $this->userModel->all([
+            'limit' => $perPage,
+            'offset' => $offset,
+            'order' => 'created_at DESC'
+        ]);
+
+        $totalUsers = $this->userModel->count();
+        $totalPages = ceil($totalUsers / $perPage);
+
+        View::render('admin/users/index', [
+            'title' => 'Потребители',
+            'users' => $users,
+            'pagination' => [
+                'current' => $page,
+                'total' => $totalPages,
+                'per_page' => $perPage,
+            ],
+            'layout' => 'admin'
+        ]);
     }
 }

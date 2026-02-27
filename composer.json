@@ -7,6 +7,7 @@
     },
     "require": {},
     "scripts": {
-        "setup-db": "php console.php db:setup"
+        "setup-db": "php console.php db:setup",
+        "seed:users": "php console.php seed:users"
     }
 }

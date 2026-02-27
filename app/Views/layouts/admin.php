@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title><?= $title ?? 'Админ' ?></title>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/assets/css/min/tailwind.css">
 </head>
 
 <body class="bg-gray-50 flex">
