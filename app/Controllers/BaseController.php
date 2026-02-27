@@ -69,4 +69,18 @@ abstract class BaseController
             'message' => $message
         ];
     }
+    
+    protected function handleOrderUpdate($model)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        header('Content-Type: application/json');
+        if (isset($data['items'])) {
+            $success = $model->updateOrder($data['items']);
+            echo json_encode(['success' => $success]);
+        } else {
+            echo json_encode(['success' => false]);
+        }
+        exit;
+    }
 }

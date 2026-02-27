@@ -196,4 +196,10 @@ class LandmarkController extends BaseController
             exit;
         }
     }
+
+    public function updateOrder()
+    {
+        $this->middleware('admin');
+        return $this->handleOrderUpdate($this->landmarkModel);
+    }
 }

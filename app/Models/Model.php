@@ -104,6 +104,29 @@ abstract class Model
         return $result ? $result['max_val'] : null;
     }
 
+    public function updateOrder(array $items): bool
+    {
+        try {
+            $this->db->beginTransaction();
+
+            $stmt = $this->db->prepare("UPDATE {$this->table} SET sort_order = :sort_order WHERE id = :id");
+
+            foreach ($items as $item) {
+                $stmt->execute([
+                    'sort_order' => $item['sort_order'],
+                    'id' => $item['id']
+                ]);
+            }
+
+            return $this->db->commit();
+        } catch (\Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            return false;
+        }
+    }
+
     public function generateUuid(): string
     {
         return sprintf(

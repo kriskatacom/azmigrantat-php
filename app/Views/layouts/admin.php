@@ -36,6 +36,7 @@ use App\Models\User;
                 ['label' => 'Потребители', 'icon' => 'users', 'url' => '/admin/users'],
                 ['label' => 'Държави', 'icon' => 'countries', 'url' => '/admin/countries'],
                 ['label' => 'Забележителности', 'icon' => 'landmarks', 'url' => '/admin/landmarks'],
+                ['label' => 'Посолства', 'icon' => 'embassies', 'url' => '/admin/embassies'],
             ];
 
             foreach ($menu as $item): ?>

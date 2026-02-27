@@ -7,6 +7,7 @@ use App\Controllers\AuthController;
 use App\Controllers\AdminController;
 use App\Controllers\UserController;
 use App\Controllers\CountryController;
+use App\Controllers\EmbassyController;
 
 $router = new Router();
 
@@ -44,5 +45,14 @@ $router->get('/admin/landmarks/edit/{id}', [LandmarkController::class, 'edit']);
 $router->post('/admin/landmarks/update/{id}', [LandmarkController::class, 'update']);
 $router->post('/admin/landmarks/delete/{id}', [LandmarkController::class, 'delete']);
 $router->post('/admin/landmarks/update-order', [LandmarkController::class, 'updateOrder']);
+
+// --- Посолства (Embassies) ---
+$router->get('/admin/embassies', [EmbassyController::class, 'index']);
+$router->get('/admin/embassies/create', [EmbassyController::class, 'create']);
+$router->post('/admin/embassies/store', [EmbassyController::class, 'store']);
+$router->get('/admin/embassies/edit/{id}', [EmbassyController::class, 'edit']);
+$router->post('/admin/embassies/update/{id}', [EmbassyController::class, 'update']);
+$router->post('/admin/embassies/delete/{id}', [EmbassyController::class, 'delete']);
+$router->post('/admin/embassies/update-order', [EmbassyController::class, 'updateOrder']);
 
 return $router;
