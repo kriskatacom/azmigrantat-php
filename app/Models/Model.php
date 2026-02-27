@@ -15,15 +15,19 @@ abstract class Model
         $this->db = Database::getConnection();
     }
 
-    public function create(array $data): bool
+    public function create($data)
     {
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
 
-        $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
+        $sql = "INSERT INTO {$this->table} ($columns) VALUES ($placeholders)";
         $stmt = $this->db->prepare($sql);
 
-        return $stmt->execute($data);
+        if ($stmt->execute($data)) {
+            return $this->db->lastInsertId();
+        }
+
+        return false;
     }
 
     public function update(int $id, array $data): bool

@@ -30,6 +30,7 @@
         const closeBtn = modal.querySelector('button');
 
         function openModal(src) {
+            if (!src || src.includes('no-image.png')) return;
             modalImg.src = src;
             modal.classList.add('active');
         }
@@ -43,16 +44,11 @@
 
         document.addEventListener('click', function(e) {
             const trigger = e.target.closest('.lightbox-trigger');
+            
             if (trigger) {
                 e.preventDefault();
-
-                const src = trigger.src;
-
-                if (src.includes('no-image.png')) {
-                    return;
-                }
-
-                openModal(src);
+                const imageSrc = trigger.getAttribute('src');
+                openModal(imageSrc);
             }
         });
 

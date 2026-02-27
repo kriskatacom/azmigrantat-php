@@ -1,3 +1,10 @@
+<?php
+
+use App\Core\View;
+use App\Models\User;
+
+?>
+
 <!DOCTYPE html>
 <html lang="bg">
 
@@ -13,17 +20,17 @@
 
     <script src="/assets/js/min/jquery-3.6.0.min.js"></script>
     <script src="/assets/js/min/jquery-ui.min.js"></script>
-    <script>$.widget.bridge('uibutton', $.ui.button);</script>
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
 
-    <aside class="w-64 min-h-screen bg-[#1e293b] text-white flex flex-col sticky top-0">
+    <aside class="w-64 h-screen bg-[#1e293b] text-white flex flex-col sticky top-0 overflow-hidden">
+
         <div class="p-6 text-xl font-bold border-b border-gray-700">Табло</div>
 
-        <nav class="flex-1 p-4 space-y-2">
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+
             <?php
-
-            use App\Core\View;
-            use App\Models\User;
-
             $menu = [
                 ['label' => 'Табло', 'icon' => 'grid', 'url' => '/admin/dashboard'],
                 ['label' => 'Потребители', 'icon' => 'users', 'url' => '/admin/users'],
@@ -38,9 +45,11 @@
             <?php endforeach; ?>
         </nav>
 
-        <div class="p-4 border-t border-gray-700">
+        <div class="p-4 border-t border-gray-700 bg-[#1e293b]">
             <form action="/auth/logout" method="POST">
-                <button class="w-full text-left px-4 py-2 text-red-400 hover:bg-red-500/10 rounded-lg">Изход</button>
+                <button class="w-full text-left px-4 py-2 text-red-400 hover:bg-red-500/10 rounded-lg transition">
+                    Изход
+                </button>
             </form>
         </div>
     </aside>
@@ -57,7 +66,7 @@
         <div class="p-8">
             <?= $content ?>
         </div>
-        
+
         <?php View::component('alert', 'admin/components'); ?>
     </main>
 

@@ -117,7 +117,6 @@ class CountryController extends BaseController
         }
 
         $data['image_url'] = $finalImageUrl;
-        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
         unset($data['remove_image_url']);
 

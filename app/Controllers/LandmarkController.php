@@ -85,10 +85,10 @@ class LandmarkController extends BaseController
         $data['additional_images'] = json_encode($gallery);
 
         $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
-        $data['country_id'] = (int)($data['country_id'] ?? 0);
+        $data['country_id'] = !empty($data['country_id']) ? (int)$data['country_id'] : null;
         $data['sort_order'] = !empty($data['sort_order']) ? (int)$data['sort_order'] : 0;
 
-        unset($data['remove_image_url'], $data['existing_images']);
+        unset($data['remove_image_url'], $data['existing_images'], $data['return_url']);
 
         $newId = $this->landmarkModel->create($data);
 
@@ -174,21 +174,25 @@ class LandmarkController extends BaseController
         $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
         $data['country_id'] = (int)$data['country_id'];
 
-        unset($data['remove_image_url'], $data['existing_images']);
+        unset($data['remove_image_url'], $data['existing_images'], $data['return_url']);
 
+        $returnUrl = $_POST['return_url'] ?? "/admin/landmarks/edit/{$id}";
+        
         if ($this->landmarkModel->update((int)$id, $data)) {
             $this->flash('success', 'Забележителността беше актуализирана успешно!');
         }
 
-        header('Location: /admin/landmarks/edit/' . $id);
+        header('Location: ' . $returnUrl);
         exit;
     }
 
     public function delete($id)
     {
+        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/landmarks';
+
         if ($this->landmarkModel->delete((int)$id)) {
             $this->flash('success', 'Изтриването беше успешно!');
-            header('Location: /admin/landmarks?success=deleted');
+            header('Location: ' . $redirectUrl);
             exit;
         }
     }

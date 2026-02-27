@@ -22,7 +22,7 @@ $label = $label ?? 'URL Slug (автоматично)';
             </svg>
         </div>
     </div>
-    <p class="text-[10px] text-gray-400 italic">Генерира се автоматично от името на латиница.</p>
+    <p class="text-gray-400 italic">Генерира се автоматично от името на латиница.</p>
 </div>
 
 <script>
@@ -40,8 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const slugFields = document.querySelectorAll('.slug-field');
 
     slugFields.forEach(field => {
-        const sourceId = field.getAttribute('data-source');
-        const sourceInput = document.getElementById(sourceId);
+        const sourceNameOrId = field.getAttribute('data-source');
+        
+        let sourceInput = document.getElementById(sourceNameOrId) || 
+                          document.querySelector(`input[name="${sourceNameOrId}"]`);
 
         if (sourceInput) {
             sourceInput.addEventListener('input', function() {

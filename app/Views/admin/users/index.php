@@ -1,3 +1,16 @@
+<?php
+
+use App\Core\View;
+?>
+
+<div class="mb-5">
+    <?php View::component('breadcrumbs', 'admin/components', [
+        'items' => [
+            ['label' => 'Потребители', 'url' => '/admin/users'],
+        ]
+    ]); ?>
+</div>
+
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <h3 class="font-bold text-gray-800 text-lg">Списък с потребители</h3>
@@ -7,8 +20,6 @@
     </div>
 
     <?php
-
-use App\Core\View;
 
     $headers = [
         ['label' => 'Име'],

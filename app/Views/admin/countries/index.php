@@ -1,3 +1,17 @@
+<?php
+
+use App\Core\View;
+use App\Services\HelperService;
+?>
+
+<div class="mb-5">
+    <?php View::component('breadcrumbs', 'admin/components', [
+        'items' => [
+            ['label' => 'Държави', 'url' => '/admin/countries'],
+        ]
+    ]); ?>
+</div>
+
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <h3 class="font-bold text-gray-800 text-lg">Списък с държави</h3>
@@ -7,9 +21,6 @@
     </div>
 
     <?php
-
-    use App\Core\View;
-use App\Services\HelperService;
 
     $headers = [
         ['label' => 'Ред'],
@@ -74,6 +85,7 @@ use App\Services\HelperService;
         'slot' => $tableBody,
         'attributes' => 'id="countries-table"'
     ]);
+    
     View::component('sortable-script', 'admin/components', [
         'tableId' => '#countries-table',
         'url'     => '/admin/countries/update-order'

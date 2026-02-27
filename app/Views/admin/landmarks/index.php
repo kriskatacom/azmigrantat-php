@@ -1,3 +1,17 @@
+<?php
+
+use App\Core\View;
+use App\Services\HelperService;
+?>
+
+<div class="mb-5">
+    <?php View::component('breadcrumbs', 'admin/components', [
+        'items' => [
+            ['label' => 'Забележителности', 'url' => '/admin/landmarks'],
+        ]
+    ]); ?>
+</div>
+
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <h3 class="font-bold text-gray-800 text-lg">Списък със забележителности</h3>
@@ -8,8 +22,6 @@
 
     <?php
 
-    use App\Core\View;
-    use App\Services\HelperService;
 
     $headers = [
         ['label' => 'Ред'],
@@ -74,14 +86,12 @@
 
     $tableBody = ob_get_clean();
 
-    // Използваме компонента за таблица
     View::component('table', 'admin/components', [
         'headers' => $headers,
         'slot' => $tableBody,
         'attributes' => 'id="landmarks-table"'
     ]);
 
-    // Активираме сортирането
     View::component('sortable-script', 'admin/components', [
         'tableId' => '#landmarks-table',
         'url'     => '/admin/landmarks/update-order'
