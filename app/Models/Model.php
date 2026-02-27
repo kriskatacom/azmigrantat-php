@@ -76,7 +76,11 @@ abstract class Model
 
     public function where(string $column, $value): array
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE {$column} = :val");
+        $hasOperator = preg_match('/[<>=!]/', $column);
+
+        $sql = "SELECT * FROM {$this->table} WHERE " . ($hasOperator ? $column : "{$column} =") . " :val";
+
+        $stmt = $this->db->prepare($sql);
         $stmt->execute(['val' => $value]);
         return $stmt->fetchAll();
     }

@@ -11,6 +11,7 @@ $router->get('/auth/login', ['controller' => 'AuthController', 'method' => 'show
 $router->get('/auth/register', ['controller' => 'AuthController', 'method' => 'showRegister']);
 $router->get('/admin/dashboard', ['controller' => 'AdminController', 'method' => 'dashboard']);
 $router->get('/admin/users', ['controller' => 'UserController', 'method' => 'index']);
+$router->get('/admin/countries', ['controller' => 'CountryController', 'method' => 'index']);
 
 // POST заявки (Обработка на форми)
 $router->post('/auth/login', ['controller' => 'AuthController', 'method' => 'login']);

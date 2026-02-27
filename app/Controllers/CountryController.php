@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\View;
 use App\Models\Country;
 
 class CountryController extends BaseController
@@ -15,8 +16,28 @@ class CountryController extends BaseController
 
     public function index()
     {
-        $countries = $this->countryModel->getAllSorted();
-        $this->json($countries);
+        $page = (int)($_GET['page'] ?? 1);
+        $perPage = (int)($_GET['per_page'] ?? 10);
+        $offset = ($page - 1) * $perPage;
+
+        $countries = $this->countryModel->all([
+            'limit' => $perPage,
+            'offset' => $offset,
+            'order' => 'name ASC'
+        ]);
+
+        $total = $this->countryModel->count();
+
+        View::render('admin/countries/index', [
+            'title' => 'Държави',
+            'countries' => $countries,
+            'layout' => 'admin',
+            'pagination' => [
+                'current' => $page,
+                'total' => ceil($total / $perPage),
+                'per_page' => $perPage,
+            ],
+        ]);
     }
 
     public function store()
@@ -62,7 +83,7 @@ class CountryController extends BaseController
             $this->json(['message' => 'Update failed'], 400);
         }
     }
-    
+
     public function destroy(int $id)
     {
         $success = $this->countryModel->delete($id);

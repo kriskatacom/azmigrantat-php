@@ -20,6 +20,7 @@
             $menu = [
                 ['label' => 'Табло', 'icon' => 'grid', 'url' => '/admin/dashboard'],
                 ['label' => 'Потребители', 'icon' => 'users', 'url' => '/admin/users'],
+                ['label' => 'Държави', 'icon' => 'countries', 'url' => '/admin/countries'],
             ];
 
             foreach ($menu as $item): ?>
