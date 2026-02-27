@@ -28,6 +28,7 @@
                 ['label' => 'Табло', 'icon' => 'grid', 'url' => '/admin/dashboard'],
                 ['label' => 'Потребители', 'icon' => 'users', 'url' => '/admin/users'],
                 ['label' => 'Държави', 'icon' => 'countries', 'url' => '/admin/countries'],
+                ['label' => 'Забележителности', 'icon' => 'landmarks', 'url' => '/admin/landmarks'],
             ];
 
             foreach ($menu as $item): ?>

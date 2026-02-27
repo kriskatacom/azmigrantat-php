@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\LandmarkController;
 use App\Core\Router;
 use App\Controllers\HomeController;
 use App\Controllers\AuthController;
@@ -34,5 +35,14 @@ $router->get('/admin/countries/edit/{id}', [CountryController::class, 'edit']);
 $router->post('/admin/countries/update/{id}', [CountryController::class, 'update']);
 $router->post('/admin/countries/update-order', [CountryController::class, 'updateOrder']);
 $router->post('/admin/countries/delete/{id}', [CountryController::class, 'delete']);
+
+// --- Забележителности (Landmarks) ---
+$router->get('/admin/landmarks', [LandmarkController::class, 'index']);
+$router->get('/admin/landmarks/create', [LandmarkController::class, 'create']);
+$router->post('/admin/landmarks/store', [LandmarkController::class, 'store']);
+$router->get('/admin/landmarks/edit/{id}', [LandmarkController::class, 'edit']);
+$router->post('/admin/landmarks/update/{id}', [LandmarkController::class, 'update']);
+$router->post('/admin/landmarks/delete/{id}', [LandmarkController::class, 'delete']);
+$router->post('/admin/landmarks/update-order', [LandmarkController::class, 'updateOrder']);
 
 return $router;

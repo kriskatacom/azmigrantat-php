@@ -45,7 +45,7 @@ class CountryController extends BaseController
 
     public function create()
     {
-        View::render('admin/countries/form', ['title' => 'Добави държава', 'layout' => 'admin']);
+        View::render('admin/countries/form', ['title' => 'Добавяне на държава', 'layout' => 'admin']);
     }
 
     public function store()
@@ -69,7 +69,7 @@ class CountryController extends BaseController
             $data['slug'] = HelperService::slug($data['slug']);
         }
 
-        unset($data['remove_image']);
+        unset($data['remove_image_url']);
 
         $newId = $this->countryModel->create($data);
 
@@ -106,7 +106,7 @@ class CountryController extends BaseController
 
         $finalImageUrl = $country['image_url'];
 
-        if (isset($data['remove_image']) && $data['remove_image'] == '1') {
+        if (isset($data['remove_image_url']) && $data['remove_image_url'] == '1') {
             FileService::delete($country['image_url']);
             $finalImageUrl = null;
         }
@@ -119,7 +119,7 @@ class CountryController extends BaseController
         $data['image_url'] = $finalImageUrl;
         $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
-        unset($data['remove_image']);
+        unset($data['remove_image_url']);
 
         if ($this->countryModel->update($id, $data)) {
             $this->flash('success', 'Промените бяха запазени!');
