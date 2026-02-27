@@ -9,6 +9,10 @@
 
 <body class="bg-gray-50 flex">
 
+    <script src="/assets/js/min/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/min/jquery-ui.min.js"></script>
+    <script>$.widget.bridge('uibutton', $.ui.button);</script>
+
     <aside class="w-64 min-h-screen bg-[#1e293b] text-white flex flex-col sticky top-0">
         <div class="p-6 text-xl font-bold border-b border-gray-700">Табло</div>
 

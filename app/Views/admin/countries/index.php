@@ -7,29 +7,36 @@
     </div>
 
     <?php
+
     use App\Core\View;
 
     $headers = [
+        ['label' => 'Ред'],
         ['label' => 'Държава'],
         ['label' => 'Градове', 'align' => 'center'],
         ['label' => 'Действия', 'align' => 'right']
     ];
 
     ob_start();
-    foreach ($countries as $country): 
+    foreach ($countries as $country):
         $imagePath = !empty($country['image_url']) ? $country['image_url'] : '/assets/images/placeholders/country.webp';
     ?>
-        <tr class="hover:bg-gray-200/50 transition">
+        <tr class="hover:bg-gray-50 transition" data-id="<?= $country['id'] ?>">
+            <td class="px-6 py-4 w-10">
+                <div class="drag-handle text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                    </svg>
+                </div>
+            </td>
             <td class="px-6 py-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-30 h-20 rounded-md overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0">
-                        <img src="<?= $imagePath ?>" 
-                             alt="<?= htmlspecialchars($country['name']) ?>" 
-                             class="w-full h-full object-cover">
+                    <div class="w-32 h-20 rounded-md overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0">
+                        <img src="<?= $imagePath ?>"
+                            alt="<?= htmlspecialchars($country['name']) ?>"
+                            class="w-full h-full object-cover">
                     </div>
-                    <span class="font-semibold text-gray-700 hover:text-primary-dark transition cursor-default">
-                        <?= htmlspecialchars($country['name']) ?>
-                    </span>
+                    <span class="font-semibold text-gray-700 italic"><?= htmlspecialchars($country['name']) ?></span>
                 </div>
             </td>
             <td class="px-6 py-4 text-center">
@@ -45,10 +52,15 @@
     <?php endforeach;
 
     $tableBody = ob_get_clean();
-    
+
     View::component('table', 'admin/components', [
         'headers' => $headers,
-        'slot' => $tableBody
+        'slot' => $tableBody,
+        'attributes' => 'id="countries-table"'
+    ]);
+    View::component('sortable-script', 'admin/components', [
+        'tableId' => '#countries-table',
+        'url'     => '/admin/countries/update-order'
     ]);
     ?>
 </div>

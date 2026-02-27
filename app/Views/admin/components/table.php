@@ -1,5 +1,9 @@
+<?php 
+$extraAttributes = $attributes ?? ''; 
+?>
+
 <div class="overflow-x-auto">
-    <table class="w-full text-left border-collapse">
+    <table <?= $extraAttributes ?> class="w-full text-left border-collapse">
         <thead>
             <tr class="text-gray-400 text-xs uppercase tracking-wider border-b border-gray-100">
                 <?php foreach ($headers as $header): ?>

@@ -23,7 +23,7 @@ class CountryController extends BaseController
         $countries = $this->countryModel->all([
             'limit' => $perPage,
             'offset' => $offset,
-            'order' => 'name ASC'
+            'order' => 'sort_order ASC, name ASC'
         ]);
 
         $total = $this->countryModel->count();
@@ -82,6 +82,38 @@ class CountryController extends BaseController
         } else {
             $this->json(['message' => 'Update failed'], 400);
         }
+    }
+
+    public function updateOrder()
+    {
+        $this->middleware('admin');
+
+        // Взимаме JSON данните от заявката
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (isset($data['items'])) {
+            $db = \App\Core\Database::getConnection();
+
+            try {
+                $db->beginTransaction();
+
+                $stmt = $db->prepare("UPDATE countries SET sort_order = :sort_order WHERE id = :id");
+
+                foreach ($data['items'] as $item) {
+                    $stmt->execute([
+                        'sort_order' => $item['sort_order'],
+                        'id' => $item['id']
+                    ]);
+                }
+
+                $db->commit();
+                echo json_encode(['success' => true]);
+            } catch (\Exception $e) {
+                $db->rollBack();
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            }
+        }
+        exit;
     }
 
     public function destroy(int $id)

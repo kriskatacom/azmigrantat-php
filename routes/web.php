@@ -17,5 +17,6 @@ $router->get('/admin/countries', ['controller' => 'CountryController', 'method' 
 $router->post('/auth/login', ['controller' => 'AuthController', 'method' => 'login']);
 $router->post('/auth/register', ['controller' => 'AuthController', 'method' => 'register']);
 $router->post('/auth/logout', ['controller' => 'AuthController', 'method' => 'logout']);
+$router->post('/admin/countries/update-order', ['controller' => 'CountryController', 'method' => 'updateOrder']);
 
 return $router;
