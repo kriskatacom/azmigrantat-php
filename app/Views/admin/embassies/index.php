@@ -12,10 +12,9 @@ use App\Services\HelperService;
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+    <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <div>
             <h3 class="font-bold text-gray-800 text-lg">Списък с посолства</h3>
-            <p class="text-xs text-gray-400 mt-1">Управление на дипломатически мисии и контакти</p>
         </div>
         <a href="/admin/embassies/create" class="bg-[#1e293b] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition shadow-sm">
             + Ново посолство
@@ -33,7 +32,6 @@ use App\Services\HelperService;
 
     ob_start();
     foreach ($embassies as $embassy):
-        // Приоритет на снимките: лого -> основна снимка -> placeholder
         $imagePath = !empty($embassy['logo']) ? $embassy['logo'] : (!empty($embassy['image_url']) ? $embassy['image_url'] : '/assets/images/placeholders/embassy.webp');
         $editUrl = "/admin/embassies/edit/{$embassy['id']}";
         $deleteUrl = "/admin/embassies/delete/{$embassy['id']}";
@@ -108,7 +106,6 @@ use App\Services\HelperService;
         'attributes' => 'id="embassies-table"'
     ]);
     
-    // Sortable Script за подредба на посолствата
     View::component('sortable-script', 'admin/components', [
         'tableId' => '#embassies-table',
         'url'     => '/admin/embassies/update-order'

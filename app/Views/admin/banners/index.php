@@ -1,4 +1,5 @@
 <?php
+
 use App\Core\View;
 use App\Services\HelperService;
 
@@ -23,32 +24,31 @@ $positions = [
     ]); ?>
 </div>
 
-<div class="flex justify-between items-end mb-6">
-    <div>
-        <h2 class="text-2xl font-bold text-gray-800">Управление на банери</h2>
-    </div>
-    
-    <div class="flex items-center gap-4">
-        <div class="text-left">
-            <select onchange="window.location.href='/admin/banners?group_key=' + this.value" 
-                    class="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-primary-light focus:border-primary-light block w-48 p-2.5 outline-none transition shadow-sm">
-                <option value="">Всички групи</option>
-                <?php 
-                foreach ($groups as $group): ?>
-                    <option value="<?= htmlspecialchars($group) ?>" <?= $selectedGroup == $group ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($group) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+        <div>
+            <h2 class="font-bold text-gray-800 text-lg">Управление на банери</h2>
         </div>
 
-        <a href="/admin/banners/create" class="bg-[#1e293b] text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark transition shadow-sm h-fit">
-            + Нов банер
-        </a>
-    </div>
-</div>
+        <div class="border-b border-gray-100 flex justify-between items-center gap-5 bg-gray-50/50">
+            <div class="text-left">
+                <select onchange="window.location.href='/admin/banners?group_key=' + this.value" class="px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm">
+                    <option value="">Всички групи</option>
+                    <?php
+                    foreach ($groups as $group): ?>
+                        <option value="<?= htmlspecialchars($group) ?>" <?= $selectedGroup == $group ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($group) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <a href="/admin/banners/create" class="bg-[#1e293b] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition shadow-sm">
+                + Нов банер
+            </a>
+        </div>
+    </div>
+
     <?php
     $headers = [
         ['label' => 'Ред'],
@@ -76,10 +76,10 @@ $positions = [
 
             <td class="px-6 py-4 w-48">
                 <a href="<?= $editUrl ?>" class="block group relative aspect-video rounded-lg overflow-hidden border border-gray-100 bg-gray-100 shadow-sm">
-                    <img src="<?= HelperService::getImage($imagePath) ?>" 
-                         alt="<?= htmlspecialchars($banner['name']) ?>"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    <?php if($banner['show_overlay']): ?>
+                    <img src="<?= HelperService::getImage($imagePath) ?>"
+                        alt="<?= htmlspecialchars($banner['name']) ?>"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <?php if ($banner['show_overlay']): ?>
                         <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
                     <?php endif; ?>
                 </a>
@@ -107,13 +107,13 @@ $positions = [
 
             <td class="px-6 py-4">
                 <div class="flex flex-wrap gap-2">
-                    <?php 
+                    <?php
                     $flags = [
                         'Бутон' => $banner['show_button'],
                         'Име' => $banner['show_name'],
                         'Овърлей' => $banner['show_overlay']
                     ];
-                    foreach($flags as $label => $isActive): ?>
+                    foreach ($flags as $label => $isActive): ?>
                         <span class="px-1.5 py-0.5 rounded font-bold uppercase border <?= $isActive ? 'bg-green-50 border-green-100' : 'bg-gray-50 border-gray-100' ?>">
                             <?= $label ?>
                         </span>
@@ -121,11 +121,12 @@ $positions = [
                 </div>
             </td>
 
-            <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
-                <a href="<?= $editUrl ?>" class="p-2 text-gray-400 hover:text-blue-500 hover:bg-gray-50 rounded-lg transition inline-block">✏️</a>
-                <form action="<?= $deleteUrl ?>" method="POST" class="inline-block" onsubmit="return confirmDelete(event, '<?= htmlspecialchars($banner['name'], ENT_QUOTES) ?>')">
-                    <button type="submit" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">🗑️</button>
-                </form>
+            <td class="px-6 py-4">
+                <?php View::component('table-actions', 'admin/components', [
+                    'editUrl'   => "/admin/banners/edit/{$banner['id']}",
+                    'deleteUrl' => "/admin/banners/delete/{$banner['id']}",
+                    'name'      => $banner['name']
+                ]); ?>
             </td>
         </tr>
     <?php endforeach;
@@ -137,7 +138,7 @@ $positions = [
         'slot' => $tableBody,
         'attributes' => 'id="banners-table-all"'
     ]);
-    
+
     View::component('sortable-script', 'admin/components', [
         'tableId' => '#banners-table-all',
         'url'     => '/admin/banners/update-order'

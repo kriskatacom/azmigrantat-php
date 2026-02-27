@@ -25,33 +25,51 @@ use App\Models\User;
     </script>
 
     <aside class="w-64 h-screen bg-[#1e293b] text-white flex flex-col sticky top-0 overflow-hidden">
+        <div class="p-6 text-xl font-bold border-b border-gray-700 flex items-center gap-3">
+            <span class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-sm">A</span>
+            Табло
+        </div>
 
-        <div class="p-6 text-xl font-bold border-b border-gray-700">Табло</div>
-
-        <nav class="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
-
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
             <?php
+            $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
             $menu = [
-                ['label' => 'Табло', 'icon' => 'grid', 'url' => '/admin/dashboard'],
-                ['label' => 'Потребители', 'icon' => 'users', 'url' => '/admin/users'],
-                ['label' => 'Държави', 'icon' => 'countries', 'url' => '/admin/countries'],
-                ['label' => 'Забележителности', 'icon' => 'landmarks', 'url' => '/admin/landmarks'],
-                ['label' => 'Посолства', 'icon' => 'embassies', 'url' => '/admin/embassies'],
-                ['label' => 'Круиз компании', 'icon' => 'cruises', 'url' => '/admin/cruises'],
-                ['label' => 'Банери', 'icon' => 'banners', 'url' => '/admin/banners'],
+                ['label' => 'Табло', 'url' => '/admin/dashboard', 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
+                ['label' => 'Потребители', 'url' => '/admin/users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'],
+                ['label' => 'Държави', 'url' => '/admin/countries', 'icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2 2 2 0 012 2v.627M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
+                ['label' => 'Забележителности', 'url' => '/admin/landmarks', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
+                ['label' => 'Посолства', 'url' => '/admin/embassies', 'icon' => 'M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9'],
+                ['label' => 'Круиз компании', 'url' => '/admin/cruises', 'icon' => 'M13 5H19V7H13V5M13 9H19V11H13V9M3 9V11H11V9H3M13 13H17V15H13V13M3 13V15H11V13H3M3 5H11V7H3V5M21 19V21H3V19L5 17H19L21 19Z'],
+                ['label' => 'Банери', 'url' => '/admin/banners', 'icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z'],
             ];
 
-            foreach ($menu as $item): ?>
-                <a href="<?= $item['url'] ?>" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition">
-                    <span class="w-5 h-5 opacity-70">📁</span> <?= $item['label'] ?>
+            foreach ($menu as $item):
+                $isActive = (strpos($currentPath, $item['url']) === 0);
+                $activeClass = $isActive ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:bg-gray-800 hover:text-white';
+            ?>
+                <a href="<?= $item['url'] ?>" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group <?= $activeClass ?>">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5 transition-colors <?= $isActive ? 'text-white' : 'text-gray-500 group-hover:text-white' ?>"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<?= $item['icon'] ?>" />
+                    </svg>
+                    <span class="font-medium"><?= $item['label'] ?></span>
+
+                    <?php if ($isActive): ?>
+                        <span class="ml-auto w-1.5 h-1.5 bg-white rounded-full"></span>
+                    <?php endif; ?>
                 </a>
             <?php endforeach; ?>
         </nav>
 
-        <div class="p-4 border-t border-gray-700 bg-[#1e293b]">
+        <div class="p-5 border-t border-gray-700/50 bg-[#1e293b]">
             <form action="/auth/logout" method="POST">
-                <button class="w-full text-left px-4 py-2 text-red-400 hover:bg-red-500/10 rounded-lg transition">
-                    Изход
+                <button class="w-full flex items-center gap-3 px-4 py-2.5 text-red-400 hover:bg-red-500/10 rounded-xl transition duration-200 group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-400 opacity-70 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span class="font-medium">Изход</span>
                 </button>
             </form>
         </div>
@@ -66,7 +84,7 @@ use App\Models\User;
             </div>
         </header>
 
-        <div class="p-8">
+        <div class="p-5">
             <?= $content ?>
         </div>
 

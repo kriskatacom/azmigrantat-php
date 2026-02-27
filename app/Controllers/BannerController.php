@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Core\Database;
 use App\Models\Banner;
 use App\Core\View;
 use App\Services\FileService;
@@ -56,11 +55,15 @@ class BannerController extends BaseController
             $data['image'] = FileService::upload($_FILES['image']);
         }
 
-        if ($this->bannerModel->create($data)) {
-            $this->flash('success', 'Банерът беше създаден успешно!');
-        }
+        $newId = $this->bannerModel->create($data);
 
-        header('Location: /admin/banners');
+        if ($newId) {
+            $this->flash('success', 'Банерът беше създаден успешно!');
+            header('Location: /admin/banners/edit/' . $newId);
+        } else {
+            $this->flash('error', 'Възникна грешка при записа в базата данни.');
+            header('Location: /admin/banners');
+        }
         exit;
     }
 
@@ -109,7 +112,8 @@ class BannerController extends BaseController
             $this->bannerModel->delete((int)$id);
             $this->flash('success', 'Банерът беше изтрит.');
         }
-        header('Location: /admin/banners');
+        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/embassies';
+        header('Location: ' . $redirectUrl);
         exit;
     }
 
