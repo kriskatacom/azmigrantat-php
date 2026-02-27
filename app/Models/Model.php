@@ -90,6 +90,16 @@ abstract class Model
         return (int)$this->db->query("SELECT COUNT(*) FROM {$this->table}")->fetchColumn();
     }
 
+    public function max(string $column)
+    {
+        $sql = "SELECT MAX({$column}) AS max_val FROM {$this->table}";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetch();
+
+        return $result ? $result['max_val'] : null;
+    }
+
     public function generateUuid(): string
     {
         return sprintf(

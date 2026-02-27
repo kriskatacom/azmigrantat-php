@@ -34,7 +34,6 @@ abstract class BaseController
     {
         $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        // 1. Първо проверяваме изключенията. Ако методът е изключение, спираме веднага.
         foreach ($except as $method) {
             if (str_contains($currentUri, $method)) {
                 return;
@@ -43,27 +42,31 @@ abstract class BaseController
 
         $user = User::auth();
 
-        // 2. Логика за ГOСТИ (guest)
         if ($type === 'guest') {
             if ($user) {
                 header('Location: /');
                 exit;
             }
-            return; // Ако е гост и не е логнат, всичко е наред
+            return;
         }
 
-        // 3. Логика за ОТОРИЗАЦИЯ (auth или специфична роля)
-        // Ако не е логнат, а се изисква каквато и да е роля или просто 'auth'
         if (!$user) {
             header('Location: /login');
             exit;
         }
 
-        // 4. Проверка за конкретна РОЛЯ (ако $type не е 'auth', а нещо друго, напр. 'admin')
         if ($type !== 'auth' && $user['role'] !== $type) {
             $_SESSION['error'] = "Нямате достъп до тази секция!";
             header('Location: /');
             exit;
         }
+    }
+
+    protected function flash(string $type, string $message)
+    {
+        $_SESSION['flash'] = [
+            'type' => $type,
+            'message' => $message
+        ];
     }
 }

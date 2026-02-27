@@ -1,22 +1,37 @@
 <?php
 
 use App\Core\Router;
+use App\Controllers\HomeController;
+use App\Controllers\AuthController;
+use App\Controllers\AdminController;
+use App\Controllers\UserController;
+use App\Controllers\CountryController;
 
 $router = new Router();
 
-// GET заявки (Показване на страници)
-$router->get('/', ['controller' => 'HomeController', 'method' => 'index']);
-$router->get('/travel', ['controller' => 'HomeController', 'method' => 'travel']);
-$router->get('/auth/login', ['controller' => 'AuthController', 'method' => 'showLogin']);
-$router->get('/auth/register', ['controller' => 'AuthController', 'method' => 'showRegister']);
-$router->get('/admin/dashboard', ['controller' => 'AdminController', 'method' => 'dashboard']);
-$router->get('/admin/users', ['controller' => 'UserController', 'method' => 'index']);
-$router->get('/admin/countries', ['controller' => 'CountryController', 'method' => 'index']);
+// --- Публични страници ---
+$router->get('/', [HomeController::class, 'index']);
+$router->get('/travel', [HomeController::class, 'travel']);
 
-// POST заявки (Обработка на форми)
-$router->post('/auth/login', ['controller' => 'AuthController', 'method' => 'login']);
-$router->post('/auth/register', ['controller' => 'AuthController', 'method' => 'register']);
-$router->post('/auth/logout', ['controller' => 'AuthController', 'method' => 'logout']);
-$router->post('/admin/countries/update-order', ['controller' => 'CountryController', 'method' => 'updateOrder']);
+// --- Аутентикация ---
+$router->get('/auth/login', [AuthController::class, 'showLogin']);
+$router->post('/auth/login', [AuthController::class, 'login']);
+$router->get('/auth/register', [AuthController::class, 'showRegister']);
+$router->post('/auth/register', [AuthController::class, 'register']);
+$router->post('/auth/logout', [AuthController::class, 'logout']);
+
+// --- Админ Табло ---
+$router->get('/admin/dashboard', [AdminController::class, 'dashboard']);
+
+// --- Потребители ---
+$router->get('/admin/users', [UserController::class, 'index']);
+
+// --- Държави (Countries) ---
+$router->get('/admin/countries', [CountryController::class, 'index']);
+$router->get('/admin/countries/create', [CountryController::class, 'create']);
+$router->post('/admin/countries/store', [CountryController::class, 'store']);
+$router->get('/admin/countries/edit/{id}', [CountryController::class, 'edit']);
+$router->post('/admin/countries/update/{id}', [CountryController::class, 'update']);
+$router->post('/admin/countries/update-order', [CountryController::class, 'updateOrder']);
 
 return $router;

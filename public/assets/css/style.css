@@ -6,3 +6,9 @@
     --color-primary-light: #e3e295;
     --color-primary-blue: #8fd5e7;
 }
+
+.image-fallback {
+    object-fit: contain !important;
+    background-color: #f3f4f6;
+    opacity: 0.8;
+}

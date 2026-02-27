@@ -53,6 +53,8 @@
         <div class="p-8">
             <?= $content ?>
         </div>
+        
+        <?php \App\Core\View::component('alert', 'admin/components'); ?>
     </main>
 
 </body>

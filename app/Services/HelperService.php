@@ -94,4 +94,16 @@ class HelperService
 
         return 'bg';
     }
+
+    public static function getImage(?string $path, string $default = '/assets//images/no-image.png'): string
+    {
+        $publicRoot = dirname(__DIR__, 2) . '/public';
+        $absolutePath = $publicRoot . $path;
+
+        if (!empty($path) && file_exists($absolutePath) && is_file($absolutePath)) {
+            return $path;
+        }
+
+        return $default;
+    }
 }

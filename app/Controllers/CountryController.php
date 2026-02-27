@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Models\Country;
+use App\Services\FileService;
 
 class CountryController extends BaseController
 {
@@ -40,24 +41,76 @@ class CountryController extends BaseController
         ]);
     }
 
+    public function create()
+    {
+        View::render('admin/countries/form', ['title' => 'Добави държава', 'layout' => 'admin']);
+    }
+
     public function store()
     {
-        $data = [
-            'name'       => $_POST['name'],
-            'slug'       => $_POST['slug'] ?? strtolower(str_replace(' ', '-', $_POST['name'])),
-            'heading'    => $_POST['heading'],
-            'excerpt'    => $_POST['excerpt'],
-            'image_url'  => $_POST['image_url'] ?? null,
-            'sort_order' => (int)($_POST['sort_order'] ?? 0)
-        ];
+        $imageUrl = FileService::upload($_FILES['image_url']);
 
-        $success = $this->countryModel->create($data);
-
-        if ($success) {
-            $this->json(['message' => 'Country created successfully'], 201);
-        } else {
-            $this->json(['message' => 'Failed to create country'], 400);
+        if ($_FILES['image_url']['name'] && !$imageUrl) {
+            $this->flash('error', 'Възникна грешка при качването на снимката.');
+            header('Location: /admin/countries/create');
+            exit;
         }
+
+        $data = $_POST;
+        $data['image_url'] = $imageUrl;
+        $data['sort_order'] = ($this->countryModel->max('sort_order') ?? 0) + 1;
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
+
+        $newId = $this->countryModel->create($data);
+
+        if ($newId) {
+            $this->flash('success', 'Държавата "' . $data['name'] . '" беше създадена успешно!');
+            header('Location: /admin/countries/edit/' . $newId);
+        } else {
+            $this->flash('error', 'Възникна грешка при записа в базата данни.');
+            header('Location: /admin/countries');
+        }
+        exit;
+    }
+
+    public function edit($id)
+    {
+        $country = $this->countryModel->find($id);
+        View::render('admin/countries/form', [
+            'title' => 'Редактиране на ' . $country['name'],
+            'country' => $country,
+            'layout' => 'admin'
+        ]);
+    }
+
+    public function update($id)
+    {
+        $country = $this->countryModel->find($id);
+        $data = $_POST;
+
+        $finalImageUrl = $country['image_url'];
+
+        if (isset($data['remove_image']) && $data['remove_image'] == '1') {
+            \App\Services\FileService::delete($country['image_url']);
+            $finalImageUrl = null;
+        }
+
+        if (!empty($_FILES['image_url']['name'])) {
+            FileService::delete($country['image_url']);
+            $finalImageUrl = FileService::upload($_FILES['image_url']);
+        }
+
+        $data['image_url'] = $finalImageUrl;
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
+
+        unset($data['remove_image']);
+
+        if ($this->countryModel->update($id, $data)) {
+            $this->flash('success', 'Промените бяха запазени!');
+        }
+
+        header('Location: /admin/countries/edit/' . $id);
+        exit;
     }
 
     public function show(int $id)
@@ -71,24 +124,10 @@ class CountryController extends BaseController
         $this->json($country);
     }
 
-    public function update(int $id)
-    {
-        $data = $_POST;
-
-        $success = $this->countryModel->update($id, $data);
-
-        if ($success) {
-            $this->json(['message' => 'Country updated successfully']);
-        } else {
-            $this->json(['message' => 'Update failed'], 400);
-        }
-    }
-
     public function updateOrder()
     {
         $this->middleware('admin');
 
-        // Взимаме JSON данните от заявката
         $data = json_decode(file_get_contents('php://input'), true);
 
         if (isset($data['items'])) {

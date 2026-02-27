@@ -21,6 +21,8 @@
     foreach ($countries as $country):
         $imagePath = !empty($country['image_url']) ? $country['image_url'] : '/assets/images/placeholders/country.webp';
     ?>
+        <?php $editUrl = "/admin/countries/edit/{$country['id']}"; ?>
+
         <tr class="hover:bg-gray-50 transition" data-id="<?= $country['id'] ?>">
             <td class="px-6 py-4 w-10">
                 <div class="drag-handle text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing">
@@ -29,24 +31,33 @@
                     </svg>
                 </div>
             </td>
+
             <td class="px-6 py-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-32 h-20 rounded-md overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0">
+                <a href="<?= $editUrl ?>" class="flex items-center gap-4 group">
+                    <div class="w-32 h-20 rounded-md overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0 group-hover:ring-2 group-hover:ring-primary-light transition-all">
                         <img src="<?= $imagePath ?>"
                             alt="<?= htmlspecialchars($country['name']) ?>"
                             class="w-full h-full object-cover">
                     </div>
-                    <span class="font-semibold text-gray-700 italic"><?= htmlspecialchars($country['name']) ?></span>
-                </div>
+                    <span class="font-semibold text-gray-700 italic group-hover:text-primary-dark group-hover:underline decoration-primary-light transition">
+                        <?= htmlspecialchars($country['name']) ?>
+                    </span>
+                </a>
             </td>
+
             <td class="px-6 py-4 text-center">
                 <span class="inline-flex items-center justify-center bg-gray-100 text-gray-600 text-xs font-bold px-2.5 py-1 rounded-full">
                     <?= $country['cities_count'] ?? 0 ?> градове
                 </span>
             </td>
+
             <td class="px-6 py-4 text-right space-x-2">
-                <button title="Редактиране" class="p-2 text-gray-400 hover:text-primary-light hover:bg-gray-50 rounded-lg transition">✏️</button>
-                <button title="Изтриване" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">🗑️</button>
+                <a href="<?= $editUrl ?>" title="Редактиране" class="inline-block p-2 text-gray-400 hover:text-primary-light hover:bg-gray-50 rounded-lg transition">
+                    ✏️
+                </a>
+                <button title="Изтриване" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+                    🗑️
+                    </a>
             </td>
         </tr>
     <?php endforeach;
