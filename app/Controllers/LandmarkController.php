@@ -58,19 +58,45 @@ class LandmarkController extends BaseController
     {
         $data = $_POST;
 
-        $data['additional_images'] = json_encode([]);
+        $data['slug'] = !empty($data['slug'])
+            ? HelperService::slug($data['slug'])
+            : HelperService::slug($data['name']);
 
+        $data['image_url'] = null;
+        if (!empty($_FILES['image_url']['name'])) {
+            $data['image_url'] = FileService::upload($_FILES['image_url']);
+        }
+
+        $gallery = [];
+        if (!empty($_FILES['additional_images']['name'][0])) {
+            foreach ($_FILES['additional_images']['name'] as $key => $val) {
+                if ($_FILES['additional_images']['error'][$key] === UPLOAD_ERR_OK) {
+                    $fileData = [
+                        'name'     => $_FILES['additional_images']['name'][$key],
+                        'type'     => $_FILES['additional_images']['type'][$key],
+                        'tmp_name' => $_FILES['additional_images']['tmp_name'][$key],
+                        'error'    => $_FILES['additional_images']['error'][$key],
+                        'size'     => $_FILES['additional_images']['size'][$key]
+                    ];
+                    $gallery[] = FileService::upload($fileData);
+                }
+            }
+        }
+        $data['additional_images'] = json_encode($gallery);
+
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
+        $data['country_id'] = (int)($data['country_id'] ?? 0);
         $data['sort_order'] = !empty($data['sort_order']) ? (int)$data['sort_order'] : 0;
 
-        unset($data['remove_image_url']);
+        unset($data['remove_image_url'], $data['existing_images']);
 
         $newId = $this->landmarkModel->create($data);
 
         if ($newId) {
-            $this->flash('success', 'Забележителността "' . $data['name'] . '" беше създадена успешно!');
+            $this->flash('success', 'Забележителността "' . htmlspecialchars($data['name']) . '" беше създадена успешно!');
             header('Location: /admin/landmarks/edit/' . $newId);
         } else {
-            $this->flash('error', 'Възникна грешка при записа в базата данни.');
+            $this->flash('error', 'Възникна грешка при записа.');
             header('Location: /admin/landmarks');
         }
         exit;
@@ -110,23 +136,45 @@ class LandmarkController extends BaseController
             : HelperService::slug($data['name']);
 
         $finalImageUrl = $landmark['image_url'];
-
         if (isset($data['remove_image_url']) && $data['remove_image_url'] == '1') {
             FileService::delete($landmark['image_url']);
             $finalImageUrl = null;
         }
-
         if (!empty($_FILES['image_url']['name'])) {
             FileService::delete($landmark['image_url']);
             $finalImageUrl = FileService::upload($_FILES['image_url']);
         }
-
         $data['image_url'] = $finalImageUrl;
+
+        $currentGallery = !empty($landmark['additional_images']) ? json_decode($landmark['additional_images'], true) : [];
+        $remainingImages = $data['existing_images'] ?? [];
+
+        $removedImages = array_diff($currentGallery, $remainingImages);
+        foreach ($removedImages as $removedImg) {
+            FileService::delete($removedImg);
+        }
+
+        if (!empty($_FILES['additional_images']['name'][0])) {
+            foreach ($_FILES['additional_images']['name'] as $key => $val) {
+                if ($_FILES['additional_images']['error'][$key] === UPLOAD_ERR_OK) {
+                    $fileData = [
+                        'name'     => $_FILES['additional_images']['name'][$key],
+                        'type'     => $_FILES['additional_images']['type'][$key],
+                        'tmp_name' => $_FILES['additional_images']['tmp_name'][$key],
+                        'error'    => $_FILES['additional_images']['error'][$key],
+                        'size'     => $_FILES['additional_images']['size'][$key]
+                    ];
+                    $newImgPath = FileService::upload($fileData);
+                    $remainingImages[] = $newImgPath;
+                }
+            }
+        }
+        $data['additional_images'] = json_encode(array_values($remainingImages));
 
         $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
         $data['country_id'] = (int)$data['country_id'];
 
-        unset($data['remove_image_url']);
+        unset($data['remove_image_url'], $data['existing_images']);
 
         if ($this->landmarkModel->update((int)$id, $data)) {
             $this->flash('success', 'Забележителността беше актуализирана успешно!');

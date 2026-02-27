@@ -142,7 +142,7 @@ $action = $isEdit ? "/admin/landmarks/update/{$landmark['id']}" : "/admin/landma
                         class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition">
                 </div>
             </div>
-            
+
             <div class="mt-5">
                 <?php View::component('maps-input', 'admin/components', [
                     'name'  => 'google_map',
@@ -151,6 +151,16 @@ $action = $isEdit ? "/admin/landmarks/update/{$landmark['id']}" : "/admin/landma
                 ]); ?>
             </div>
         </div>
+
+        <?php
+        $gallery = !empty($landmark['additional_images']) ? json_decode($landmark['additional_images'], true) : [];
+
+        View::component('multi-image-upload', 'admin/components', [
+            'name'   => 'additional_images[]',
+            'label'  => 'Фотогалерия на обекта',
+            'images' => $gallery
+        ]);
+        ?>
 
         <div class="pt-5 border-t border-gray-100 flex gap-4">
             <button type="submit" class="bg-primary-dark text-white px-10 py-3 rounded-xl font-bold shadow-lg hover:bg-opacity-90 transition">
