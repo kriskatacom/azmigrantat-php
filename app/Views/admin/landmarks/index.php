@@ -38,7 +38,7 @@ use App\Services\HelperService;
         $deleteUrl = "/admin/landmarks/delete/{$landmark['id']}";
     ?>
         <tr class="hover:bg-gray-50 transition" data-id="<?= $landmark['id'] ?>">
-            <td class="px-6 py-4 w-10">
+            <td class="px-5 py-4 w-10">
                 <div class="drag-handle text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
@@ -46,7 +46,7 @@ use App\Services\HelperService;
                 </div>
             </td>
 
-            <td class="px-6 py-4">
+            <td class="px-5 py-4">
                 <a href="<?= $editUrl ?>" class="flex items-center gap-4 group">
                     <div class="w-32 h-20 rounded-md overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0 group-hover:ring-2 group-hover:ring-primary-light transition-all">
                         <img src="<?= HelperService::getImage($imagePath) ?>"
@@ -64,13 +64,13 @@ use App\Services\HelperService;
                 </a>
             </td>
 
-            <td class="px-6 py-4 text-center">
+            <td class="px-5 py-4 text-center">
                 <span class="inline-flex items-center justify-center bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-full border border-blue-100">
                     🌍 <?= htmlspecialchars($landmark['country_name'] ?? 'Няма държава') ?>
                 </span>
             </td>
 
-            <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
+            <td class="px-5 py-4 text-right space-x-2 whitespace-nowrap">
                 <a href="<?= $editUrl ?>" title="Редактиране" class="inline-block p-2 text-gray-400 hover:text-blue-500 hover:bg-gray-50 rounded-lg transition">
                     ✏️
                 </a>

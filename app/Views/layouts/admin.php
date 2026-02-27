@@ -42,6 +42,8 @@ use App\Models\User;
                 ['label' => 'Посолства', 'url' => '/admin/embassies', 'icon' => 'M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9'],
                 ['label' => 'Круиз компании', 'url' => '/admin/cruises', 'icon' => 'M13 5H19V7H13V5M13 9H19V11H13V9M3 9V11H11V9H3M13 13H17V15H13V13M3 13V15H11V13H3M3 5H11V7H3V5M21 19V21H3V19L5 17H19L21 19Z'],
                 ['label' => 'Банери', 'url' => '/admin/banners', 'icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z'],
+                ['label' => 'Градове', 'url' => '/admin/cities', 'icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z'],
+                ['label' => 'Автобуси', 'url' => '/admin/autobuses', 'icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z'],
             ];
 
             foreach ($menu as $item):

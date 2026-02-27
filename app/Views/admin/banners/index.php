@@ -66,7 +66,7 @@ $positions = [
         $deleteUrl = "/admin/banners/delete/{$banner['id']}";
     ?>
         <tr class="hover:bg-gray-50 transition border-b border-gray-50 last:border-0" data-id="<?= $banner['id'] ?>">
-            <td class="px-6 py-4 w-10">
+            <td class="px-5 py-4 w-10">
                 <div class="drag-handle text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
@@ -74,18 +74,17 @@ $positions = [
                 </div>
             </td>
 
-            <td class="px-6 py-4 w-48">
-                <a href="<?= $editUrl ?>" class="block group relative aspect-video rounded-lg overflow-hidden border border-gray-100 bg-gray-100 shadow-sm">
-                    <img src="<?= HelperService::getImage($imagePath) ?>"
-                        alt="<?= htmlspecialchars($banner['name']) ?>"
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    <?php if ($banner['show_overlay']): ?>
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                    <?php endif; ?>
+            <td class="px-5 py-4">
+                <a href="<?= $editUrl ?>" class="flex items-center gap-4 group">
+                    <div class="w-32 h-20 rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0 group-hover:ring-2 group-hover:ring-primary-light transition-all">
+                        <img src="<?= HelperService::getImage($imagePath) ?>" 
+                             alt="<?= htmlspecialchars($banner['name']) ?>"
+                             class="w-full h-full object-cover">
+                    </div>
                 </a>
             </td>
 
-            <td class="px-6 py-4">
+            <td class="px-5 py-4">
                 <div class="space-y-1">
                     <a href="<?= $editUrl ?>" class="font-bold text-gray-700 hover:text-primary-dark transition block">
                         <?= htmlspecialchars($banner['name'] ?: 'Без име') ?>
@@ -94,7 +93,7 @@ $positions = [
                 </div>
             </td>
 
-            <td class="px-6 py-4">
+            <td class="px-5 py-4">
                 <div class="flex flex-col gap-1">
                     <span class="font-bold uppercase tracking-tight">
                         📁 <?= htmlspecialchars($banner['group_key'] ?: 'default') ?>
@@ -105,7 +104,7 @@ $positions = [
                 </div>
             </td>
 
-            <td class="px-6 py-4">
+            <td class="px-5 py-4">
                 <div class="flex flex-wrap gap-2">
                     <?php
                     $flags = [
@@ -121,7 +120,7 @@ $positions = [
                 </div>
             </td>
 
-            <td class="px-6 py-4">
+            <td class="px-5 py-4">
                 <?php View::component('table-actions', 'admin/components', [
                     'editUrl'   => "/admin/banners/edit/{$banner['id']}",
                     'deleteUrl' => "/admin/banners/delete/{$banner['id']}",

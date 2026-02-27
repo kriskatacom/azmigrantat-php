@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\CityController;
 use App\Controllers\LandmarkController;
 use App\Core\Router;
 use App\Controllers\HomeController;
@@ -74,5 +75,15 @@ $router->get('/admin/banners/edit/{id}', [BannerController::class, 'edit']);
 $router->post('/admin/banners/update/{id}', [BannerController::class, 'update']);
 $router->post('/admin/banners/delete/{id}', [BannerController::class, 'delete']);
 $router->post('/admin/banners/update-order', [BannerController::class, 'updateOrder']);
+
+// Градове (Cities)
+$router->get('/admin/cities', [CityController::class, 'index']);
+$router->get('/admin/cities/create', [CityController::class, 'create']);
+$router->post('/admin/cities/store', [CityController::class, 'store']);
+$router->get('/admin/cities/edit/(\d+)', [CityController::class, 'edit']);
+$router->post('/admin/cities/update/(\d+)', [CityController::class, 'update']);
+$router->post('/admin/cities/delete/(\d+)', [CityController::class, 'delete']);
+$router->get('/api/cities-by-country/(\d+)', [CityController::class, 'getByCountry']);
+$router->post('/admin/cities/update-order', [CityController::class, 'updateOrder']);
 
 return $router;
