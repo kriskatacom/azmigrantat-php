@@ -9,6 +9,7 @@
     <?php
 
     use App\Core\View;
+use App\Services\HelperService;
 
     $headers = [
         ['label' => 'Ред'],
@@ -22,6 +23,7 @@
         $imagePath = !empty($country['image_url']) ? $country['image_url'] : '/assets/images/placeholders/country.webp';
     ?>
         <?php $editUrl = "/admin/countries/edit/{$country['id']}"; ?>
+        <?php $deleteUrl = "/admin/countries/delete/{$country['id']}"; ?>
 
         <tr class="hover:bg-gray-50 transition" data-id="<?= $country['id'] ?>">
             <td class="px-6 py-4 w-10">
@@ -35,7 +37,7 @@
             <td class="px-6 py-4">
                 <a href="<?= $editUrl ?>" class="flex items-center gap-4 group">
                     <div class="w-32 h-20 rounded-md overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0 group-hover:ring-2 group-hover:ring-primary-light transition-all">
-                        <img src="<?= $imagePath ?>"
+                        <img src="<?= HelperService::getImage($imagePath) ?>"
                             alt="<?= htmlspecialchars($country['name']) ?>"
                             class="w-full h-full object-cover">
                     </div>
@@ -51,13 +53,16 @@
                 </span>
             </td>
 
-            <td class="px-6 py-4 text-right space-x-2">
-                <a href="<?= $editUrl ?>" title="Редактиране" class="inline-block p-2 text-gray-400 hover:text-primary-light hover:bg-gray-50 rounded-lg transition">
+            <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
+                <a href="<?= $editUrl ?>" title="Редактиране" class="inline-block p-2 text-gray-400 hover:text-blue-500 hover:bg-gray-50 rounded-lg transition">
                     ✏️
                 </a>
-                <button title="Изтриване" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
-                    🗑️
-                    </a>
+
+                <form action="<?= $deleteUrl ?>" method="POST" class="inline-block" onsubmit="return confirmDelete(event, '<?= $country['name'] ?? 'този запис' ?>')">
+                    <button type="submit" title="Изтриване" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+                        🗑️
+                    </button>
+                </form>
             </td>
         </tr>
     <?php endforeach;
@@ -77,3 +82,13 @@
 </div>
 
 <?php View::component('pagination', 'admin/components', ['pagination' => $pagination]); ?>
+
+<script>
+    function confirmDelete(event, name) {
+        if (!confirm('Сигурни ли сте, че искате да изтриете "' + name + '"? Това действие е необратимо.')) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    }
+</script>

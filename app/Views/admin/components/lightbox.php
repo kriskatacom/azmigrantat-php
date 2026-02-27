@@ -45,10 +45,14 @@
             const trigger = e.target.closest('.lightbox-trigger');
             if (trigger) {
                 e.preventDefault();
-                const img = trigger.tagName === 'IMG' ? trigger : trigger.querySelector('img');
-                if (img && img.src) {
-                    openModal(img.src);
+
+                const src = trigger.src;
+
+                if (src.includes('no-image.png')) {
+                    return;
                 }
+
+                openModal(src);
             }
         });
 

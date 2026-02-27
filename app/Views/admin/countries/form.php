@@ -41,7 +41,7 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
                 <p class="text-gray-400 italic">Ако оставите празно, ще се генерира от името на латиница.</p>
             </div>
 
-            <?php \App\Core\View::component('editor', 'admin/components', [
+            <?php View::component('editor', 'admin/components', [
                 'name'  => 'excerpt',
                 'label' => 'Описание',
                 'value' => $country['excerpt'] ?? ''
@@ -50,11 +50,12 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
             <div class="space-y-3">
                 <label class="text-sm font-semibold text-gray-600 block">Снимка на държавата</label>
                 <div class="flex items-center gap-6 p-4 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+
                     <div class="relative shrink-0 group/img">
                         <img id="preview-image"
-                            src="<?= HelperService::getImage($country['image_url']) ?>"
-                            data-default="<?= '/assets/img/no-image.png' ?>"
-                            class="lightbox-trigger w-50 h-30 object-cover rounded-xl border-2 border-white shadow-md cursor-zoom-in hover:scale-105 transition-transform">
+                            src="<?= HelperService::getImage($country['image_url'] ?? null) ?>"
+                            data-default="/assets/images/no-image.png"
+                            class="lightbox-trigger w-40 h-28 object-cover rounded-xl border-2 border-white shadow-md transition-transform hover:scale-105 cursor-zoom-in">
 
                         <button type="button" id="remove-image-btn"
                             class="<?= empty($country['image_url']) ? 'hidden' : '' ?> absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600 transition-colors z-10">
@@ -76,7 +77,7 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
                                 Изберете изображение
                             </div>
                         </label>
-                        <p class="text-[11px] transition-colors duration-200" id="file-name">
+                        <p class="text-[11px]" id="file-name">
                             <span class="text-gray-400 italic">Максимален размер: 10MB</span>
                         </p>
                     </div>
@@ -159,17 +160,17 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
                     removeInput.value = "0";
                 }
                 reader.readAsDataURL(file);
-                fileNameDisplay.innerHTML = `<span class="text-primary-dark font-bold">Избрано: ${file.name}</span>`;
+                fileNameDisplay.innerHTML = `<span class="text-primary-dark font-bold text-xs uppercase tracking-wider">Избрано: ${file.name}</span>`;
             }
         });
 
         removeBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            imageInput.value = "";
             previewImage.src = defaultImg;
-            imageInput.value = '';
             removeInput.value = "1";
             this.classList.add('hidden');
-            fileNameDisplay.innerHTML = '<span class="text-gray-400 italic">Снимката ще бъде премахната при запис</span>';
+            fileNameDisplay.innerHTML = '<span class="text-red-500 font-bold italic animate-pulse">Снимката ще бъде премахната при запис</span>';
         });
     });
 </script>

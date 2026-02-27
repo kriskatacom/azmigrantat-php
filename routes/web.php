@@ -33,5 +33,6 @@ $router->post('/admin/countries/store', [CountryController::class, 'store']);
 $router->get('/admin/countries/edit/{id}', [CountryController::class, 'edit']);
 $router->post('/admin/countries/update/{id}', [CountryController::class, 'update']);
 $router->post('/admin/countries/update-order', [CountryController::class, 'updateOrder']);
+$router->post('/admin/countries/delete/{id}', [CountryController::class, 'delete']);
 
 return $router;

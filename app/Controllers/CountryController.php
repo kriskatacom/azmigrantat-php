@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Database;
 use App\Core\View;
 use App\Models\Country;
 use App\Services\FileService;
@@ -67,6 +68,8 @@ class CountryController extends BaseController
         } else {
             $data['slug'] = HelperService::slug($data['slug']);
         }
+
+        unset($data['remove_image']);
 
         $newId = $this->countryModel->create($data);
 
@@ -144,7 +147,7 @@ class CountryController extends BaseController
         $data = json_decode(file_get_contents('php://input'), true);
 
         if (isset($data['items'])) {
-            $db = \App\Core\Database::getConnection();
+            $db = Database::getConnection();
 
             try {
                 $db->beginTransaction();
@@ -168,14 +171,13 @@ class CountryController extends BaseController
         exit;
     }
 
-    public function destroy(int $id)
+    public function delete($id)
     {
-        $success = $this->countryModel->delete($id);
-
-        if ($success) {
-            $this->json(['message' => 'Country deleted successfully']);
-        } else {
-            $this->json(['message' => 'Delete failed'], 400);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->countryModel->delete($id);
+            $this->flash('success', 'Изтриването беше успешно!');
+            header('Location: /admin/countries?success=deleted');
+            exit;
         }
     }
 }
