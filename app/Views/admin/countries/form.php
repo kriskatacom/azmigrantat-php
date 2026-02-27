@@ -23,6 +23,15 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
 
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
 
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_url',
+            'label' => 'Изображение',
+            'value' => $country['image_url'] ?? null,
+            'id'    => 'country-image'
+        ]); ?>
+
+        <?php View::component('lightbox', 'admin/components'); ?>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
                 <label class="text-sm font-semibold text-gray-600">Име на държавата</label>
@@ -46,15 +55,6 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
             'label' => 'Описание',
             'value' => $country['excerpt'] ?? ''
         ]); ?>
-
-        <?php View::component('image-upload', 'admin/components', [
-            'name'  => 'image_url',
-            'label' => 'Изображение на държавата',
-            'value' => $country['image_url'] ?? null,
-            'id'    => 'country-image'
-        ]); ?>
-
-        <?php View::component('lightbox', 'admin/components'); ?>
 
         <?php View::component('toggle', 'admin/components', [
             'name'  => 'is_active',

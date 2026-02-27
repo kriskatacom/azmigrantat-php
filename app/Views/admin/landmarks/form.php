@@ -15,11 +15,36 @@ $action = $isEdit ? "/admin/landmarks/update/{$landmark['id']}" : "/admin/landma
     ]); ?>
 </div>
 
-<form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
+<form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+            Изображение
+        </h3>
+
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_url',
+            'label' => 'Изображение на забележителността',
+            'value' => $landmark['image_url'] ?? null,
+            'id'    => 'landmark-image'
+        ]); ?>
+
+        <?php View::component('lightbox', 'admin/components'); ?>
+        <div class="mt-5">
+            <?php
+            $gallery = !empty($landmark['additional_images']) ? json_decode($landmark['additional_images'], true) : [];
+
+            View::component('multi-image-upload', 'admin/components', [
+                'name'   => 'additional_images[]',
+                'label'  => 'Фотогалерия на обекта',
+                'images' => $gallery
+            ]);
+            ?>
+        </div>
+    </div>
+
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <span class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm">1</span>
             Основна информация
         </h3>
 
@@ -66,23 +91,6 @@ $action = $isEdit ? "/admin/landmarks/update/{$landmark['id']}" : "/admin/landma
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <span class="w-8 h-8 bg-green-50 text-green-600 rounded-lg flex items-center justify-center text-sm">2</span>
-            Изображение
-        </h3>
-
-        <?php View::component('image-upload', 'admin/components', [
-            'name'  => 'image_url',
-            'label' => 'Изображение на забележителността',
-            'value' => $landmark['image_url'] ?? null,
-            'id'    => 'landmark-image'
-        ]); ?>
-
-        <?php View::component('lightbox', 'admin/components'); ?>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <span class="w-8 h-8 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center text-sm">3</span>
             Съдържание
         </h3>
 
@@ -109,7 +117,6 @@ $action = $isEdit ? "/admin/landmarks/update/{$landmark['id']}" : "/admin/landma
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <span class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center text-sm">4</span>
             Локация и Контакти
         </h3>
 
@@ -149,16 +156,6 @@ $action = $isEdit ? "/admin/landmarks/update/{$landmark['id']}" : "/admin/landma
     </div>
 
     <input type="hidden" name="return_url" value="<?= $_SERVER['REQUEST_URI'] ?>">
-
-    <?php
-    $gallery = !empty($landmark['additional_images']) ? json_decode($landmark['additional_images'], true) : [];
-
-    View::component('multi-image-upload', 'admin/components', [
-        'name'   => 'additional_images[]',
-        'label'  => 'Фотогалерия на обекта',
-        'images' => $gallery
-    ]);
-    ?>
 
     <?php View::component('toggle', 'admin/components', [
         'name'  => 'is_active',

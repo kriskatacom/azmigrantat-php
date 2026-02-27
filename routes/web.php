@@ -1,9 +1,9 @@
 <?php
 
-use App\Controllers\CityController;
-use App\Controllers\LandmarkController;
 use App\Core\Router;
 use App\Controllers\HomeController;
+use App\Controllers\CityController;
+use App\Controllers\LandmarkController;
 use App\Controllers\AuthController;
 use App\Controllers\AdminController;
 use App\Controllers\BannerController;
@@ -11,6 +11,7 @@ use App\Controllers\UserController;
 use App\Controllers\CountryController;
 use App\Controllers\CruiseController;
 use App\Controllers\EmbassyController;
+use App\Controllers\AutobusController;
 
 $router = new Router();
 
@@ -85,5 +86,14 @@ $router->post('/admin/cities/update/(\d+)', [CityController::class, 'update']);
 $router->post('/admin/cities/delete/(\d+)', [CityController::class, 'delete']);
 $router->get('/api/cities-by-country/(\d+)', [CityController::class, 'getByCountry']);
 $router->post('/admin/cities/update-order', [CityController::class, 'updateOrder']);
+
+// Автобуси (Autobuses / Bus Lines)
+$router->get('/admin/autobuses', [AutobusController::class, 'index']);
+$router->get('/admin/autobuses/create', [AutobusController::class, 'create']);
+$router->post('/admin/autobuses/store', [AutobusController::class, 'store']);
+$router->get('/admin/autobuses/edit/(\d+)', [AutobusController::class, 'edit']);
+$router->post('/admin/autobuses/update/(\d+)', [AutobusController::class, 'update']);
+$router->post('/admin/autobuses/delete/(\d+)', [AutobusController::class, 'delete']);
+$router->post('/admin/autobuses/update-order', [AutobusController::class, 'updateOrder']);
 
 return $router;

@@ -22,6 +22,19 @@ $action = $isEdit ? "/admin/cities/update/{$city['id']}" : "/admin/cities/store"
     </div>
 
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div class="space-y-2">
+                <?php View::component('image-upload', 'admin/components', [
+                    'name'  => 'image_url',
+                    'label' => 'Снимка на града',
+                    'value' => $city['image_url'] ?? null,
+                    'id'    => 'city-image'
+                ]); ?>
+            </div>
+            
+            <?php View::component('lightbox', 'admin/components'); ?>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
                 <label class="text-sm font-semibold text-gray-600">Име на града</label>
@@ -61,19 +74,11 @@ $action = $isEdit ? "/admin/cities/update/{$city['id']}" : "/admin/cities/store"
                 class="form-control"><?= $city['excerpt'] ?? '' ?></textarea>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            <div class="space-y-2">
-                <?php View::component('image-upload', 'admin/components', [
-                    'name'  => 'image_url',
-                    'label' => 'Снимка на града',
-                    'value' => $city['image_url'] ?? null,
-                    'id'    => 'city-image'
-                ]); ?>
-                <p class="text-xs text-gray-400 italic mt-1 uppercase tracking-tight">
-                    Препоръчителен размер: 1200x800px (пейзаж).
-                </p>
-            </div>
-        </div>
+        <?php View::component('toggle', 'admin/components', [
+            'name'  => 'is_active',
+            'label' => 'Показвай в сайта',
+            'value' => $city['is_active'] ?? true
+        ]); ?>
 
         <div class="pt-4">
             <?php View::component('submit-button', 'admin/components', [
@@ -82,5 +87,3 @@ $action = $isEdit ? "/admin/cities/update/{$city['id']}" : "/admin/cities/store"
         </div>
     </form>
 </div>
-
-<?php View::component('lightbox', 'admin/components'); ?>

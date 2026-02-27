@@ -31,7 +31,7 @@ use App\Core\View;
             </td>
 
             <td class="px-5 py-4">
-                <a href="/admin/countries/edit/<?= $cruise['id'] ?>" class="flex items-center gap-4 group">
+                <a href="/admin/cruises/edit/<?= $cruise['id'] ?>" class="flex items-center gap-4 group">
                     <?php View::component('table-image', 'admin/components', [
                         'src' => $cruise['image_url'],
                         'alt' => $cruise['name']

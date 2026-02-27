@@ -22,6 +22,40 @@ $action = $isEdit ? "/admin/embassies/update/{$embassy['id']}" : "/admin/embassi
     </div>
 
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="p-8 space-y-10">
+        <div class="space-y-5">
+            <h4 class="text-xs font-bold uppercase tracking-wider border-b pb-2">Визуални елементи</h4>
+
+            <div class="grid xl:grid-cols-2 2xl:grid-cols-3 gap-5">
+                <?php View::component('image-upload', 'admin/components', [
+                    'name'  => 'logo',
+                    'label' => 'Знаме',
+                    'value' => $embassy['logo'] ?? null,
+                    'id'    => 'embassy-logo'
+                ]); ?>
+
+                <?php View::component('image-upload', 'admin/components', [
+                    'name'  => 'right_heading_image',
+                    'label' => 'Герб',
+                    'value' => $embassy['right_heading_image'] ?? null,
+                    'id'    => 'embassy-right-heading-image'
+                ]); ?>
+
+                <?php View::component('image-upload', 'admin/components', [
+                    'name'  => 'image_url',
+                    'label' => 'Основна снимка (Сграда)',
+                    'value' => $embassy['image_url'] ?? null,
+                    'id'    => 'embassy-main-image'
+                ]); ?>
+
+                <?php View::component('lightbox', 'admin/components'); ?>
+            </div>
+
+            <?php View::component('gallery-upload', 'admin/components', [
+                'name'   => 'additional_images',
+                'label'  => 'Допълнителна галерия',
+                'images' => !empty($embassy['additional_images']) ? json_decode($embassy['additional_images'], true) : []
+            ]); ?>
+        </div>
 
         <div class="space-y-5">
             <h4 class="text-xs font-bold uppercase tracking-wider border-b pb-2">Обща информация</h4>
@@ -110,51 +144,12 @@ $action = $isEdit ? "/admin/embassies/update/{$embassy['id']}" : "/admin/embassi
             'value' => $embassy['google_map'] ?? ''
         ]); ?>
 
-        <div class="space-y-5">
-            <h4 class="text-xs font-bold uppercase tracking-wider border-b pb-2">Визуални елементи</h4>
-
-            <div class="grid xl:grid-cols-2 2xl:grid-cols-3 gap-5">
-                <?php View::component('image-upload', 'admin/components', [
-                    'name'  => 'logo',
-                    'label' => 'Лого',
-                    'value' => $embassy['logo'] ?? null,
-                    'id'    => 'embassy-logo'
-                ]); ?>
-
-                <?php View::component('image-upload', 'admin/components', [
-                    'name'  => 'right_heading_image',
-                    'label' => 'Герб',
-                    'value' => $embassy['right_heading_image'] ?? null,
-                    'id'    => 'embassy-right-heading-image'
-                ]); ?>
-
-                <?php View::component('image-upload', 'admin/components', [
-                    'name'  => 'image_url',
-                    'label' => 'Основна снимка (Сграда)',
-                    'value' => $embassy['image_url'] ?? null,
-                    'id'    => 'embassy-main-image'
-                ]); ?>
-            </div>
-
-            <?php View::component('gallery-upload', 'admin/components', [
-                'name'   => 'additional_images',
-                'label'  => 'Допълнителна галерия',
-                'images' => !empty($embassy['additional_images']) ? json_decode($embassy['additional_images'], true) : []
-            ]); ?>
-        </div>
-
-        <div class="pt-5 border-t border-gray-100">
-            <div class="flex gap-5">
-                <?php View::component('toggle', 'admin/components', [
-                    'name'  => 'is_active',
-                    'label' => 'Активен статус',
-                    'value' => $embassy['is_active'] ?? true
-                ]); ?>
-            </div>
-        </div>
+        <?php View::component('toggle', 'admin/components', [
+            'name'  => 'is_active',
+            'label' => 'Показвай в сайта',
+            'value' => $embassy['is_active'] ?? true
+        ]); ?>
 
         <?php View::component('submit-button', 'admin/components', ['text' => !$isEdit ? 'Създаване' : 'Запазване']); ?>
     </form>
 </div>
-
-<?php View::component('lightbox', 'admin/components'); ?>

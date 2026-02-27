@@ -29,8 +29,21 @@ $positions = [
 
 <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
         <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="w-1 h-4 bg-green-500 rounded-full"></span> Визуализация
+                </h3>
+
+                <?php View::component('image-upload', 'admin/components', [
+                    'name' => 'image',
+                    'value' => $banner['image'] ?? null,
+                    'label' => 'Фоново изображение'
+                ]); ?>
+                
+                <?php View::component('lightbox', 'admin/components'); ?>
+            </div>
+
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <span class="w-1 h-4 bg-blue-500 rounded-full"></span> Основна информация
@@ -58,17 +71,6 @@ $positions = [
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span class="w-1 h-4 bg-green-500 rounded-full"></span> Визуализация
-                </h3>
-                <?php View::component('image-upload', 'admin/components', [
-                    'name' => 'image',
-                    'value' => $banner['image'] ?? null,
-                    'label' => 'Фоново изображение'
-                ]); ?>
             </div>
         </div>
 
@@ -128,9 +130,12 @@ $positions = [
             </div>
 
         </div>
+        <?php View::component('toggle', 'admin/components', [
+            'name'  => 'is_active',
+            'label' => 'Показвай в сайта',
+            'value' => $banner['is_active'] ?? true
+        ]); ?>
     </div>
     
     <?php View::component('submit-button', 'admin/components', ['text' => !$isEdit ? 'Създаване' : 'Запазване']); ?>
 </form>
-
-<?php View::component('lightbox', 'admin/components'); ?>

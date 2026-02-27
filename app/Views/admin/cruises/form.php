@@ -1,4 +1,5 @@
 <?php
+
 use App\Core\View;
 
 $isEdit = isset($cruise);
@@ -23,19 +24,30 @@ $action = $isEdit ? "{$baseRoute}/update/{$cruise['id']}" : "{$baseRoute}/store"
 
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div class="space-y-2">
+                <?php View::component('image-upload', 'admin/components', [
+                    'name'   => 'image_url',
+                    'label'  => 'Изображение',
+                    'value'  => $cruise['image_url'] ?? null,
+                    'id'     => 'cruise-logo'
+                ]); ?>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
                 <label class="text-sm font-semibold text-gray-600">Име на круизната компания</label>
-                <input type="text" name="name" id="cruise-name" 
-                       value="<?= $cruise['name'] ?? '' ?>" 
-                       required placeholder="напр. MSC Cruises" class="form-control">
+                <input type="text" name="name" id="cruise-name"
+                    value="<?= $cruise['name'] ?? '' ?>"
+                    required placeholder="напр. MSC Cruises" class="form-control">
             </div>
 
             <div class="space-y-2">
                 <label class="text-sm font-semibold text-gray-600">Официален уебсайт</label>
-                <input type="url" name="website_url" 
-                       value="<?= $cruise['website_url'] ?? '' ?>" 
-                       placeholder="https://www.msccruises.com" class="form-control">
+                <input type="url" name="website_url"
+                    value="<?= $cruise['website_url'] ?? '' ?>"
+                    placeholder="https://www.msccruises.com" class="form-control">
             </div>
         </div>
 
@@ -45,29 +57,15 @@ $action = $isEdit ? "{$baseRoute}/update/{$cruise['id']}" : "{$baseRoute}/store"
             'source' => 'cruise-name'
         ]); ?>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            <div class="space-y-2">
-                <?php View::component('image-upload', 'admin/components', [
-                    'name'   => 'image_url',
-                    'label'  => 'Лого на компанията',
-                    'value'  => $cruise['image_url'] ?? null,
-                    'id'     => 'cruise-logo'
-                ]); ?>
-                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mt-2">
-                    ✨ Препоръчителен формат: PNG или WEBP с прозрачен фон.
-                </p>
-            </div>
-        </div>
+        <?php View::component('toggle', 'admin/components', [
+            'name'  => 'is_active',
+            'label' => 'Показвай в сайта',
+            'value' => $cruise['is_active'] ?? true
+        ]); ?>
 
-        <div class="pt-4 border-t border-gray-50 flex items-center justify-between">
-            <?php View::component('submit-button', 'admin/components', [
-                'text' => $isEdit ? 'Запазване на промените' : 'Създаване на компания'
-            ]); ?>
-            
-            <?php if ($isEdit): ?>
-                <input type="hidden" name="return_url" value="<?= $baseRoute ?>">
-            <?php endif; ?>
-        </div>
+        <?php View::component('submit-button', 'admin/components', [
+            'text' => $isEdit ? 'Запазване' : 'Създаване'
+        ]); ?>
     </form>
 </div>
 
