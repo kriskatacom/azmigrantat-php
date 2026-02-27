@@ -106,4 +106,19 @@ class HelperService
 
         return $default;
     }
+
+    public static function slug(string $text): string
+    {
+        $cyr = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ь', 'ю', 'я'];
+        $lat = ['a', 'b', 'v', 'g', 'd', 'e', 'zh', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'ts', 'ch', 'sh', 'sht', 'a', 'y', 'yu', 'ya'];
+
+        $text = mb_strtolower($text);
+        $text = str_replace($cyr, $lat, $text);
+        $text = preg_replace('/[^a-z0-9\s-]/', '', $text);
+        $text = preg_replace('/[\s-]+/', ' ', $text);
+        $text = trim($text);
+        $text = str_replace(' ', '-', $text);
+
+        return $text;
+    }
 }

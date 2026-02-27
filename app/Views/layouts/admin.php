@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title><?= $title ?? 'Админ' ?></title>
     <link rel="stylesheet" href="/assets/css/min/tailwind.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 </head>
 
 <body class="bg-gray-50 flex">
@@ -19,6 +21,7 @@
         <nav class="flex-1 p-4 space-y-2">
             <?php
 
+            use App\Core\View;
             use App\Models\User;
 
             $menu = [
@@ -54,7 +57,7 @@
             <?= $content ?>
         </div>
         
-        <?php \App\Core\View::component('alert', 'admin/components'); ?>
+        <?php View::component('alert', 'admin/components'); ?>
     </main>
 
 </body>

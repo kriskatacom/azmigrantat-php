@@ -31,11 +31,21 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
                 </div>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-sm font-semibold text-gray-600">Описание</label>
-                <textarea name="excerpt" rows="4"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition"><?= $country['excerpt'] ?? '' ?></textarea>
+            <div class="space-y-1">
+                <label class="text-sm font-semibold text-gray-600">URL Slug (попълва се автоматично)</label>
+                <input type="text"
+                    name="slug"
+                    value="<?= $country['slug'] ?? '' ?>"
+                    placeholder="напр. bulgaria"
+                    class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-light outline-none transition-all">
+                <p class="text-gray-400 italic">Ако оставите празно, ще се генерира от името на латиница.</p>
             </div>
+
+            <?php \App\Core\View::component('editor', 'admin/components', [
+                'name'  => 'excerpt',
+                'label' => 'Описание',
+                'value' => $country['excerpt'] ?? ''
+            ]); ?>
 
             <div class="space-y-3">
                 <label class="text-sm font-semibold text-gray-600 block">Снимка на държавата</label>
@@ -131,35 +141,35 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const imageInput = document.getElementById('image-input');
-    const previewImage = document.getElementById('preview-image');
-    const removeBtn = document.getElementById('remove-image-btn');
-    const removeInput = document.getElementById('remove-image-input');
-    const fileNameDisplay = document.getElementById('file-name');
-    const defaultImg = previewImage.getAttribute('data-default');
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageInput = document.getElementById('image-input');
+        const previewImage = document.getElementById('preview-image');
+        const removeBtn = document.getElementById('remove-image-btn');
+        const removeInput = document.getElementById('remove-image-input');
+        const fileNameDisplay = document.getElementById('file-name');
+        const defaultImg = previewImage.getAttribute('data-default');
 
-    imageInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImage.src = e.target.result;
-                removeBtn.classList.remove('hidden');
-                removeInput.value = "0";
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    removeBtn.classList.remove('hidden');
+                    removeInput.value = "0";
+                }
+                reader.readAsDataURL(file);
+                fileNameDisplay.innerHTML = `<span class="text-primary-dark font-bold">Избрано: ${file.name}</span>`;
             }
-            reader.readAsDataURL(file);
-            fileNameDisplay.innerHTML = `<span class="text-primary-dark font-bold">Избрано: ${file.name}</span>`;
-        }
-    });
+        });
 
-    removeBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        previewImage.src = defaultImg;
-        imageInput.value = '';
-        removeInput.value = "1";
-        this.classList.add('hidden');
-        fileNameDisplay.innerHTML = '<span class="text-gray-400 italic">Снимката ще бъде премахната при запис</span>';
+        removeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            previewImage.src = defaultImg;
+            imageInput.value = '';
+            removeInput.value = "1";
+            this.classList.add('hidden');
+            fileNameDisplay.innerHTML = '<span class="text-gray-400 italic">Снимката ще бъде премахната при запис</span>';
+        });
     });
-});
 </script>

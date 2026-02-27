@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Models\Country;
 use App\Services\FileService;
+use App\Services\HelperService;
 
 class CountryController extends BaseController
 {
@@ -61,6 +62,12 @@ class CountryController extends BaseController
         $data['sort_order'] = ($this->countryModel->max('sort_order') ?? 0) + 1;
         $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
+        if (empty($data['slug'])) {
+            $data['slug'] = HelperService::slug($data['name']);
+        } else {
+            $data['slug'] = HelperService::slug($data['slug']);
+        }
+
         $newId = $this->countryModel->create($data);
 
         if ($newId) {
@@ -88,10 +95,16 @@ class CountryController extends BaseController
         $country = $this->countryModel->find($id);
         $data = $_POST;
 
+        if (empty($data['slug'])) {
+            $data['slug'] = HelperService::slug($data['name']);
+        } else {
+            $data['slug'] = HelperService::slug($data['slug']);
+        }
+
         $finalImageUrl = $country['image_url'];
 
         if (isset($data['remove_image']) && $data['remove_image'] == '1') {
-            \App\Services\FileService::delete($country['image_url']);
+            FileService::delete($country['image_url']);
             $finalImageUrl = null;
         }
 

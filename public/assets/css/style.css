@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary-dark: #0B2935;
+    --color-primary-dark: #0b2935;
     --color-primary-darken: #0e3545;
     --color-primary-light: #e3e295;
     --color-primary-blue: #8fd5e7;
@@ -11,4 +11,14 @@
     object-fit: contain !important;
     background-color: #f3f4f6;
     opacity: 0.8;
+}
+
+.ql-toolbar.ql-snow {
+    border: none !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    background: #f9fafb;
+}
+.ql-container.ql-snow {
+    border: none !important;
+    font-size: 14px;
 }

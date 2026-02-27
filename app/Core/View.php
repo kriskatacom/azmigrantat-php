@@ -35,17 +35,19 @@ class View
         }
     }
 
-    public static function component(string $name, string $folder = "components", array $data = [])
+    public static function component(string $componentName, string $folder = "components", array $data = [])
     {
         extract($data);
 
         $folderPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $folder);
-        $filePath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . $folderPath . DIRECTORY_SEPARATOR . $name . '.php';
+
+        $filePath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . $folderPath . DIRECTORY_SEPARATOR . $componentName . '.php';
 
         if (file_exists($filePath)) {
             include $filePath;
         } else {
-            var_dump($filePath);
+            error_log("Component not found: " . $filePath);
+            if ($_ENV['DEBUG'] ?? true) echo "";
         }
     }
 }
