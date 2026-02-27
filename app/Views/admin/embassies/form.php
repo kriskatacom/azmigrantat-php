@@ -31,12 +31,12 @@ $action = $isEdit ? "/admin/embassies/update/{$embassy['id']}" : "/admin/embassi
                     <label class="text-sm font-semibold text-gray-600">Име на институцията</label>
                     <input type="text" name="name" id="embassy-name" value="<?= $embassy['name'] ?? '' ?>" required
                         placeholder="напр. Посолство на Република България"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition">
+                        class="form-control">
                 </div>
 
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-gray-600">Държава</label>
-                    <select name="country_id" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition bg-white">
+                    <select name="country_id" required class="form-control bg-white">
                         <option value="">-- Изберете държава --</option>
                         <?php foreach ($countries as $country): ?>
                             <option value="<?= $country['id'] ?>" <?= (isset($embassy) && $embassy['country_id'] == $country['id']) ? 'selected' : '' ?>>
@@ -56,7 +56,7 @@ $action = $isEdit ? "/admin/embassies/update/{$embassy['id']}" : "/admin/embassi
             <div class="space-y-2">
                 <label class="text-sm font-semibold text-gray-600">Заглавие (H1)</label>
                 <input type="text" name="heading" value="<?= $embassy['heading'] ?? '' ?>"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition">
+                    class="form-control">
             </div>
         </div>
 
@@ -66,26 +66,26 @@ $action = $isEdit ? "/admin/embassies/update/{$embassy['id']}" : "/admin/embassi
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-gray-600">Телефон</label>
-                    <input type="text" name="phone" value="<?= $embassy['phone'] ?? '' ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition">
+                    <input type="text" name="phone" value="<?= $embassy['phone'] ?? '' ?>" class="form-control">
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-gray-600">Email</label>
-                    <input type="email" name="email" value="<?= $embassy['email'] ?? '' ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition">
+                    <input type="email" name="email" value="<?= $embassy['email'] ?? '' ?>" class="form-control">
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-gray-600">Уебсайт</label>
-                    <input type="url" name="website_link" value="<?= $embassy['website_link'] ?? '' ?>" placeholder="https://..." class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition">
+                    <input type="url" name="website_link" value="<?= $embassy['website_link'] ?? '' ?>" placeholder="https://..." class="form-control">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-gray-600">Адрес</label>
-                    <input type="text" name="address" value="<?= $embassy['address'] ?? '' ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition">
+                    <input type="text" name="address" value="<?= $embassy['address'] ?? '' ?>" class="form-control">
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-gray-600">Спешен телефон</label>
-                    <input type="text" name="emergency_phone" value="<?= $embassy['emergency_phone'] ?? '' ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition text-red-600 font-medium">
+                    <input type="text" name="emergency_phone" value="<?= $embassy['emergency_phone'] ?? '' ?>" class="form-control">
                 </div>
             </div>
         </div>
@@ -143,7 +143,7 @@ $action = $isEdit ? "/admin/embassies/update/{$embassy['id']}" : "/admin/embassi
             ]); ?>
         </div>
 
-        <div class="pt-5 border-t border-gray-100 flex items-center justify-between">
+        <div class="pt-5 border-t border-gray-100">
             <div class="flex gap-5">
                 <?php View::component('toggle', 'admin/components', [
                     'name'  => 'is_active',
@@ -151,11 +151,9 @@ $action = $isEdit ? "/admin/embassies/update/{$embassy['id']}" : "/admin/embassi
                     'value' => $embassy['is_active'] ?? true
                 ]); ?>
             </div>
-
-            <button type="submit" class="bg-primary-dark text-white px-12 py-3 rounded-xl font-bold shadow-lg hover:shadow-primary-light/20 transition-all transform hover:-translate-y-0.5">
-                Запази посолството
-            </button>
         </div>
+
+        <?php View::component('submit-button', 'admin/components', ['text' => !$isEdit ? 'Създаване' : 'Запазване']); ?>
     </form>
 </div>
 

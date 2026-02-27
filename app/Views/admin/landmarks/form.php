@@ -166,10 +166,6 @@ $action = $isEdit ? "/admin/landmarks/update/{$landmark['id']}" : "/admin/landma
         'value' => $landmark['is_active'] ?? true
     ]); ?>
 
-    <div class="pt-5 border-t border-gray-100 flex gap-4">
-        <button type="submit" class="bg-primary-dark text-white px-10 py-3 rounded-xl font-bold shadow-lg hover:bg-opacity-90 transition">
-            Запазване
-        </button>
-    </div>
+    <?php View::component('submit-button', 'admin/components', ['text' => !$isEdit ? 'Създаване' : 'Запазване']); ?>
 
 </form>

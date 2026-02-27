@@ -5,8 +5,10 @@ use App\Core\Router;
 use App\Controllers\HomeController;
 use App\Controllers\AuthController;
 use App\Controllers\AdminController;
+use App\Controllers\BannerController;
 use App\Controllers\UserController;
 use App\Controllers\CountryController;
+use App\Controllers\CruiseController;
 use App\Controllers\EmbassyController;
 
 $router = new Router();
@@ -54,5 +56,23 @@ $router->get('/admin/embassies/edit/{id}', [EmbassyController::class, 'edit']);
 $router->post('/admin/embassies/update/{id}', [EmbassyController::class, 'update']);
 $router->post('/admin/embassies/delete/{id}', [EmbassyController::class, 'delete']);
 $router->post('/admin/embassies/update-order', [EmbassyController::class, 'updateOrder']);
+
+// --- Круизи (Cruises) ---
+$router->get('/admin/cruises', [CruiseController::class, 'index']);
+$router->get('/admin/cruises/create', [CruiseController::class, 'create']);
+$router->post('/admin/cruises/store', [CruiseController::class, 'store']);
+$router->get('/admin/cruises/edit/{id}', [CruiseController::class, 'edit']);
+$router->post('/admin/cruises/update/{id}', [CruiseController::class, 'update']);
+$router->post('/admin/cruises/delete/{id}', [CruiseController::class, 'delete']);
+$router->post('/admin/cruises/update-order', [CruiseController::class, 'updateOrder']);
+
+// --- Банери (Banners) ---
+$router->get('/admin/banners', [BannerController::class, 'index']);
+$router->get('/admin/banners/create', [BannerController::class, 'create']);
+$router->post('/admin/banners/store', [BannerController::class, 'store']);
+$router->get('/admin/banners/edit/{id}', [BannerController::class, 'edit']);
+$router->post('/admin/banners/update/{id}', [BannerController::class, 'update']);
+$router->post('/admin/banners/delete/{id}', [BannerController::class, 'delete']);
+$router->post('/admin/banners/update-order', [BannerController::class, 'updateOrder']);
 
 return $router;

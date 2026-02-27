@@ -16,9 +16,9 @@ $id = $id ?? 'maps-' . uniqid();
         id="input-<?= $id ?>"
         rows="3"
         placeholder='Поставете <iframe src="..."></iframe> или директен линк тук'
-        class="maps-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition-all font-mono text-sm"><?= $value ?></textarea>
+        class="form-control maps-input w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition"><?= $value ?></textarea>
 
-    <div class="relative mt-4 rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 max-w-150 h-100 shadow-inner flex items-center justify-center">
+    <div class="relative mt-4 rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 max-w-full h-75 shadow-inner flex items-center justify-center">
         <div class="maps-placeholder text-center space-y-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -31,49 +31,59 @@ $id = $id ?? 'maps-' . uniqid();
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const mapContainers = document.querySelectorAll('.maps-component-container');
+    (function() {
+        const initMaps = function() {
+            const mapContainers = document.querySelectorAll('.maps-component-container');
 
-    mapContainers.forEach(container => {
-        const input = container.querySelector('.maps-input');
-        const activeMap = container.querySelector('.active-map');
-        const placeholder = container.querySelector('.maps-placeholder');
-        const badge = container.querySelector('.status-badge');
+            mapContainers.forEach(container => {
+                const input = container.querySelector('.maps-input');
+                const activeMap = container.querySelector('.active-map');
+                const placeholder = container.querySelector('.maps-placeholder');
+                const badge = container.querySelector('.status-badge');
 
-        function processMap() {
-            let value = input.value.trim();
-            let finalUrl = '';
+                // Защита: Ако някой елемент липсва, не продължавай
+                if (!input || !activeMap) return;
 
-            if (value.includes('<iframe')) {
-                const match = value.match(/src=["']([^"']+)["']/);
-                if (match && match[1]) {
-                    finalUrl = match[1];
-                    input.value = finalUrl;
+                function processMap() {
+                    let val = input.value.trim();
+                    let finalUrl = '';
+
+                    if (val.includes('<iframe')) {
+                        const match = val.match(/src=["']([^"']+)["']/);
+                        if (match && match[1]) {
+                            finalUrl = match[1];
+                            input.value = finalUrl; // Почистваме инпута да остане само URL-а
+                        }
+                    } else if (val.startsWith('http')) {
+                        finalUrl = val;
+                    }
+
+                    if (finalUrl) {
+                        placeholder.classList.add('hidden');
+                        activeMap.classList.remove('hidden');
+                        activeMap.innerHTML = `<iframe src="${finalUrl}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`;
+
+                        badge.textContent = "Валидна локация";
+                        badge.className = "status-badge text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-green-100 text-green-600 font-bold";
+                    } else {
+                        placeholder.classList.remove('hidden');
+                        activeMap.classList.add('hidden');
+                        activeMap.innerHTML = '';
+
+                        badge.textContent = "Чакане на код";
+                        badge.className = "status-badge text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-400";
+                    }
                 }
-            } else if (value.startsWith('http')) {
-                finalUrl = value;
-            }
 
-            if (finalUrl) {
-                placeholder.classList.add('hidden');
-                activeMap.classList.remove('hidden');
-                activeMap.innerHTML = `<iframe src="${finalUrl}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`;
+                input.addEventListener('input', processMap);
+                if (input.value.length > 5) processMap();
+            });
+        };
 
-                badge.textContent = "Валидна локация";
-                badge.className = "status-badge text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-green-100 text-green-600 font-bold";
-            } else {
-                placeholder.classList.remove('hidden');
-                activeMap.classList.add('hidden');
-                activeMap.innerHTML = '';
-
-                badge.textContent = "Чакане на код";
-                badge.className = "status-badge text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-400";
-            }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMaps);
+        } else {
+            initMaps();
         }
-
-        input.addEventListener('input', processMap);
-
-        if (input.value.length > 5) processMap();
-    });
-});
+    })();
 </script>

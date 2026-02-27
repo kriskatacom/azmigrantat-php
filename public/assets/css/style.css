@@ -22,3 +22,7 @@
     border: none !important;
     font-size: 14px;
 }
+
+.form-control {
+    @apply w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-dark/20 outline-none transition;
+}

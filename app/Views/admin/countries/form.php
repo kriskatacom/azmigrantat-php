@@ -26,15 +26,12 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
                 <label class="text-sm font-semibold text-gray-600">Име на държавата</label>
-                <input type="text" name="name" id="country-name-input" value="<?= $country['name'] ?? '' ?>" required
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 ...">
+                <input type="text" name="name" id="country-name-input" value="<?= $country['name'] ?? '' ?>" required class="form-control">
             </div>
 
             <div class="space-y-2">
                 <label class="text-sm font-semibold text-gray-600">Заглавие на страницата (H1)</label>
-                <input type="text" name="heading" value="<?= $country['heading'] ?? '' ?>"
-                    placeholder="напр. Добре дошли в България"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition">
+                <input type="text" name="heading" value="<?= $country['heading'] ?? '' ?>" placeholder="напр. Добре дошли в България" class="form-control">
             </div>
         </div>
 
@@ -65,10 +62,6 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
             'value' => $country['is_active'] ?? true
         ]); ?>
 
-        <div class="pt-5 border-t border-gray-100 flex gap-4">
-            <button type="submit" class="bg-primary-dark text-white px-10 py-3 rounded-xl font-bold shadow-lg hover:bg-opacity-90 transition">
-                Запазване
-            </button>
-        </div>
+        <?php View::component('submit-button', 'admin/components', ['text' => !$isEdit ? 'Създаване' : 'Запазване']); ?>
     </form>
 </div>
