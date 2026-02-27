@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Core\Database;
 use App\Core\View;
 use App\Models\Country;
 use App\Services\FileService;
@@ -14,32 +13,26 @@ class CountryController extends BaseController
 
     public function __construct()
     {
+        $this->middleware('admin', ['index']);
+
         $this->countryModel = new Country();
     }
 
     public function index()
     {
-        $page = (int)($_GET['page'] ?? 1);
-        $perPage = (int)($_GET['per_page'] ?? 10);
-        $offset = ($page - 1) * $perPage;
+        $pageData = $this->paginate($this->countryModel);
 
         $countries = $this->countryModel->all([
-            'limit' => $perPage,
-            'offset' => $offset,
-            'order' => 'sort_order ASC, name ASC'
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset'],
+            'order'  => 'sort_order ASC, name ASC'
         ]);
 
-        $total = $this->countryModel->count();
-
         View::render('admin/countries/index', [
-            'title' => 'Държави',
-            'countries' => $countries,
-            'layout' => 'admin',
-            'pagination' => [
-                'current' => $page,
-                'total' => ceil($total / $perPage),
-                'per_page' => $perPage,
-            ],
+            'title'      => 'Държави',
+            'countries'  => $countries,
+            'pagination' => $pageData['pagination'],
+            'layout'     => 'admin'
         ]);
     }
 
@@ -141,33 +134,7 @@ class CountryController extends BaseController
 
     public function updateOrder()
     {
-        $this->middleware('admin');
-
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        if (isset($data['items'])) {
-            $db = Database::getConnection();
-
-            try {
-                $db->beginTransaction();
-
-                $stmt = $db->prepare("UPDATE countries SET sort_order = :sort_order WHERE id = :id");
-
-                foreach ($data['items'] as $item) {
-                    $stmt->execute([
-                        'sort_order' => $item['sort_order'],
-                        'id' => $item['id']
-                    ]);
-                }
-
-                $db->commit();
-                echo json_encode(['success' => true]);
-            } catch (\Exception $e) {
-                $db->rollBack();
-                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-            }
-        }
-        exit;
+        return $this->handleOrderUpdate($this->countryModel);
     }
 
     public function delete($id)

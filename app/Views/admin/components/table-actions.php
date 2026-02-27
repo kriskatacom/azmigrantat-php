@@ -1,6 +1,6 @@
 <?php
-$editUrl = $editUrl ?? '#';
-$deleteUrl = $deleteUrl ?? '#';
+$editUrl = $edit_url ?? '#';
+$deleteUrl = $delete_url ?? '#';
 $name = $name ?? 'този запис';
 ?>
 

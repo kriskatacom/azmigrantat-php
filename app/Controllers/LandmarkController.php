@@ -15,32 +15,26 @@ class LandmarkController extends BaseController
 
     public function __construct()
     {
+        $this->middleware('admin', ['index']);
+
         $this->landmarkModel = new Landmark();
     }
 
     public function index()
     {
-        $page = (int)($_GET['page'] ?? 1);
-        $perPage = (int)($_GET['per_page'] ?? 10);
-        $offset = ($page - 1) * $perPage;
+        $pageData = $this->paginate($this->landmarkModel);
 
         $landmarks = $this->landmarkModel->getAllWithCountries([
-            'limit' => $perPage,
-            'offset' => $offset,
-            'order' => 'sort_order ASC, name ASC'
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset'],
+            'order'  => 'sort_order ASC, name ASC'
         ]);
 
-        $total = $this->landmarkModel->count();
-
         View::render('admin/landmarks/index', [
-            'title' => 'Забележителности',
-            'landmarks' => $landmarks,
-            'layout' => 'admin',
-            'pagination' => [
-                'current' => $page,
-                'total' => ceil($total / $perPage),
-                'per_page' => $perPage,
-            ],
+            'title'      => 'Забележителности',
+            'landmarks'  => $landmarks,
+            'pagination' => $pageData['pagination'],
+            'layout'     => 'admin'
         ]);
     }
 
@@ -177,7 +171,7 @@ class LandmarkController extends BaseController
         unset($data['remove_image_url'], $data['existing_images'], $data['return_url']);
 
         $returnUrl = $_POST['return_url'] ?? "/admin/landmarks/edit/{$id}";
-        
+
         if ($this->landmarkModel->update((int)$id, $data)) {
             $this->flash('success', 'Забележителността беше актуализирана успешно!');
         }
@@ -199,7 +193,6 @@ class LandmarkController extends BaseController
 
     public function updateOrder()
     {
-        $this->middleware('admin');
         return $this->handleOrderUpdate($this->landmarkModel);
     }
 }

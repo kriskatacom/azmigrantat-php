@@ -1,62 +1,47 @@
 <?php
 use App\Core\View;
-use App\Services\HelperService;
 ?>
 
 <div class="mb-5">
     <?php View::component('breadcrumbs', 'admin/components', [
-        'items' => [
-            ['label' => 'Градове', 'url' => '/admin/cities'],
-        ]
+        'items' => [['label' => 'Градове', 'url' => '/admin/cities']]
     ]); ?>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-        <div>
-            <h3 class="font-bold text-gray-800 text-lg">Списък с градове</h3>
-        </div>
-        <a href="/admin/cities/create" class="bg-[#1e293b] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition shadow-sm">
-            + Нов град
-        </a>
-    </div>
+    <?php View::component('page-header', 'admin/components', [
+        'title'        => 'Списък с градове',
+        'button_label' => 'Нов град',
+        'button_url'   => '/admin/cities/create'
+    ]); ?>
 
     <?php
     $headers = [
         ['label' => 'Ред'],
         ['label' => 'Град'],
         ['label' => 'Държава'],
-        ['label' => 'SEO'],
+        ['label' => 'SEO статус'],
         ['label' => 'Действия', 'align' => 'right']
     ];
 
     ob_start();
-    foreach ($cities as $city):
-        $imagePath = !empty($city['image_url']) ? $city['image_url'] : '/assets/images/placeholders/city.webp';
-        $editUrl = "/admin/cities/edit/{$city['id']}";
-        $deleteUrl = "/admin/cities/delete/{$city['id']}";
-    ?>
+    foreach ($cities as $city): ?>
         <tr class="hover:bg-gray-50 transition" data-id="<?= $city['id'] ?>">
             <td class="px-5 py-4 w-10">
-                <div class="drag-handle text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                    </svg>
-                </div>
+                <?php View::component('drag-handle', 'admin/components'); ?>
             </td>
 
             <td class="px-5 py-4">
-                <a href="<?= $editUrl ?>" class="flex items-center gap-4 group">
-                    <div class="w-32 h-20 rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0 group-hover:ring-2 group-hover:ring-primary-light transition-all">
-                        <img src="<?= HelperService::getImage($imagePath) ?>" 
-                             alt="<?= htmlspecialchars($city['name']) ?>"
-                             class="w-full h-full object-cover">
-                    </div>
+                <a href="/admin/cities/edit/<?= $city['id'] ?>" class="flex items-center gap-4 group">
+                    <?php View::component('table-image', 'admin/components', [
+                        'src' => $city['image_url'],
+                        'alt' => $city['name']
+                    ]); ?>
                     <div>
-                        <span class="block font-semibold text-gray-700 group-hover:text-primary-dark group-hover:underline transition">
+                        <span class="block font-semibold text-gray-700 group-hover:text-indigo-600 transition">
                             <?= htmlspecialchars($city['name']) ?>
                         </span>
-                        <span class="text-[10px] text-gray-400 font-mono tracking-tighter uppercase">
+                        <span class="text-gray-400 font-mono">
                             ID: #<?= str_pad($city['id'], 4, '0', STR_PAD_LEFT) ?>
                         </span>
                     </div>
@@ -64,39 +49,40 @@ use App\Services\HelperService;
             </td>
 
             <td class="px-5 py-4">
-                <span class="text-sm text-gray-600 bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
+                <span class="inline-flex items-center gap-1.5 font-medium text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
                     🌍 <?= htmlspecialchars($city['country_name'] ?? 'Няма държава') ?>
                 </span>
             </td>
 
             <td class="px-5 py-4">
-                <div class="flex flex-col gap-1">
-                    <span class="text-gray-500 truncate max-w-75.5">
-                        🔗 <?= htmlspecialchars($city['slug']) ?>
+                <div class="flex flex-col gap-1 max-w-50">
+                    <span class="text-gray-500 truncate flex items-center gap-1" title="<?= htmlspecialchars($city['slug']) ?>">
+                        <span class="opacity-50 text-indigo-500">🔗</span> <?= htmlspecialchars($city['slug']) ?>
                     </span>
                     <?php if(!empty($city['heading'])): ?>
-                        <span class="text-[10px] text-blue-400 italic">
-                            H1: <?= htmlspecialchars($city['heading']) ?>
+                        <span class="text-emerald-600 font-medium flex items-center gap-1">
+                            <span class="bg-emerald-100 px-1 rounded">H1</span> 
+                            <?= htmlspecialchars($city['heading']) ?>
                         </span>
+                    <?php else: ?>
+                        <span class="text-amber-500 italic">Липсва H1 заглавие</span>
                     <?php endif; ?>
                 </div>
             </td>
 
-            <td class="px-5 py-4">
+            <td class="px-5 py-4 text-right">
                 <?php View::component('table-actions', 'admin/components', [
-                    'editUrl'   => $editUrl,
-                    'deleteUrl' => $deleteUrl,
-                    'name'      => $city['name']
+                    'edit_url'   => "/admin/cities/edit/{$city['id']}",
+                    'delete_url' => "/admin/cities/delete/{$city['id']}",
+                    'name'       => $city['name']
                 ]); ?>
             </td>
         </tr>
     <?php endforeach;
 
-    $tableBody = ob_get_clean();
-
     View::component('table', 'admin/components', [
         'headers' => $headers,
-        'slot' => $tableBody,
+        'slot' => ob_get_clean(),
         'attributes' => 'id="cities-table"'
     ]);
     

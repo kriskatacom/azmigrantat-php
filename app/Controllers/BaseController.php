@@ -69,7 +69,7 @@ abstract class BaseController
             'message' => $message
         ];
     }
-    
+
     protected function handleOrderUpdate($model)
     {
         $data = json_decode(file_get_contents('php://input'), true);
@@ -82,5 +82,25 @@ abstract class BaseController
             echo json_encode(['success' => false]);
         }
         exit;
+    }
+    
+    protected function paginate($model, $perPage = 10)
+    {
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $limit = (int)($_GET['per_page'] ?? $perPage);
+        $offset = ($page - 1) * $limit;
+
+        $total = $model->count();
+
+        return [
+            'limit'      => $limit,
+            'offset'     => $offset,
+            'pagination' => [
+                'current'  => $page,
+                'total'    => ceil($total / $limit),
+                'per_page' => $limit,
+                'total_records' => $total
+            ]
+        ];
     }
 }

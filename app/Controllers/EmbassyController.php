@@ -15,32 +15,26 @@ class EmbassyController extends BaseController
 
     public function __construct()
     {
+        $this->middleware('admin', ['index']);
+
         $this->embassyModel = new Embassy();
     }
 
     public function index()
     {
-        $page = (int)($_GET['page'] ?? 1);
-        $perPage = (int)($_GET['per_page'] ?? 10);
-        $offset = ($page - 1) * $perPage;
+        $pageData = $this->paginate($this->embassyModel);
 
         $embassies = $this->embassyModel->getAllWithCountries([
-            'limit' => $perPage,
-            'offset' => $offset,
-            'order' => 'sort_order ASC, name ASC'
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset'],
+            'order'  => 'sort_order ASC, name ASC'
         ]);
 
-        $total = $this->embassyModel->count();
-
         View::render('admin/embassies/index', [
-            'title' => 'Посолства',
-            'embassies' => $embassies,
-            'layout' => 'admin',
-            'pagination' => [
-                'current' => $page,
-                'total' => ceil($total / $perPage),
-                'per_page' => $perPage,
-            ],
+            'title'      => 'Посолства',
+            'embassies'  => $embassies,
+            'pagination' => $pageData['pagination'],
+            'layout'     => 'admin'
         ]);
     }
 
@@ -215,7 +209,6 @@ class EmbassyController extends BaseController
 
     public function updateOrder()
     {
-        $this->middleware('admin');
         return $this->handleOrderUpdate($this->embassyModel);
     }
 }

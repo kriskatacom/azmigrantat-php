@@ -1,10 +1,8 @@
 <?php
 
 use App\Core\View;
-use App\Services\HelperService;
 
 $selectedGroup = $_GET['group_key'] ?? '';
-
 $positions = [
     'top_left' => 'Горе вляво',
     'top_center' => 'Горе център',
@@ -26,25 +24,24 @@ $positions = [
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-        <div>
-            <h2 class="font-bold text-gray-800 text-lg">Управление на банери</h2>
-        </div>
+        <h2 class="font-bold text-gray-800 text-lg">Управление на банери</h2>
 
-        <div class="border-b border-gray-100 flex justify-between items-center gap-5 bg-gray-50/50">
-            <div class="text-left">
-                <select onchange="window.location.href='/admin/banners?group_key=' + this.value" class="px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm">
-                    <option value="">Всички групи</option>
-                    <?php
-                    foreach ($groups as $group): ?>
-                        <option value="<?= htmlspecialchars($group) ?>" <?= $selectedGroup == $group ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($group) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+        <div class="flex items-center gap-5">
+            <select onchange="window.location.href='/admin/banners?group_key=' + this.value"
+                class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition shadow-sm outline-none">
+                <option value="">Всички групи</option>
+                <?php foreach ($groups as $group): ?>
+                    <option value="<?= htmlspecialchars($group) ?>" <?= $selectedGroup == $group ? 'selected' : '' ?>>
+                        📁 <?= htmlspecialchars($group) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
 
-            <a href="/admin/banners/create" class="bg-[#1e293b] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition shadow-sm">
-                + Нов банер
+            <a href="/admin/banners/create" class="bg-[#1e293b] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 transition flex items-center gap-2 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Нов банер
             </a>
         </div>
     </div>
@@ -55,66 +52,57 @@ $positions = [
         ['label' => 'Визуализация'],
         ['label' => 'Детайли'],
         ['label' => 'Група / Позиция'],
-        ['label' => 'Статус'],
+        ['label' => 'Конфигурация'],
         ['label' => 'Действия', 'align' => 'right']
     ];
 
     ob_start();
-    foreach ($banners as $banner):
-        $imagePath = !empty($banner['image']) ? $banner['image'] : '/assets/images/placeholders/banner.webp';
-        $editUrl = "/admin/banners/edit/{$banner['id']}";
-        $deleteUrl = "/admin/banners/delete/{$banner['id']}";
-    ?>
+    foreach ($banners as $banner): ?>
         <tr class="hover:bg-gray-50 transition border-b border-gray-50 last:border-0" data-id="<?= $banner['id'] ?>">
             <td class="px-5 py-4 w-10">
-                <div class="drag-handle text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                    </svg>
-                </div>
+                <?php View::component('drag-handle', 'admin/components'); ?>
             </td>
 
             <td class="px-5 py-4">
-                <a href="<?= $editUrl ?>" class="flex items-center gap-4 group">
-                    <div class="w-32 h-20 rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0 group-hover:ring-2 group-hover:ring-primary-light transition-all">
-                        <img src="<?= HelperService::getImage($imagePath) ?>" 
-                             alt="<?= htmlspecialchars($banner['name']) ?>"
-                             class="w-full h-full object-cover">
-                    </div>
+                <a href="/admin/banners/edit/<?= $banner['id'] ?>" class="group block">
+                    <?php View::component('table-image', 'admin/components', [
+                        'src' => $banner['image'],
+                        'alt' => $banner['name'] ?? 'Banner',
+                    ]); ?>
                 </a>
             </td>
 
             <td class="px-5 py-4">
-                <div class="space-y-1">
-                    <a href="<?= $editUrl ?>" class="font-bold text-gray-700 hover:text-primary-dark transition block">
+                <div class="max-w-xs">
+                    <a href="/admin/banners/edit/<?= $banner['id'] ?>" class="font-bold text-gray-700 hover:text-indigo-600 transition block mb-1">
                         <?= htmlspecialchars($banner['name'] ?: 'Без име') ?>
                     </a>
-                    <p class="text-gray-400 line-clamp-1"><?= htmlspecialchars($banner['description'] ?? '') ?></p>
+                    <p class="text-xs text-gray-400 line-clamp-2 italic"><?= htmlspecialchars($banner['description'] ?? '') ?></p>
                 </div>
             </td>
 
-            <td class="px-5 py-4">
-                <div class="flex flex-col gap-1">
-                    <span class="font-bold uppercase tracking-tight">
+            <td class="px-5 py-4 text-sm">
+                <div class="flex flex-col gap-1.5">
+                    <span class="font-bold text-[10px] uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 self-start">
                         📁 <?= htmlspecialchars($banner['group_key'] ?: 'default') ?>
                     </span>
-                    <span class="text-gray-500">
+                    <span class="text-gray-500 flex items-center gap-1 text-[11px]">
                         📍 <?= $positions[$banner['content_place']] ?? $banner['content_place'] ?>
                     </span>
                 </div>
             </td>
 
             <td class="px-5 py-4">
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-1.5">
                     <?php
                     $flags = [
-                        'Бутон' => $banner['show_button'],
-                        'Име' => $banner['show_name'],
-                        'Овърлей' => $banner['show_overlay']
+                        ['L' => 'BTN', 'V' => $banner['show_button']],
+                        ['L' => 'NAME', 'V' => $banner['show_name']],
+                        ['L' => 'OVL', 'V' => $banner['show_overlay']]
                     ];
-                    foreach ($flags as $label => $isActive): ?>
-                        <span class="px-1.5 py-0.5 rounded font-bold uppercase border <?= $isActive ? 'bg-green-50 border-green-100' : 'bg-gray-50 border-gray-100' ?>">
-                            <?= $label ?>
+                    foreach ($flags as $flag): ?>
+                        <span class="px-1.5 py-0.5 rounded-sm text-[9px] font-black border <?= $flag['V'] ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-100' ?>">
+                            <?= $flag['L'] ?>
                         </span>
                     <?php endforeach; ?>
                 </div>
@@ -122,19 +110,17 @@ $positions = [
 
             <td class="px-5 py-4">
                 <?php View::component('table-actions', 'admin/components', [
-                    'editUrl'   => "/admin/banners/edit/{$banner['id']}",
-                    'deleteUrl' => "/admin/banners/delete/{$banner['id']}",
-                    'name'      => $banner['name']
+                    'edit_url'   => "/admin/banners/edit/{$banner['id']}",
+                    'delete_url' => "/admin/banners/delete/{$banner['id']}",
+                    'name'       => $banner['name']
                 ]); ?>
             </td>
         </tr>
     <?php endforeach;
 
-    $tableBody = ob_get_clean();
-
     View::component('table', 'admin/components', [
         'headers' => $headers,
-        'slot' => $tableBody,
+        'slot' => ob_get_clean(),
         'attributes' => 'id="banners-table-all"'
     ]);
 
@@ -143,6 +129,8 @@ $positions = [
         'url'     => '/admin/banners/update-order'
     ]);
     ?>
-
-    <?php View::component('pagination', 'admin/components', ['pagination' => $pagination]); ?>
 </div>
+
+<?php if (isset($pagination)): ?>
+    <?php View::component('pagination', 'admin/components', ['pagination' => $pagination]); ?>
+<?php endif; ?>

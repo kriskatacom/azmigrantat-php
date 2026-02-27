@@ -1,25 +1,19 @@
 <?php
 use App\Core\View;
-use App\Services\HelperService;
 ?>
 
 <div class="mb-5">
     <?php View::component('breadcrumbs', 'admin/components', [
-        'items' => [
-            ['label' => 'Посолства', 'url' => '/admin/embassies'],
-        ]
+        'items' => [['label' => 'Посолства', 'url' => '/admin/embassies']]
     ]); ?>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-        <div>
-            <h3 class="font-bold text-gray-800 text-lg">Списък с посолства</h3>
-        </div>
-        <a href="/admin/embassies/create" class="bg-[#1e293b] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition shadow-sm">
-            + Ново посолство
-        </a>
-    </div>
+    <?php View::component('page-header', 'admin/components', [
+        'title'        => 'Списък с посолства',
+        'button_label' => 'Ново посолство',
+        'button_url'   => '/admin/embassies/create'
+    ]); ?>
 
     <?php
     $headers = [
@@ -32,31 +26,24 @@ use App\Services\HelperService;
 
     ob_start();
     foreach ($embassies as $embassy):
-        $imagePath = !empty($embassy['logo']) ? $embassy['logo'] : (!empty($embassy['image_url']) ? $embassy['image_url'] : '/assets/images/placeholders/embassy.webp');
-        $editUrl = "/admin/embassies/edit/{$embassy['id']}";
-        $deleteUrl = "/admin/embassies/delete/{$embassy['id']}";
+        $imagePath = $embassy['logo'] ?: ($embassy['image_url'] ?: '');
     ?>
         <tr class="hover:bg-gray-50 transition" data-id="<?= $embassy['id'] ?>">
             <td class="px-5 py-4 w-10">
-                <div class="drag-handle text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                    </svg>
-                </div>
+                <?php View::component('drag-handle', 'admin/components'); ?>
             </td>
 
             <td class="px-5 py-4">
-                <a href="<?= $editUrl ?>" class="flex items-center gap-4 group">
-                    <div class="w-32 h-20 rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50 shrink-0 group-hover:ring-2 group-hover:ring-primary-light transition-all">
-                        <img src="<?= HelperService::getImage($imagePath) ?>" 
-                             alt="<?= htmlspecialchars($embassy['name']) ?>"
-                             class="w-full h-full object-cover">
-                    </div>
+                <a href="/admin/embassies/edit/<?= $embassy['id'] ?>" class="flex items-center gap-4 group">
+                    <?php View::component('table-image', 'admin/components', [
+                        'src' => $imagePath,
+                        'alt' => $embassy['name'],
+                    ]); ?>
                     <div>
-                        <span class="block font-semibold text-gray-700 group-hover:text-primary-dark group-hover:underline transition">
+                        <span class="block font-semibold text-gray-700 group-hover:text-indigo-600 transition">
                             <?= htmlspecialchars($embassy['name']) ?>
                         </span>
-                        <span class="text-[10px] text-gray-400 font-mono tracking-tighter uppercase">
+                        <span class="text-gray-400 font-mono tracking-tighter uppercase">
                             ID: #<?= str_pad($embassy['id'], 4, '0', STR_PAD_LEFT) ?>
                         </span>
                     </div>
@@ -64,45 +51,39 @@ use App\Services\HelperService;
             </td>
 
             <td class="px-5 py-4">
-                <span class="text-sm text-gray-600 bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
+                <span class="inline-flex items-center gap-1.5 font-medium text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
                     🌍 <?= htmlspecialchars($embassy['country_name'] ?? 'Няма държава') ?>
                 </span>
             </td>
 
             <td class="px-5 py-4">
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-1.5">
                     <?php if(!empty($embassy['email'])): ?>
-                        <span class="text-[11px] text-gray-500 flex items-center gap-1">
-                            📧 <?= htmlspecialchars($embassy['email']) ?>
+                        <span class="text-gray-500 flex items-center gap-1.5">
+                            <span class="opacity-70">📧</span> <?= htmlspecialchars($embassy['email']) ?>
                         </span>
                     <?php endif; ?>
                     <?php if(!empty($embassy['phone'])): ?>
-                        <span class="text-[11px] text-gray-500 flex items-center gap-1">
-                            📞 <?= htmlspecialchars($embassy['phone']) ?>
+                        <span class="text-gray-500 flex items-center gap-1.5">
+                            <span class="opacity-70">📞</span> <?= htmlspecialchars($embassy['phone']) ?>
                         </span>
                     <?php endif; ?>
                 </div>
             </td>
 
-            <td class="px-5 py-4 text-right space-x-2 whitespace-nowrap">
-                <a href="<?= $editUrl ?>" title="Редактиране" class="inline-block p-2 text-gray-400 hover:text-blue-500 hover:bg-gray-50 rounded-lg transition">
-                    ✏️
-                </a>
-
-                <form action="<?= $deleteUrl ?>" method="POST" class="inline-block" onsubmit="return confirmDelete(event, '<?= $embassy['name'] ?? 'това посолство' ?>')">
-                    <button type="submit" title="Изтриване" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
-                        🗑️
-                    </button>
-                </form>
+            <td class="px-5 py-4 text-right">
+                <?php View::component('table-actions', 'admin/components', [
+                    'edit_url'   => "/admin/embassies/edit/{$embassy['id']}",
+                    'delete_url' => "/admin/embassies/delete/{$embassy['id']}",
+                    'name'       => $embassy['name']
+                ]); ?>
             </td>
         </tr>
     <?php endforeach;
 
-    $tableBody = ob_get_clean();
-
     View::component('table', 'admin/components', [
         'headers' => $headers,
-        'slot' => $tableBody,
+        'slot' => ob_get_clean(),
         'attributes' => 'id="embassies-table"'
     ]);
     
@@ -114,13 +95,3 @@ use App\Services\HelperService;
 </div>
 
 <?php View::component('pagination', 'admin/components', ['pagination' => $pagination]); ?>
-
-<script>
-    function confirmDelete(event, name) {
-        if (!confirm('Сигурни ли сте, че искате да изтриете посолството на "' + name + '"?')) {
-            event.preventDefault();
-            return false;
-        }
-        return true;
-    }
-</script>

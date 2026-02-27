@@ -13,32 +13,26 @@ class CruiseController extends BaseController
 
     public function __construct()
     {
+        $this->middleware('admin', ['index']);
+
         $this->cruiseModel = new Cruise();
     }
 
     public function index()
     {
-        $page = (int)($_GET['page'] ?? 1);
-        $perPage = (int)($_GET['per_page'] ?? 10);
-        $offset = ($page - 1) * $perPage;
+        $pageData = $this->paginate($this->cruiseModel);
 
         $cruises = $this->cruiseModel->all([
-            'limit' => $perPage,
-            'offset' => $offset,
-            'order' => 'sort_order ASC, name ASC'
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset'],
+            'order'  => 'sort_order ASC, name ASC'
         ]);
 
-        $total = $this->cruiseModel->count();
-
         View::render('admin/cruises/index', [
-            'title' => 'Круизни компании',
-            'cruises' => $cruises,
-            'layout' => 'admin',
-            'pagination' => [
-                'current' => $page,
-                'total' => ceil($total / $perPage),
-                'per_page' => $perPage,
-            ],
+            'title'      => 'Круизни компании',
+            'cruises'    => $cruises,
+            'pagination' => $pageData['pagination'],
+            'layout'     => 'admin'
         ]);
     }
 
@@ -129,7 +123,6 @@ class CruiseController extends BaseController
 
     public function updateOrder()
     {
-        $this->middleware('admin');
         return $this->handleOrderUpdate($this->cruiseModel);
     }
 }

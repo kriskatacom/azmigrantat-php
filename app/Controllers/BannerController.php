@@ -18,12 +18,21 @@ class BannerController extends BaseController
     public function index()
     {
         $groupKey = $_GET['group_key'] ?? null;
-        $page = max(1, (int)($_GET['page'] ?? 1));
-        $perPage = 5;
-        $offset = ($page - 1) * $perPage;
 
-        $banners = $this->bannerModel->getFiltered($groupKey, $perPage, $offset);
-        $total = $this->bannerModel->countFiltered($groupKey);
+        $paginationData = $this->paginate($this->bannerModel, 10);
+
+        if ($groupKey) {
+            $total = $this->bannerModel->countFiltered($groupKey);
+            $paginationData['pagination']['total'] = ceil($total / $paginationData['limit']);
+            $paginationData['pagination']['total_records'] = $total;
+        }
+
+        $banners = $this->bannerModel->getFiltered(
+            $groupKey,
+            $paginationData['limit'],
+            $paginationData['offset']
+        );
+
         $groups = $this->bannerModel->getUniqueGroups();
 
         View::render('admin/banners/index', [
@@ -31,10 +40,7 @@ class BannerController extends BaseController
             'banners'    => $banners,
             'groups'     => $groups,
             'layout'     => 'admin',
-            'pagination' => [
-                'current' => $page,
-                'total'   => ceil($total / $perPage),
-            ],
+            'pagination' => $paginationData['pagination'],
         ]);
     }
 

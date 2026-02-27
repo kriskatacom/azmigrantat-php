@@ -16,28 +16,26 @@ class CityController extends BaseController
 
     public function __construct()
     {
+        $this->middleware('admin', ['index', 'getByCountry']);
+        
         $this->cityModel = new City();
         $this->countryModel = new Country();
     }
 
     public function index()
     {
-        $page = (int)($_GET['page'] ?? 1);
-        $perPage = (int)($_GET['per_page'] ?? 10);
-        $offset = ($page - 1) * $perPage;
+        $pageData = $this->paginate($this->cityModel);
 
-        $cities = $this->cityModel->getWithCountry($perPage, $offset);
-        $total = $this->cityModel->count();
+        $cities = $this->cityModel->getWithCountry(
+            $pageData['limit'],
+            $pageData['offset']
+        );
 
         View::render('admin/cities/index', [
-            'title' => 'Градове',
-            'cities' => $cities,
-            'pagination' => [
-                'current' => $page,
-                'total' => ceil($total / $perPage),
-                'per_page' => $perPage,
-            ],
-            'layout' => 'admin'
+            'title'      => 'Управление на градове',
+            'cities'     => $cities,
+            'pagination' => $pageData['pagination'],
+            'layout'     => 'admin'
         ]);
     }
 
@@ -160,7 +158,6 @@ class CityController extends BaseController
 
     public function updateOrder()
     {
-        $this->middleware('admin');
         return $this->handleOrderUpdate($this->cityModel);
     }
 }

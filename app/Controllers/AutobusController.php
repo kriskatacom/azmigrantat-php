@@ -11,27 +11,25 @@ class CruiseController extends BaseController
 
     public function __construct()
     {
+        $this->middleware('admin', ['index']);
+        
         $this->autobusModel = new Autobus();
     }
 
     public function index()
     {
-        $page = (int)($_GET['page'] ?? 1);
-        $perPage = (int)($_GET['per_page'] ?? 10);
-        $offset = ($page - 1) * $perPage;
+        $pageData = $this->paginate($this->autobusModel);
 
-        $autobuses = $this->autobusModel->getWithRelations($perPage, $offset);
-        $total = $this->autobusModel->count();
+        $autobuses = $this->autobusModel->getWithRelations(
+            $pageData['limit'],
+            $pageData['offset']
+        );
 
         View::render('admin/autobuses/index', [
-            'title' => 'Автобусни компании',
-            'autobuses' => $autobuses,
-            'layout' => 'admin',
-            'pagination' => [
-                'current' => $page,
-                'total' => ceil($total / $perPage),
-                'per_page' => $perPage,
-            ],
+            'title'      => 'Автобусни компании',
+            'autobuses'  => $autobuses,
+            'pagination' => $pageData['pagination'],
+            'layout'     => 'admin'
         ]);
     }
 }
