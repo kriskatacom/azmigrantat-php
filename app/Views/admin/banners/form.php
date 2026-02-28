@@ -36,8 +36,8 @@ $positions = [
                 </h3>
 
                 <?php View::component('image-upload', 'admin/components', [
-                    'name' => 'image',
-                    'value' => $banner['image'] ?? null,
+                    'name' => 'image_url',
+                    'value' => $banner['image_url'] ?? null,
                     'label' => 'Фоново изображение'
                 ]); ?>
                 

@@ -6,8 +6,6 @@ use App\Controllers\BaseController;
 use App\Models\Embassy;
 use App\Models\Country;
 use App\Core\View;
-use App\Services\FileService;
-use App\Services\HelperService;
 
 class EmbassyController extends BaseController
 {
@@ -50,48 +48,7 @@ class EmbassyController extends BaseController
 
     public function store()
     {
-        $data = $_POST;
-
-        $data['slug'] = !empty($data['slug'])
-            ? HelperService::slug($data['slug'])
-            : HelperService::slug($data['name']);
-
-        $data['image_url'] = !empty($_FILES['image_url']['name']) ? FileService::upload($_FILES['image_url']) : null;
-        $data['logo'] = !empty($_FILES['logo']['name']) ? FileService::upload($_FILES['logo']) : null;
-        $data['right_heading_image'] = !empty($_FILES['right_heading_image']['name']) ? FileService::upload($_FILES['right_heading_image']) : null;
-
-        $gallery = [];
-        if (!empty($_FILES['additional_images']['name'][0])) {
-            foreach ($_FILES['additional_images']['name'] as $key => $val) {
-                if ($_FILES['additional_images']['error'][$key] === UPLOAD_ERR_OK) {
-                    $fileData = [
-                        'name'     => $_FILES['additional_images']['name'][$key],
-                        'type'     => $_FILES['additional_images']['type'][$key],
-                        'tmp_name' => $_FILES['additional_images']['tmp_name'][$key],
-                        'error'    => $_FILES['additional_images']['error'][$key],
-                        'size'     => $_FILES['additional_images']['size'][$key]
-                    ];
-                    $gallery[] = FileService::upload($fileData);
-                }
-            }
-        }
-        $data['additional_images'] = json_encode($gallery);
-
-        $data['country_id'] = !empty($data['country_id']) ? (int)$data['country_id'] : null;
-        $data['sort_order'] = !empty($data['sort_order']) ? (int)$data['sort_order'] : 0;
-
-        unset($data['remove_image_url'], $data['remove_logo'], $data['remove_right_heading_image'], $data['existing_images'], $data['return_url']);
-
-        $newId = $this->embassyModel->create($data);
-
-        if ($newId) {
-            $this->flash('success', 'Посолството беше създадено успешно!');
-            header('Location: /admin/embassies/edit/' . $newId);
-        } else {
-            $this->flash('error', 'Грешка при записа.');
-            header('Location: /admin/embassies');
-        }
-        exit;
+        $this->handleStore($this->embassyModel, '/admin/embassies', ['image_url', 'logo', 'right_heading_image'], 'embassies');
     }
 
     public function edit($id)
@@ -113,69 +70,14 @@ class EmbassyController extends BaseController
 
     public function update($id)
     {
-        $embassy = $this->embassyModel->find((int)$id);
-        if (!$embassy) exit;
-
-        $data = $_POST;
-
-        $data['slug'] = !empty($data['slug']) ? HelperService::slug($data['slug']) : HelperService::slug($data['name']);
-
-        $imagesToHandle = ['image_url', 'logo', 'right_heading_image'];
-        foreach ($imagesToHandle as $field) {
-            $finalUrl = $embassy[$field];
-
-            if (isset($data["remove_$field"]) && $data["remove_$field"] == '1') {
-                FileService::delete($embassy[$field]);
-                $finalUrl = null;
-            }
-
-            if (!empty($_FILES[$field]['name'])) {
-                FileService::delete($embassy[$field]);
-                $finalUrl = FileService::upload($_FILES[$field]);
-            }
-            $data[$field] = $finalUrl;
-        }
-
-        $currentGallery = !empty($embassy['additional_images']) ? json_decode($embassy['additional_images'], true) : [];
-        $remainingImages = $data['existing_images'] ?? [];
-
-        $removedImages = array_diff($currentGallery, $remainingImages);
-        foreach ($removedImages as $removedImg) {
-            FileService::delete($removedImg);
-        }
-
-        if (!empty($_FILES['additional_images']['name'][0])) {
-            foreach ($_FILES['additional_images']['name'] as $key => $val) {
-                if ($_FILES['additional_images']['error'][$key] === UPLOAD_ERR_OK) {
-                    $fileData = [
-                        'name' => $_FILES['additional_images']['name'][$key],
-                        'type' => $_FILES['additional_images']['type'][$key],
-                        'tmp_name' => $_FILES['additional_images']['tmp_name'][$key],
-                        'error' => $_FILES['additional_images']['error'][$key],
-                        'size' => $_FILES['additional_images']['size'][$key]
-                    ];
-                    $remainingImages[] = FileService::upload($fileData);
-                }
-            }
-        }
-        $data['additional_images'] = json_encode(array_values($remainingImages));
-
-        $data['country_id'] = (int)$data['country_id'];
-        unset($data['remove_image_url'], $data['remove_logo'], $data['remove_right_heading_image'], $data['existing_images'], $data['return_url']);
-
-        if ($this->embassyModel->update((int)$id, $data)) {
-            $this->flash('success', 'Посолството беше обновено успешно!');
-        }
-
-        header('Location: /admin/embassies/edit/' . $id);
-        exit;
+        $this->handleUpdate($this->embassyModel, (int)$id, '/admin/embassies', ['image_url', 'logo', 'right_heading_image'], 'embassies');
     }
 
     public function updateOrder()
     {
         return $this->handleOrderUpdate($this->embassyModel);
     }
-    
+
     public function delete($id)
     {
         $this->handleDelete($this->embassyModel, (int)$id, null, ['logo', 'image_url', 'right_heading_image']);

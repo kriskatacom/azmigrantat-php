@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\Airline;
-use App\Services\FileService;
 
 class AirlineController extends BaseController
 {
@@ -43,22 +42,7 @@ class AirlineController extends BaseController
 
     public function store()
     {
-        $data = $this->airlineModel->prepareData($_POST);
-
-        if (!empty($_FILES['image']['name'])) {
-            $data['image_url'] = FileService::upload($_FILES['image'], 'airlines');
-        }
-
-        unset($data['remove_image']);
-
-        $newId = $this->airlineModel->create($data);
-
-        if ($newId) {
-            $this->flash('success', 'Авиокомпания беше създадена успешно!');
-        }
-
-        header('Location: /admin/airlines/edit/' . $newId);
-        exit;
+        $this->handleStore($this->airlineModel, '/admin/airlines', ['image_url'], 'airlines');
     }
 
     public function edit($id)
@@ -79,22 +63,7 @@ class AirlineController extends BaseController
 
     public function update($id)
     {
-        $airline = $this->airlineModel->find((int)$id);
-        if (!$airline) $this->redirect('/admin/airlines');
-
-        $data = $this->airlineModel->prepareData($_POST);
-
-        if (!empty($_FILES['image']['name'])) {
-            FileService::delete($airline['image_url']);
-            $data['image_url'] = FileService::upload($_FILES['image'], 'airlines');
-        }
-
-        unset($data['remove_image']);
-
-        if ($this->airlineModel->update((int)$id, $data)) {
-            $this->flash('success', 'Данните бяха обновени!');
-            $this->redirect('/admin/airlines');
-        }
+        $this->handleUpdate($this->airlineModel, (int)$id, '/admin/airlines/edit/' . $id, ['image_url'], 'airlines');
     }
 
     public function updateOrder()

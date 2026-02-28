@@ -46,26 +46,7 @@ class CruiseController extends BaseController
 
     public function store()
     {
-        $data = $_POST;
-        $data['slug'] = !empty($data['slug']) ? HelperService::slug($data['slug']) : HelperService::slug($data['name']);
-
-        if (!empty($_FILES['image_url']['name'])) {
-            $data['image_url'] = FileService::upload($_FILES['image_url']);
-        }
-
-        $data['sort_order'] = !empty($data['sort_order']) ? (int)$data['sort_order'] : 0;
-        unset($data['remove_image_url'], $data['return_url']);
-
-        $newId = $this->cruiseModel->create($data);
-
-        if ($newId) {
-            $this->flash('success', 'Круиз компанията беше добавена!');
-            header('Location: /admin/cruises/edit/' . $newId);
-        } else {
-            $this->flash('error', 'Грешка при записа.');
-            header('Location: /admin/cruises');
-        }
-        exit;
+        $this->handleStore($this->cruiseModel, '/admin/cruises', ['image_url'], 'cruises');
     }
 
     public function edit($id)
@@ -82,31 +63,7 @@ class CruiseController extends BaseController
 
     public function update($id)
     {
-        $cruise = $this->cruiseModel->find((int)$id);
-        $data = $_POST;
-
-        $data['slug'] = !empty($data['slug']) ? HelperService::slug($data['slug']) : HelperService::slug($data['name']);
-
-        $finalImage = $cruise['image_url'];
-        if (isset($data['remove_image_url']) && $data['remove_image_url'] == '1') {
-            FileService::delete($cruise['image_url']);
-            $finalImage = null;
-        }
-        if (!empty($_FILES['image_url']['name'])) {
-            FileService::delete($cruise['image_url']);
-            $finalImage = FileService::upload($_FILES['image_url']);
-        }
-        $data['image_url'] = $finalImage;
-        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
-
-        unset($data['remove_image_url'], $data['return_url']);
-
-        if ($this->cruiseModel->update((int)$id, $data)) {
-            $this->flash('success', 'Промените бяха запазени!');
-        }
-
-        header('Location: /admin/cruises/edit/' . $id);
-        exit;
+        $this->handleUpdate($this->cruiseModel, (int)$id, '/admin/cruises/edit/' . $id, ['image_url'], 'cruises');
     }
 
     public function updateOrder()

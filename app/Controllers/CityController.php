@@ -50,31 +50,7 @@ class CityController extends BaseController
 
     public function store()
     {
-        $data = $_POST;
-
-        $data['slug'] = !empty($data['slug'])
-            ? HelperService::slug($data['slug'])
-            : HelperService::slug($data['name']);
-
-        if (!empty($_FILES['image_url']['name'])) {
-            $data['image_url'] = FileService::upload($_FILES['image_url']);
-        }
-
-        $data['country_id'] = (int)$data['country_id'];
-        $data['sort_order'] = (int)($data['sort_order'] ?? 0);
-
-        unset($data['remove_image_url']);
-
-        $newId = $this->cityModel->create($data);
-
-        if ($newId) {
-            $this->flash('success', "Градът беше добавен успешно.");
-            header('Location: /admin/cities/edit/' . $newId);
-        } else {
-            $this->flash('error', "Възникна грешка при записа.");
-            header('Location: /admin/cities/create');
-        }
-        exit;
+        $this->handleStore($this->cityModel, '/admin/cities', ['image_url'], 'cities');
     }
 
     public function edit(int $id)
@@ -96,46 +72,7 @@ class CityController extends BaseController
 
     public function update(int $id)
     {
-        $city = $this->cityModel->find($id);
-        if (!$city) {
-            $this->flash('error', 'Градът не е намерен!');
-            header('Location: /admin/cities');
-            exit;
-        }
-
-        $data = $_POST;
-        $data['slug'] = !empty($data['slug'])
-            ? HelperService::slug($data['slug'])
-            : HelperService::slug($data['name']);
-
-        $finalImageUrl = $city['image_url'];
-
-        if (isset($data['remove_image_url']) && $data['remove_image_url'] == '1') {
-            FileService::delete($city['image_url']);
-            $finalImageUrl = null;
-        }
-
-        if (!empty($_FILES['image_url']['name'])) {
-            FileService::delete($city['image_url']);
-            $finalImageUrl = FileService::upload($_FILES['image_url']);
-        }
-
-        $data['image_url'] = $finalImageUrl;
-        $data['country_id'] = (int)$data['country_id'];
-        $data['sort_order'] = (int)($data['sort_order'] ?? 0);
-        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
-
-        unset($data['remove_image_url']);
-
-        if ($this->cityModel->update($id, $data)) {
-            $this->flash('success', 'Градът беше обновен успешно.');
-        } else {
-            $this->flash('error', 'Възникна грешка при обновяването.');
-        }
-
-        $redirectUrl = '/admin/cities/edit/' . $id;
-        header('Location: ' . $redirectUrl);
-        exit;
+        $this->handleUpdate($this->cityModel, (int)$id, '/admin/cities/edit/' . $id, ['image_url'], 'cities');
     }
 
     public function getByCountry(int $countryId)

@@ -59,8 +59,9 @@ class Banner extends Model
 
         $data['sort_order'] = !empty($input['sort_order']) ? (int)$input['sort_order'] : 0;
         $data['height'] = !empty($input['height']) ? (int)$input['height'] : 520;
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
-        unset($data['remove_image'], $data['return_url']);
+        unset($data['remove_image_url'], $data['return_url']);
 
         return $data;
     }

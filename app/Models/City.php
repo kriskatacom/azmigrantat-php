@@ -35,14 +35,10 @@ class City extends Model
         }
 
         $data['sort_order'] = (int)($data['sort_order'] ?? 0);
+        $data['country_id'] = (int)$data['country_id'];
+        $data['sort_order'] = (int)($data['sort_order'] ?? 0);
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
         
         return $data;
-    }
-
-    private function generateSlug(string $text): string
-    {
-        $text = mb_strtolower($text);
-        $text = str_replace([' ', '/', '\\'], '-', $text);
-        return preg_replace('/[^a-z0-9\-]/', '', $text);
     }
 }

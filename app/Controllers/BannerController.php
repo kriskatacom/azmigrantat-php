@@ -55,22 +55,7 @@ class BannerController extends BaseController
 
     public function store()
     {
-        $data = $this->bannerModel->prepareData($_POST);
-
-        if (!empty($_FILES['image']['name'])) {
-            $data['image'] = FileService::upload($_FILES['image']);
-        }
-
-        $newId = $this->bannerModel->create($data);
-
-        if ($newId) {
-            $this->flash('success', 'Банерът беше създаден успешно!');
-            header('Location: /admin/banners/edit/' . $newId);
-        } else {
-            $this->flash('error', 'Възникна грешка при записа в базата данни.');
-            header('Location: /admin/banners');
-        }
-        exit;
+        $this->handleStore($this->bannerModel, '/admin/banners', ['image_url'], 'banners');
     }
 
     public function edit($id)
@@ -88,26 +73,7 @@ class BannerController extends BaseController
 
     public function update($id)
     {
-        $banner = $this->bannerModel->find((int)$id);
-        $data = $this->bannerModel->prepareData($_POST);
-
-        $finalImage = $banner['image'];
-        if (isset($_POST['remove_image']) && $_POST['remove_image'] == '1') {
-            FileService::delete($banner['image']);
-            $finalImage = null;
-        }
-        if (!empty($_FILES['image']['name'])) {
-            FileService::delete($banner['image']);
-            $finalImage = FileService::upload($_FILES['image']);
-        }
-        $data['image'] = $finalImage;
-
-        if ($this->bannerModel->update((int)$id, $data)) {
-            $this->flash('success', 'Промените бяха запазени!');
-        }
-
-        header('Location: /admin/banners/edit/' . $id);
-        exit;
+        $this->handleUpdate($this->bannerModel, (int)$id, '/admin/banners/edit/' . $id, ['image_url'], 'banners');
     }
 
     public function updateOrder()

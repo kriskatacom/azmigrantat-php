@@ -141,4 +141,11 @@ abstract class Model
             mt_rand(0, 0xffff)
         );
     }
+
+    public function generateSlug(string $text): string
+    {
+        $text = mb_strtolower($text);
+        $text = str_replace([' ', '/', '\\'], '-', $text);
+        return preg_replace('/[^a-z0-9\-]/', '', $text);
+    }
 }

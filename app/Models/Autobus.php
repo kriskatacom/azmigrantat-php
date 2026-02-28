@@ -32,6 +32,7 @@ class Autobus extends Model
         }
         
         $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
         
         return $data;
     }

@@ -129,7 +129,7 @@ abstract class BaseController
                 if (!empty($item[$field])) {
                     $images = json_decode($item[$field], true);
                     if (is_array($images)) {
-                        foreach ($images as $img) \App\Services\FileService::delete($img);
+                        foreach ($images as $img) FileService::delete($img);
                     }
                 }
             }
@@ -141,5 +141,69 @@ abstract class BaseController
         }
 
         $this->redirect($redirectUrl);
+    }
+
+    protected function handleStore($model, string $baseRoute, array $fileFields = ['image_url'], string $uploadFolder = 'images')
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') return;
+
+        $data = $model->prepareData($_POST);
+
+        foreach ($fileFields as $field) {
+            if (!empty($_FILES[$field]['name'])) {
+                $data[$field] = \App\Services\FileService::upload($_FILES[$field], $uploadFolder);
+            }
+            unset($data["remove_$field"]);
+        }
+
+        unset($data['return_url'], $data['existing_images']);
+
+        $newId = $model->create($data);
+
+        if ($newId) {
+            $this->flash('success', 'Записът беше създаден успешно!');
+            $this->redirect($baseRoute . '/edit/' . $newId);
+        } else {
+            $this->flash('error', 'Възникна грешка при създаването.');
+            $this->redirect($baseRoute);
+        }
+    }
+
+    protected function handleUpdate($model, int $id, string $baseRoute, array $fileFields = ['image_url'], string $uploadFolder = 'images')
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') return;
+
+        $item = $model->find($id);
+        if (!$item) {
+            $this->flash('error', 'Записът не е намерен.');
+            $this->redirect($baseRoute);
+        }
+
+        $data = $model->prepareData($_POST);
+
+        foreach ($fileFields as $field) {
+            if (!empty($_FILES[$field]['name'])) {
+                if (!empty($item[$field])) {
+                    FileService::delete($item[$field]);
+                }
+                $data[$field] = FileService::upload($_FILES[$field], $uploadFolder);
+            }
+            elseif (isset($_POST["remove_$field"]) && $_POST["remove_$field"] == '1') {
+                if (!empty($item[$field])) {
+                    FileService::delete($item[$field]);
+                }
+                $data[$field] = null;
+            }
+
+            unset($data["remove_$field"]);
+        }
+
+        unset($data['return_url'], $data['existing_images']);
+
+        if ($model->update($id, $data)) {
+            $this->flash('success', 'Данните бяха обновени успешно!');
+        }
+
+        $this->redirect($baseRoute . '/edit/' . $id);
     }
 }

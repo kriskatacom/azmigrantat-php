@@ -74,50 +74,12 @@ class AutobusController extends BaseController
 
     public function store()
     {
-        $data = $_POST;
-        $data = $this->autobusModel->prepareData($data);
-
-        if (!empty($_FILES['image_url']['name'])) {
-            $data['image_url'] = FileService::upload($_FILES['image_url'], 'autobuses');
-        }
-
-        unset($data['remove_image_url']);
-
-        if ($this->autobusModel->create($data)) {
-            header('Location: /admin/autobuses?success=1');
-            exit;
-        }
+        $this->handleStore($this->autobusModel, '/admin/autobuses', ['image_url'], 'airlines');
     }
 
     public function update($id)
     {
-        $autobus = $this->autobusModel->find($id);
-        if (!$autobus) return;
-
-        $data = $_POST;
-        $data = $this->autobusModel->prepareData($data);
-
-        $finalImageUrl = $autobus['image_url'];
-
-        if (isset($data['remove_image_url']) && $data['remove_image_url'] == '1') {
-            FileService::delete($autobus['image_url']);
-            $finalImageUrl = null;
-        }
-
-        if (!empty($_FILES['image_url']['name'])) {
-            FileService::delete($autobus['image_url']);
-            $finalImageUrl = FileService::upload($_FILES['image_url']);
-        }
-
-        $data['image_url'] = $finalImageUrl;
-        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
-
-        unset($data['remove_image_url']);
-
-        if ($this->autobusModel->update($id, $data)) {
-            header('Location: /admin/autobuses?success=2');
-            exit;
-        }
+        $this->handleUpdate($this->autobusModel, (int)$id, '/admin/autobuses/edit/' . $id, ['image_url'], 'autobuses');
     }
 
     public function delete($id)

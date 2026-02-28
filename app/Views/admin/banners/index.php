@@ -66,7 +66,7 @@ $positions = [
             <td class="px-5 py-4">
                 <a href="/admin/banners/edit/<?= $banner['id'] ?>" class="group block">
                     <?php View::component('table-image', 'admin/components', [
-                        'src' => $banner['image'],
+                        'src' => $banner['image_url'],
                         'alt' => $banner['name'] ?? 'Banner',
                     ]); ?>
                 </a>
