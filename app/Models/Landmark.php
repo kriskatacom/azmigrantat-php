@@ -25,4 +25,23 @@ class Landmark extends Model
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll();
     }
+
+    public function prepareData(array $data): array
+    {
+        if (empty($data['slug']) && !empty($data['name'])) {
+            $data['slug'] = $this->generateSlug($data['name']);
+        } elseif (!empty($data['slug'])) {
+            $data['slug'] = $this->generateSlug($data['slug']);
+        }
+
+        if (empty($data['heading']) && !empty($data['name'])) {
+            $data['heading'] = $data['name'];
+        }
+
+        $data['sort_order'] = (int)($data['sort_order'] ?? 0);
+        $data['country_id'] = !empty($data['country_id']) ? (int)$data['country_id'] : null;
+        $data['is_active'] = isset($data['is_active']) ? 1 : 0;
+
+        return $data;
+    }
 }

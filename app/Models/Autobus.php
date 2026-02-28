@@ -36,12 +36,4 @@ class Autobus extends Model
         
         return $data;
     }
-
-    private function generateSlug(string $text): string
-    {
-        $text = mb_strtolower($text);
-        $text = str_replace([' ', '/', '\\'], '-', $text);
-        $text = preg_replace('/[^a-z0-9\-]/', '', $text);
-        return trim($text, '-');
-    }
 }

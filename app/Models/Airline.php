@@ -18,15 +18,6 @@ class Airline extends Model
         return $data;
     }
 
-    private function generateSlug(string $text): string
-    {
-        $text = mb_strtolower($text);
-        $text = str_replace([' ', '/', '\\'], '-', $text);
-        $text = preg_replace('/[^a-z0-9\-]/', '', $text);
-        $text = preg_replace('/-+/', '-', $text);
-        return trim($text, '-');
-    }
-
     public function getActive(): array
     {
         $sql = "SELECT * FROM {$this->table} WHERE is_active = 1 ORDER BY sort_order ASC, name ASC";

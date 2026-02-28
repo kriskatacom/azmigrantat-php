@@ -187,8 +187,7 @@ abstract class BaseController
                     FileService::delete($item[$field]);
                 }
                 $data[$field] = FileService::upload($_FILES[$field], $uploadFolder);
-            }
-            elseif (isset($_POST["remove_$field"]) && $_POST["remove_$field"] == '1') {
+            } elseif (isset($_POST["remove_$field"]) && $_POST["remove_$field"] == '1') {
                 if (!empty($item[$field])) {
                     FileService::delete($item[$field]);
                 }
@@ -205,5 +204,34 @@ abstract class BaseController
         }
 
         $this->redirect($baseRoute . '/edit/' . $id);
+    }
+
+    protected function handleGalleryUpdate(array $currentItem, array $postData, string $field = 'additional_images', string $folder = 'gallery'): string
+    {
+        $currentGallery = json_decode($currentItem[$field] ?? '[]', true);
+        $remainingImages = $postData['existing_images'] ?? [];
+
+        $removedImages = array_diff($currentGallery, $remainingImages);
+        foreach ($removedImages as $img) {
+            FileService::delete($img);
+        }
+
+        if (!empty($_FILES[$field]['name'][0])) {
+            foreach ($_FILES[$field]['name'] as $key => $val) {
+                if ($_FILES[$field]['error'][$key] === UPLOAD_ERR_OK) {
+                    $fileData = [
+                        'name'     => $_FILES[$field]['name'][$key],
+                        'type'     => $_FILES[$field]['type'][$key],
+                        'tmp_name' => $_FILES[$field]['tmp_name'][$key],
+                        'error'    => $_FILES[$field]['error'][$key],
+                        'size'     => $_FILES[$field]['size'][$key]
+                    ];
+                    $newPath = FileService::upload($fileData, $folder);
+                    if ($newPath) $remainingImages[] = $newPath;
+                }
+            }
+        }
+
+        return json_encode(array_values($remainingImages));
     }
 }
