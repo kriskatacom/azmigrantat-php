@@ -79,7 +79,7 @@ class AutobusController extends BaseController
 
     public function update($id)
     {
-        $this->handleUpdate($this->autobusModel, (int)$id, '/admin/autobuses/edit/' . $id, ['image_url'], 'autobuses');
+        $this->handleUpdate($this->autobusModel, (int)$id, '/admin/autobuses', ['image_url'], 'autobuses');
     }
 
     public function delete($id)

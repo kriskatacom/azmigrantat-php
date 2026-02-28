@@ -56,7 +56,7 @@ class CountryController extends BaseController
 
     public function update($id)
     {
-        $this->handleUpdate($this->countryModel, (int)$id, '/admin/countries/edit/' . $id, ['image_url'], 'countries');
+        $this->handleUpdate($this->countryModel, (int)$id, '/admin/countries', ['image_url'], 'countries');
     }
 
     public function show(int $id)

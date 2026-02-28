@@ -63,7 +63,7 @@ class CruiseController extends BaseController
 
     public function update($id)
     {
-        $this->handleUpdate($this->cruiseModel, (int)$id, '/admin/cruises/edit/' . $id, ['image_url'], 'cruises');
+        $this->handleUpdate($this->cruiseModel, (int)$id, '/admin/cruises', ['image_url'], 'cruises');
     }
 
     public function updateOrder()

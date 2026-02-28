@@ -31,7 +31,7 @@ $action = $isEdit ? "/admin/cities/update/{$city['id']}" : "/admin/cities/store"
                     'id'    => 'city-image'
                 ]); ?>
             </div>
-            
+
             <?php View::component('lightbox', 'admin/components'); ?>
         </div>
 
@@ -80,10 +80,9 @@ $action = $isEdit ? "/admin/cities/update/{$city['id']}" : "/admin/cities/store"
             'value' => $city['is_active'] ?? true
         ]); ?>
 
-        <div class="pt-4">
-            <?php View::component('submit-button', 'admin/components', [
-                'text' => !$isEdit ? 'Създаване' : 'Запазване'
-            ]); ?>
-        </div>
+        <?php View::component('submit-button', 'admin/components', [
+            'text' => !$isEdit ? 'Създаване' : 'Запазване',
+            'is_active' => $city['is_active']
+        ]); ?>
     </form>
 </div>

@@ -24,7 +24,7 @@ $action = $isEdit ? "/admin/airlines/update/{$airline['id']}" : "/admin/airlines
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="p-5 space-y-5">
 
         <?php View::component('image-upload', 'admin/components', [
-            'name'  => 'image',
+            'name'  => 'image_url',
             'label' => 'Изображение',
             'value' => $airline['image_url'] ?? null,
             'id'    => 'airline-logo'
@@ -62,10 +62,9 @@ $action = $isEdit ? "/admin/airlines/update/{$airline['id']}" : "/admin/airlines
             'value' => $airline['is_active'] ?? true
         ]); ?>
 
-        <div class="border-t border-gray-100">
-            <?php View::component('submit-button', 'admin/components', [
-                'text' => $isEdit ? 'Запази промените' : 'Създай авиолиния'
-            ]); ?>
-        </div>
+        <?php View::component('submit-button', 'admin/components', [
+            'text' => !$isEdit ? 'Създаване' : 'Запазване',
+            'is_active' => $airline['is_active']
+        ]); ?>
     </form>
 </div>

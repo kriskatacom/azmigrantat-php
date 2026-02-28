@@ -40,7 +40,7 @@ $positions = [
                     'value' => $banner['image_url'] ?? null,
                     'label' => 'Фоново изображение'
                 ]); ?>
-                
+
                 <?php View::component('lightbox', 'admin/components'); ?>
             </div>
 
@@ -136,6 +136,9 @@ $positions = [
             'value' => $banner['is_active'] ?? true
         ]); ?>
     </div>
-    
-    <?php View::component('submit-button', 'admin/components', ['text' => !$isEdit ? 'Създаване' : 'Запазване']); ?>
+
+    <?php View::component('submit-button', 'admin/components', [
+        'text' => !$isEdit ? 'Създаване' : 'Запазване',
+        'is_active' => $banner['is_active']
+    ]); ?>
 </form>

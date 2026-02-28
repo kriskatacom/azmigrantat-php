@@ -103,7 +103,8 @@ $action = $isEdit ? "/admin/autobuses/update/{$autobus['id']}" : "/admin/autobus
         ]); ?>
 
         <?php View::component('submit-button', 'admin/components', [
-            'text' => !$isEdit ? 'Създаване' : 'Запазване'
+            'text' => !$isEdit ? 'Създаване' : 'Запазване',
+            'is_active' => $autobus['is_active'] ?? true
         ]); ?>
     </form>
 </div>

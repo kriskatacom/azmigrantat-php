@@ -72,7 +72,7 @@ class CityController extends BaseController
 
     public function update(int $id)
     {
-        $this->handleUpdate($this->cityModel, (int)$id, '/admin/cities/edit/' . $id, ['image_url'], 'cities');
+        $this->handleUpdate($this->cityModel, (int)$id, '/admin/cities', ['image_url'], 'cities');
     }
 
     public function getByCountry(int $countryId)

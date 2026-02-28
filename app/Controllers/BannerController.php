@@ -73,7 +73,7 @@ class BannerController extends BaseController
 
     public function update($id)
     {
-        $this->handleUpdate($this->bannerModel, (int)$id, '/admin/banners/edit/' . $id, ['image_url'], 'banners');
+        $this->handleUpdate($this->bannerModel, (int)$id, '/admin/banners', ['image_url'], 'banners');
     }
 
     public function updateOrder()

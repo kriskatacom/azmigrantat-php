@@ -150,6 +150,9 @@ $action = $isEdit ? "/admin/embassies/update/{$embassy['id']}" : "/admin/embassi
             'value' => $embassy['is_active'] ?? true
         ]); ?>
 
-        <?php View::component('submit-button', 'admin/components', ['text' => !$isEdit ? 'Създаване' : 'Запазване']); ?>
+        <?php View::component('submit-button', 'admin/components', [
+            'text' => !$isEdit ? 'Създаване' : 'Запазване',
+            'is_active' => $embassy['is_active']
+        ]); ?>
     </form>
 </div>

@@ -63,7 +63,7 @@ class AirlineController extends BaseController
 
     public function update($id)
     {
-        $this->handleUpdate($this->airlineModel, (int)$id, '/admin/airlines/edit/' . $id, ['image_url'], 'airlines');
+        $this->handleUpdate($this->airlineModel, (int)$id, '/admin/airlines', ['image_url'], 'airlines');
     }
 
     public function updateOrder()

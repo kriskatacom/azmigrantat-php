@@ -64,7 +64,8 @@ $action = $isEdit ? "{$baseRoute}/update/{$cruise['id']}" : "{$baseRoute}/store"
         ]); ?>
 
         <?php View::component('submit-button', 'admin/components', [
-            'text' => $isEdit ? 'Запазване' : 'Създаване'
+            'text' => !$isEdit ? 'Създаване' : 'Запазване',
+            'is_active' => $cruise['is_active']
         ]); ?>
     </form>
 </div>

@@ -62,6 +62,9 @@ $action = $isEdit ? "/admin/countries/update/{$country['id']}" : "/admin/countri
             'value' => $country['is_active'] ?? true
         ]); ?>
 
-        <?php View::component('submit-button', 'admin/components', ['text' => !$isEdit ? 'Създаване' : 'Запазване']); ?>
+        <?php View::component('submit-button', 'admin/components', [
+            'text' => !$isEdit ? 'Създаване' : 'Запазване',
+            'is_active' => $country['is_active']
+        ]); ?>
     </form>
 </div>
