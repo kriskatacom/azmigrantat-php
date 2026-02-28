@@ -28,7 +28,7 @@ class TaxiController extends BaseController
         ]);
 
         $this->render('admin/taxis/index', [
-            'title' => 'Управление на влакове',
+            'title' => 'Таксита',
             'taxis' => $taxis,
             'pagination' => $paginationData['pagination'],
             'layout'     => 'admin'
@@ -39,7 +39,7 @@ class TaxiController extends BaseController
     {
         $countryModel = new Country();
         $this->render('admin/taxis/form', [
-            'title' => 'Нов влак',
+            'title' => 'Създаване на нова такси компания',
             'countries' => $countryModel->all(['order' => 'name ASC']),
             'taxi' => null,
             'layout'     => 'admin'
@@ -55,7 +55,7 @@ class TaxiController extends BaseController
     {
         $taxi = $this->taxi->find($id);
         if (!$taxi) {
-            $this->flash('error', 'Влакът не е намерен.');
+            $this->flash('error', 'Такси компанията не е намерена.');
             $this->redirect($this->baseRoute);
         }
 
@@ -63,7 +63,7 @@ class TaxiController extends BaseController
         $cityModel = new City();
 
         $this->render('admin/taxis/form', [
-            'title' => 'Редактиране на влак: ' . $taxi['name'],
+            'title' => 'Редактиране на такси компания: ' . $taxi['name'],
             'taxi' => $taxi,
             'countries' => $countryModel->all(['order' => 'name ASC']),
             'cities' => $cityModel->where('country_id', $taxi['country_id']),

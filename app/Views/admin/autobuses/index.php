@@ -8,7 +8,7 @@ use App\Core\View;
     ]); ?>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<?php ob_start(); ?>
     <?php View::component('page-header', 'admin/components', [
         'title'        => 'Автобусни линии',
         'button_label' => 'Нова линия',
@@ -67,15 +67,10 @@ use App\Core\View;
                     <span class="text-gray-500 truncate max-w-45" title="<?= htmlspecialchars($bus['slug']) ?>">
                         <span class="opacity-50">🔗</span> <?= htmlspecialchars($bus['slug']) ?>
                     </span>
-                    <?php if($bus['is_active']): ?>
-                        <span class="flex items-center gap-1 font-bold text-emerald-600 uppercase">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Активна
-                        </span>
-                    <?php else: ?>
-                        <span class="flex items-center gap-1 font-bold text-gray-400 uppercase">
-                            <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span> Неактивна
-                        </span>
-                    <?php endif; ?>
+                    <span class="flex items-center gap-1 font-bold text-xs uppercase <?= $bus['is_active'] ? 'text-emerald-600' : 'text-gray-400' ?>">
+                        <span class="w-1.5 h-1.5 rounded-full <?= $bus['is_active'] ? 'bg-emerald-500 animate-pulse' : 'bg-gray-300' ?>"></span>
+                        <?= $bus['is_active'] ? 'Активна' : 'Неактивна' ?>
+                    </span>
                 </div>
             </td>
 
@@ -94,12 +89,14 @@ use App\Core\View;
         'slot' => ob_get_clean(),
         'attributes' => 'id="autobuses-table"'
     ]);
-    
-    View::component('sortable-script', 'admin/components', [
-        'tableId' => '#autobuses-table',
-        'url'     => '/admin/autobuses/update-order'
-    ]);
     ?>
+<?php View::component('card', 'admin/components', ['slot' => ob_get_clean(), 'attributes' => 'p-0 overflow-hidden']); ?>
+
+<div class="mt-5">
+    <?php View::component('pagination', 'admin/components', ['pagination' => $pagination]); ?>
 </div>
 
-<?php View::component('pagination', 'admin/components', ['pagination' => $pagination]); ?>
+<?php View::component('sortable-script', 'admin/components', [
+    'tableId' => '#autobuses-table',
+    'url'     => '/admin/autobuses/update-order'
+]); ?>

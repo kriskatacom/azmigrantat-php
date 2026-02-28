@@ -1,5 +1,4 @@
 <?php
-
 use App\Core\View;
 
 $isEdit = isset($category);
@@ -16,71 +15,61 @@ $action = $isEdit ? "/admin/categories/update/{$category['id']}" : "/admin/categ
 </div>
 
 <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-5 space-y-5">
-        <h3 class="font-bold text-gray-800 text-lg"><?= $title ?></h3>
-        <a href="/admin/categories" class="text-sm text-gray-500 hover:text-indigo-600">← Назад</a>
-    </div>
 
-    <div class="space-y-5">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-5 space-y-5">
-            <h4 class="text-xs font-bold uppercase tracking-wider border-b pb-2 text-indigo-500">Визуални елементи</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <?php View::component('image-upload', 'admin/components', [
-                    'name'  => 'image_url',
-                    'label' => 'Основна икона / Снимка',
-                    'value' => $category['image_url'] ?? null,
-                    'id'    => 'cat-main-img'
-                ]); ?>
+    <?php ob_start(); ?>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_url',
+                'label' => 'Основна икона / Снимка',
+                'value' => $category['image_url'] ?? null,
+                'id'    => 'cat-main-img'
+            ]); ?>
 
-                <?php View::component('image-upload', 'admin/components', [
-                    'name'  => 'companies_background_url',
-                    'label' => 'Фон за страницата с компании',
-                    'value' => $category['companies_background_url'] ?? null,
-                    'id'    => 'cat-bg-img'
-                ]); ?>
-            </div>
-            <?php View::component('lightbox', 'admin/components'); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'companies_background_url',
+                'label' => 'Фон за страницата с компании',
+                'value' => $category['companies_background_url'] ?? null,
+                'id'    => 'cat-bg-img'
+            ]); ?>
         </div>
+        <?php View::component('lightbox', 'admin/components'); ?>
+    <?php View::component('card', 'admin/components', ['title' => 'Визуални елементи', 'slot' => ob_get_clean()]); ?>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-5 space-y-5">
-            <h4 class="text-xs font-bold uppercase tracking-wider border-b pb-2 text-indigo-500">Основни данни</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-gray-600">Име на категорията</label>
-                    <input type="text" name="name" id="cat-name" value="<?= $category['name'] ?? '' ?>" required class="form-control">
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-gray-600">Родителска категория</label>
-                    <select name="parent_id" class="form-control bg-white">
-                        <option value="">-- Основна категория --</option>
-                        <?php foreach ($categories as $parent): ?>
-                            <?php
-                            // Скриваме текущата категория от избора, за да не стане родител сама на себе си
-                            if ($isEdit && $parent['id'] == $category['id']) continue;
-                            ?>
-
-                            <option value="<?= $parent['id'] ?>" <?= (isset($category) && $category['parent_id'] == $parent['id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($parent['name']) ?>
-                            </option>
-
-                            <?php if (!empty($parent['children'])): ?>
-                                <?php foreach ($parent['children'] as $child): ?>
-                                    <?php if ($isEdit && $child['id'] == $category['id']) continue; ?>
-                                    <option value="<?= $child['id'] ?>" <?= (isset($category) && $category['parent_id'] == $child['id']) ? 'selected' : '' ?>>
-                                        &nbsp;&nbsp;— <?= htmlspecialchars($child['name']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+    <?php ob_start(); ?>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="space-y-2">
+                <label class="text-sm font-semibold text-gray-600">Име на категорията</label>
+                <input type="text" name="name" id="cat-name" value="<?= htmlspecialchars($category['name'] ?? '') ?>" required class="form-control">
             </div>
 
             <div class="space-y-2">
+                <label class="text-sm font-semibold text-gray-600">Родителска категория</label>
+                <select name="parent_id" class="form-control bg-white">
+                    <option value="">-- Основна категория --</option>
+                    <?php foreach ($categories as $parent): ?>
+                        <?php if ($isEdit && $parent['id'] == $category['id']) continue; ?>
+
+                        <option value="<?= $parent['id'] ?>" <?= (isset($category) && $category['parent_id'] == $parent['id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($parent['name']) ?>
+                        </option>
+
+                        <?php if (!empty($parent['children'])): ?>
+                            <?php foreach ($parent['children'] as $child): ?>
+                                <?php if ($isEdit && $child['id'] == $category['id']) continue; ?>
+                                <option value="<?= $child['id'] ?>" <?= (isset($category) && $category['parent_id'] == $child['id']) ? 'selected' : '' ?>>
+                                    &nbsp;&nbsp;— <?= htmlspecialchars($child['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
+            <div class="space-y-2">
                 <label class="text-sm font-semibold text-gray-600">H1 Заглавие (Heading)</label>
-                <input type="text" name="heading" value="<?= $category['heading'] ?? '' ?>" class="form-control">
+                <input type="text" name="heading" value="<?= htmlspecialchars($category['heading'] ?? '') ?>" class="form-control">
             </div>
 
             <?php View::component('slug-input', 'admin/components', [
@@ -89,32 +78,36 @@ $action = $isEdit ? "/admin/categories/update/{$category['id']}" : "/admin/categ
                 'source' => 'cat-name'
             ]); ?>
         </div>
+    <?php View::component('card', 'admin/components', ['title' => 'Основни данни', 'slot' => ob_get_clean()]); ?>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-5 space-y-5">
-            <h4 class="text-xs font-bold uppercase tracking-wider border-b pb-2 text-indigo-500">Съдържание и SEO</h4>
-            <div class="space-y-2">
-                <label class="text-sm font-semibold text-gray-600">Кратко описание (Excerpt)</label>
-                <textarea name="excerpt" rows="3" class="form-control"><?= $category['excerpt'] ?? '' ?></textarea>
-            </div>
-            <div class="space-y-2">
-                <label class="text-sm font-semibold text-gray-600">Пълно съдържание</label>
-                <textarea name="content" id="editor" rows="10" class="form-control"><?= $category['content'] ?? '' ?></textarea>
-            </div>
+    <?php ob_start(); ?>
+        <div class="space-y-4">
+            <?php View::component('editor', 'admin/components', [
+                'name'  => 'excerpt',
+                'label' => 'Кратко описание (Excerpt)',
+                'value' => $category['excerpt'] ?? ''
+            ]); ?>
+            
+            <?php View::component('editor', 'admin/components', [
+                'name'  => 'content',
+                'label' => 'Пълно съдържание',
+                'value' => $category['content'] ?? ''
+            ]); ?>
         </div>
-    </div>
+    <?php View::component('card', 'admin/components', ['title' => 'Съдържание и SEO', 'slot' => ob_get_clean()]); ?>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-5 space-y-5">
-        <h4 class="text-xs font-bold uppercase tracking-wider border-b pb-2 text-indigo-500">Активност</h4>
-
+    <?php ob_start(); ?>
         <?php View::component('toggle', 'admin/components', [
             'name'  => 'is_active',
             'label' => 'Показвай в сайта',
             'value' => $category['is_active'] ?? true
         ]); ?>
-    </div>
+    <?php View::component('card', 'admin/components', ['title' => 'Статус', 'slot' => ob_get_clean()]); ?>
 
-    <?php View::component('submit-button', 'admin/components', [
-        'text' => !$isEdit ? 'Създаване' : 'Запазване',
-        'is_active' => $category['is_active']
-    ]); ?>
+    <div class="mb-5 pt-2">
+        <?php View::component('submit-button', 'admin/components', [
+            'text' => !$isEdit ? 'Създаване' : 'Запазване',
+            'is_active' => $category['is_active'] ?? true
+        ]); ?>
+    </div>
 </form>

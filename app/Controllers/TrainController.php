@@ -28,7 +28,7 @@ class TrainController extends BaseController
         ]);
 
         $this->render('admin/trains/index', [
-            'title' => 'Управление на влакове',
+            'title' => 'Влакове',
             'trains' => $trains,
             'pagination' => $paginationData['pagination'],
             'layout'     => 'admin'
@@ -39,7 +39,7 @@ class TrainController extends BaseController
     {
         $countryModel = new Country();
         $this->render('admin/trains/form', [
-            'title' => 'Нов влак',
+            'title' => 'Нова ЖП гара',
             'countries' => $countryModel->all(['order' => 'name ASC']),
             'train' => null,
             'layout'     => 'admin'
@@ -55,7 +55,7 @@ class TrainController extends BaseController
     {
         $train = $this->train->find($id);
         if (!$train) {
-            $this->flash('error', 'Влакът не е намерен.');
+            $this->flash('error', 'ЖП гарата не е намерена.');
             $this->redirect($this->baseRoute);
         }
 
@@ -63,7 +63,7 @@ class TrainController extends BaseController
         $cityModel = new City();
 
         $this->render('admin/trains/form', [
-            'title' => 'Редактиране на влак: ' . $train['name'],
+            'title' => 'Редактиране на ЖП гара: ' . $train['name'],
             'train' => $train,
             'countries' => $countryModel->all(['order' => 'name ASC']),
             'cities' => $cityModel->where('country_id', $train['country_id']),
