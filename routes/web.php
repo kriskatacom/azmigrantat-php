@@ -15,6 +15,7 @@ use App\Controllers\CountryController;
 use App\Controllers\CruiseController;
 use App\Controllers\EmbassyController;
 use App\Controllers\AutobusController;
+use App\Controllers\CategoryController;
 use App\Controllers\TaxiController;
 
 $router = new Router();
@@ -128,12 +129,21 @@ $router->post('/admin/trains/delete/(\d+)', [TrainController::class, 'delete']);
 $router->post('/admin/trains/update-order', [TrainController::class, 'updateOrder']);
 
 // Таксита (Taxis)
-$router->get('/admin/taxis', [taxiController::class, 'index']);
+$router->get('/admin/taxis', [TaxiController::class, 'index']);
 $router->get('/admin/taxis/create', [TaxiController::class, 'create']);
 $router->post('/admin/taxis/store', [TaxiController::class, 'store']);
 $router->get('/admin/taxis/edit/(\d+)', [TaxiController::class, 'edit']);
 $router->post('/admin/taxis/update/(\d+)', [TaxiController::class, 'update']);
 $router->post('/admin/taxis/delete/(\d+)', [TaxiController::class, 'delete']);
 $router->post('/admin/taxis/update-order', [TaxiController::class, 'updateOrder']);
+
+// Категории (Categories)
+$router->get('/admin/categories', [CategoryController::class, 'index']);
+$router->get('/admin/categories/create', [CategoryController::class, 'create']);
+$router->post('/admin/categories/store', [CategoryController::class, 'store']);
+$router->get('/admin/categories/edit/(\d+)', [CategoryController::class, 'edit']);
+$router->post('/admin/categories/update/(\d+)', [CategoryController::class, 'update']);
+$router->post('/admin/categories/delete/(\d+)', [CategoryController::class, 'delete']);
+$router->post('/admin/categories/update-order', [CategoryController::class, 'updateOrder']);
 
 return $router;

@@ -4,7 +4,7 @@ $isActive = $is_active ?? true;
 $uid = uniqid();
 ?>
 
-<div class="fixed bottom-0 left-0 right-0 md:left-64 bg-white/90 backdrop-blur-md border-t border-gray-200 p-4 mb-0 z-40 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+<div class="fixed bottom-0 left-0 right-0 md:left-80 bg-white/90 backdrop-blur-md border-t border-gray-200 p-4 mb-0 z-40 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
         
         <div class="hidden sm:flex items-center gap-3">
@@ -38,7 +38,7 @@ $uid = uniqid();
     </div>
 </div>
 
-<div class="h-24"></div>
+<div class="h-10"></div>
 
 <script>
     (function() {
