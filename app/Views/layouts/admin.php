@@ -46,6 +46,7 @@ use App\Services\HelperService;
                 ['label' => 'Круизи', 'url' => '/admin/cruises', 'icon' => 'anchor-icon'],
                 ['label' => 'Автобуси', 'url' => '/admin/autobuses', 'icon' => 'bus-icon'],
                 ['label' => 'Авиокомпании', 'url' => '/admin/airlines', 'icon' => 'plane-icon'],
+                ['label' => 'Компании', 'url' => '/admin/companies', 'icon' => 'building-2-icon'],
                 ['label' => 'Летища', 'url' => '/admin/airports', 'icon' => 'plane-takeoff-icon'],
                 ['label' => 'Влакове', 'url' => '/admin/trains', 'icon' => 'train-front-icon'],
                 ['label' => 'Таксита', 'url' => '/admin/taxis', 'icon' => 'car-taxi-front-icon'],

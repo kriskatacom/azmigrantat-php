@@ -2,7 +2,11 @@
 
 namespace App\Controllers;
 
+use App\Controllers\BaseController;
 use App\Models\Airline;
+use App\Models\Country;
+use App\Models\City;
+use App\Models\Category;
 
 class AirlineController extends BaseController
 {
@@ -10,7 +14,7 @@ class AirlineController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin', ['index']);
+        $this->middleware('admin');
         $this->airlineModel = new Airline();
     }
 
@@ -25,8 +29,8 @@ class AirlineController extends BaseController
         ]);
 
         $this->render('admin/airlines/index', [
-            'title'      => 'Авиолинии',
-            'airlines'   => $airlines,
+            'title'      => 'Компании',
+            'airlines'  => $airlines,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
         ]);
@@ -35,14 +39,17 @@ class AirlineController extends BaseController
     public function create()
     {
         $this->render('admin/airlines/form', [
-            'title'  => 'Нова авиокомпания',
-            'layout' => 'admin'
+            'title'      => 'Нова авиокомпания',
+            'countries'  => (new Country())->all(['order' => 'name ASC']),
+            'categories' => (new Category())->all(['order' => 'name ASC']),
+            'layout'     => 'admin'
         ]);
     }
 
     public function store()
     {
-        $this->handleStore($this->airlineModel, '/admin/airlines', ['image_url'], 'airlines');
+        $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
+        $this->handleStore($this->airlineModel, '/admin/airlines', $fileFields, 'airlines');
     }
 
     public function edit($id)
@@ -50,20 +57,22 @@ class AirlineController extends BaseController
         $airline = $this->airlineModel->find((int)$id);
 
         if (!$airline) {
-            $this->flash('error', 'Авиокомпания не е намерена.');
+            $this->flash('error', 'Авиокомпанията не е намерена.');
             $this->redirect('/admin/airlines');
         }
 
         $this->render('admin/airlines/form', [
-            'title'   => 'Редакция: ' . $airline['name'],
-            'airline' => $airline,
-            'layout'  => 'admin'
+            'title'      => 'Редакция: ' . $airline['name'],
+            'airline'    => $airline,
+            'categories' => (new Category())->all(['order' => 'name ASC']),
+            'layout'     => 'admin'
         ]);
     }
 
     public function update($id)
     {
-        $this->handleUpdate($this->airlineModel, (int)$id, '/admin/airlines', ['image_url'], 'airlines');
+        $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
+        $this->handleUpdate($this->airlineModel, (int)$id, '/admin/airlines', $fileFields, 'airlines');
     }
 
     public function updateOrder()
@@ -73,6 +82,7 @@ class AirlineController extends BaseController
 
     public function delete($id)
     {
-        $this->handleDelete($this->airlineModel, (int)$id, null, ['image_url']);
+        $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
+        $this->handleDelete($this->airlineModel, (int)$id, null, $fileFields);
     }
 }

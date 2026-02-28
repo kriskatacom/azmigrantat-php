@@ -7,8 +7,8 @@ use App\Controllers\CityController;
 use App\Controllers\LandmarkController;
 use App\Controllers\AuthController;
 use App\Controllers\AdminController;
-use App\Controllers\AirlineController;
 use App\Controllers\AirportController;
+use App\Controllers\AirlineController;
 use App\Controllers\BannerController;
 use App\Controllers\UserController;
 use App\Controllers\CountryController;
@@ -16,6 +16,7 @@ use App\Controllers\CruiseController;
 use App\Controllers\EmbassyController;
 use App\Controllers\AutobusController;
 use App\Controllers\CategoryController;
+use App\Controllers\CompanyController;
 use App\Controllers\TaxiController;
 
 $router = new Router();
@@ -109,6 +110,15 @@ $router->get('/admin/airlines/edit/(\d+)', [AirlineController::class, 'edit']);
 $router->post('/admin/airlines/update/(\d+)', [AirlineController::class, 'update']);
 $router->post('/admin/airlines/delete/(\d+)', [AirlineController::class, 'delete']);
 $router->post('/admin/airlines/update-order', [AirlineController::class, 'updateOrder']);
+
+// Компании (Companies)
+$router->get('/admin/companies', [CompanyController::class, 'index']);
+$router->get('/admin/companies/create', [CompanyController::class, 'create']);
+$router->post('/admin/companies/store', [CompanyController::class, 'store']);
+$router->get('/admin/companies/edit/(\d+)', [CompanyController::class, 'edit']);
+$router->post('/admin/companies/update/(\d+)', [CompanyController::class, 'update']);
+$router->post('/admin/companies/delete/(\d+)', [CompanyController::class, 'delete']);
+$router->post('/admin/companies/update-order', [CompanyController::class, 'updateOrder']);
 
 // Летища (Airports)
 $router->get('/admin/airports', [AirportController::class, 'index']);
