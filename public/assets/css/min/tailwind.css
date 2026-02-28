@@ -1062,6 +1062,9 @@
   .border-blue-400 {
     border-color: var(--color-blue-400);
   }
+  .border-emerald-100 {
+    border-color: var(--color-emerald-100);
+  }
   .border-emerald-200 {
     border-color: var(--color-emerald-200);
   }

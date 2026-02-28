@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\Router;
+use App\Controllers\TrainController;
 use App\Controllers\HomeController;
 use App\Controllers\CityController;
 use App\Controllers\LandmarkController;
@@ -115,5 +116,14 @@ $router->get('/admin/airports/edit/(\d+)', [AirportController::class, 'edit']);
 $router->post('/admin/airports/update/(\d+)', [AirportController::class, 'update']);
 $router->post('/admin/airports/delete/(\d+)', [AirportController::class, 'delete']);
 $router->post('/admin/airports/update-order', [airportController::class, 'updateOrder']);
+
+// Влакове (Trains)
+$router->get('/admin/trains', [TrainController::class, 'index']);
+$router->get('/admin/trains/create', [TrainController::class, 'create']);
+$router->post('/admin/trains/store', [TrainController::class, 'store']);
+$router->get('/admin/trains/edit/(\d+)', [TrainController::class, 'edit']);
+$router->post('/admin/trains/update/(\d+)', [TrainController::class, 'update']);
+$router->post('/admin/trains/delete/(\d+)', [TrainController::class, 'delete']);
+$router->post('/admin/trains/update-order', [TrainController::class, 'updateOrder']);
 
 return $router;
