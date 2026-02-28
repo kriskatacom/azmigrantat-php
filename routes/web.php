@@ -15,6 +15,7 @@ use App\Controllers\CountryController;
 use App\Controllers\CruiseController;
 use App\Controllers\EmbassyController;
 use App\Controllers\AutobusController;
+use App\Controllers\TaxiController;
 
 $router = new Router();
 
@@ -125,5 +126,14 @@ $router->get('/admin/trains/edit/(\d+)', [TrainController::class, 'edit']);
 $router->post('/admin/trains/update/(\d+)', [TrainController::class, 'update']);
 $router->post('/admin/trains/delete/(\d+)', [TrainController::class, 'delete']);
 $router->post('/admin/trains/update-order', [TrainController::class, 'updateOrder']);
+
+// Таксита (Taxis)
+$router->get('/admin/taxis', [taxiController::class, 'index']);
+$router->get('/admin/taxis/create', [TaxiController::class, 'create']);
+$router->post('/admin/taxis/store', [TaxiController::class, 'store']);
+$router->get('/admin/taxis/edit/(\d+)', [TaxiController::class, 'edit']);
+$router->post('/admin/taxis/update/(\d+)', [TaxiController::class, 'update']);
+$router->post('/admin/taxis/delete/(\d+)', [TaxiController::class, 'delete']);
+$router->post('/admin/taxis/update-order', [TaxiController::class, 'updateOrder']);
 
 return $router;

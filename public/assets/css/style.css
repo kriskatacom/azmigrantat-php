@@ -26,3 +26,56 @@
 .form-control {
     @apply w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-dark/20 outline-none transition;
 }
+
+::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-primary-dark;
+    border-radius: 16px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 16px;
+    border: 2px solid transparent;
+    transition: background-color 0.3s ease;
+}
+
+:hover::-webkit-scrollbar-thumb {
+    @apply bg-primary-dark;
+    border: 2px solid var(--color-primary-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1f2937 !important;
+}
+
+* {
+    scrollbar-width: auto;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s ease;
+}
+
+*:hover {
+    scrollbar-color: #374151 var(--color-primary-dark);
+}
+
+.custom-scroll-dark::-webkit-scrollbar {
+    width: 20px;
+}
+
+.custom-scroll-dark::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 20px;
+}
+
+.custom-scroll-dark:hover::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+}
+
+.custom-scroll-dark::-webkit-scrollbar-track {
+    background: transparent;
+}
