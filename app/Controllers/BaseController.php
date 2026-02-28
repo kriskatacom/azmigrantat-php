@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Models\User;
+use App\Services\FileService;
 
 abstract class BaseController
 {
@@ -83,7 +84,7 @@ abstract class BaseController
         }
         exit;
     }
-    
+
     protected function paginate($model, $perPage = 10)
     {
         $page = max(1, (int)($_GET['page'] ?? 1));
@@ -102,5 +103,43 @@ abstract class BaseController
                 'total_records' => $total
             ]
         ];
+    }
+
+    protected function handleDelete($model, int $id, string|null $redirectUrl = null, array $fileFields = ['image_url'], array $jsonFileFields = [], callable|null $callback = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return;
+        }
+
+        $item = $model->find($id);
+        $redirectUrl = $redirectUrl ?? $_SERVER['HTTP_REFERER'] ?? '/admin/dashboard';
+
+        if ($item) {
+            if ($callback) {
+                $callback($item);
+            }
+
+            foreach ($fileFields as $field) {
+                if (!empty($item[$field])) {
+                    FileService::delete($item[$field]);
+                }
+            }
+
+            foreach ($jsonFileFields as $field) {
+                if (!empty($item[$field])) {
+                    $images = json_decode($item[$field], true);
+                    if (is_array($images)) {
+                        foreach ($images as $img) \App\Services\FileService::delete($img);
+                    }
+                }
+            }
+
+            $model->delete($id);
+            $this->flash('success', 'Изтриването беше успешно!');
+        } else {
+            $this->flash('error', 'Записът не съществува.');
+        }
+
+        $this->redirect($redirectUrl);
     }
 }

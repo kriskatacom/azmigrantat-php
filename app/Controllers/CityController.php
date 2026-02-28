@@ -123,6 +123,7 @@ class CityController extends BaseController
         $data['image_url'] = $finalImageUrl;
         $data['country_id'] = (int)$data['country_id'];
         $data['sort_order'] = (int)($data['sort_order'] ?? 0);
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
         unset($data['remove_image_url']);
 
@@ -133,17 +134,6 @@ class CityController extends BaseController
         }
 
         $redirectUrl = '/admin/cities/edit/' . $id;
-        header('Location: ' . $redirectUrl);
-        exit;
-    }
-
-    public function delete(int $id)
-    {
-        if ($this->cityModel->delete($id)) {
-            $this->flash('success', 'Записът беше изтрит.');
-        }
-
-        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/cruises';
         header('Location: ' . $redirectUrl);
         exit;
     }
@@ -159,5 +149,10 @@ class CityController extends BaseController
     public function updateOrder()
     {
         return $this->handleOrderUpdate($this->cityModel);
+    }
+
+    public function delete(int $id)
+    {
+        $this->handleDelete($this->cityModel, (int)$id, null, ['image_url']);
     }
 }

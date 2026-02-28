@@ -55,7 +55,7 @@ class BannerController extends BaseController
 
     public function store()
     {
-        $data = $this->prepareData($_POST);
+        $data = $this->bannerModel->prepareData($_POST);
 
         if (!empty($_FILES['image']['name'])) {
             $data['image'] = FileService::upload($_FILES['image']);
@@ -89,7 +89,7 @@ class BannerController extends BaseController
     public function update($id)
     {
         $banner = $this->bannerModel->find((int)$id);
-        $data = $this->prepareData($_POST);
+        $data = $this->bannerModel->prepareData($_POST);
 
         $finalImage = $banner['image'];
         if (isset($_POST['remove_image']) && $_POST['remove_image'] == '1') {
@@ -110,41 +110,15 @@ class BannerController extends BaseController
         exit;
     }
 
-    public function delete($id)
-    {
-        $banner = $this->bannerModel->find((int)$id);
-        if ($banner) {
-            FileService::delete($banner['image']);
-            $this->bannerModel->delete((int)$id);
-            $this->flash('success', 'Банерът беше изтрит.');
-        }
-        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/embassies';
-        header('Location: ' . $redirectUrl);
-        exit;
-    }
-
     public function updateOrder()
     {
         $this->middleware('admin');
         return $this->handleOrderUpdate($this->bannerModel);
     }
 
-    private function prepareData(array $input): array
+    public function delete($id)
     {
-        $data = $input;
-
-        $flags = ['show_name', 'show_description', 'show_overlay', 'show_button'];
-
-        foreach ($flags as $flag) {
-            $data[$flag] = isset($input[$flag]) ? 1 : 0;
-        }
-
-        $data['sort_order'] = !empty($input['sort_order']) ? (int)$input['sort_order'] : 0;
-        $data['height'] = !empty($input['height']) ? (int)$input['height'] : 520;
-
-        unset($data['remove_image'], $data['return_url']);
-
-        return $data;
+        $this->handleDelete($this->bannerModel, (int)$id, null, ['image']);
     }
 
     private function getPositions(): array

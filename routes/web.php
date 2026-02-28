@@ -6,6 +6,7 @@ use App\Controllers\CityController;
 use App\Controllers\LandmarkController;
 use App\Controllers\AuthController;
 use App\Controllers\AdminController;
+use App\Controllers\AirlineController;
 use App\Controllers\BannerController;
 use App\Controllers\UserController;
 use App\Controllers\CountryController;
@@ -95,5 +96,14 @@ $router->get('/admin/autobuses/edit/(\d+)', [AutobusController::class, 'edit']);
 $router->post('/admin/autobuses/update/(\d+)', [AutobusController::class, 'update']);
 $router->post('/admin/autobuses/delete/(\d+)', [AutobusController::class, 'delete']);
 $router->post('/admin/autobuses/update-order', [AutobusController::class, 'updateOrder']);
+
+// Авиокомпании (Airlines)
+$router->get('/admin/airlines', [AirlineController::class, 'index']);
+$router->get('/admin/airlines/create', [AirlineController::class, 'create']);
+$router->post('/admin/airlines/store', [AirlineController::class, 'store']);
+$router->get('/admin/airlines/edit/(\d+)', [AirlineController::class, 'edit']);
+$router->post('/admin/airlines/update/(\d+)', [AirlineController::class, 'update']);
+$router->post('/admin/airlines/delete/(\d+)', [AirlineController::class, 'delete']);
+$router->post('/admin/airlines/update-order', [AirlineController::class, 'updateOrder']);
 
 return $router;

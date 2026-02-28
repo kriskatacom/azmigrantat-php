@@ -97,6 +97,7 @@ class CruiseController extends BaseController
             $finalImage = FileService::upload($_FILES['image_url']);
         }
         $data['image_url'] = $finalImage;
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
         unset($data['remove_image_url'], $data['return_url']);
 
@@ -108,21 +109,13 @@ class CruiseController extends BaseController
         exit;
     }
 
-    public function delete($id)
-    {
-        $cruise = $this->cruiseModel->find((int)$id);
-        if ($cruise) {
-            FileService::delete($cruise['image_url']);
-            $this->cruiseModel->delete((int)$id);
-            $this->flash('success', 'Записът беше изтрит.');
-        }
-        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/cruises';
-        header('Location: ' . $redirectUrl);
-        exit;
-    }
-
     public function updateOrder()
     {
         return $this->handleOrderUpdate($this->cruiseModel);
+    }
+
+    public function delete(int $id)
+    {
+        $this->handleDelete($this->cruiseModel, (int)$id, null, ['image_url']);
     }
 }

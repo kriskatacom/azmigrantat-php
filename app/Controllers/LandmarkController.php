@@ -180,19 +180,13 @@ class LandmarkController extends BaseController
         exit;
     }
 
-    public function delete($id)
-    {
-        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/landmarks';
-
-        if ($this->landmarkModel->delete((int)$id)) {
-            $this->flash('success', 'Изтриването беше успешно!');
-            header('Location: ' . $redirectUrl);
-            exit;
-        }
-    }
-
     public function updateOrder()
     {
         return $this->handleOrderUpdate($this->landmarkModel);
+    }
+
+    public function delete($id)
+    {
+        $this->handleDelete($this->landmarkModel, (int)$id, null, ['image_url'], ['additional_images']);
     }
 }

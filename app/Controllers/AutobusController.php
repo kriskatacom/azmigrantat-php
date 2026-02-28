@@ -110,6 +110,7 @@ class AutobusController extends BaseController
         }
 
         $data['image_url'] = $finalImageUrl;
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
         unset($data['remove_image_url']);
 
@@ -121,20 +122,6 @@ class AutobusController extends BaseController
 
     public function delete($id)
     {
-        $autobus = $this->autobusModel->find($id);
-
-        if ($autobus && $autobus['image_url']) {
-            FileService::delete($autobus['image_url']);
-        }
-        
-        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/autobuses';
-
-        if ($this->autobusModel->delete((int)$id)) {
-            $this->flash('success', 'Изтриването беше успешно!');
-            header('Location: ' . $redirectUrl);
-            exit;
-        }
-
-        exit;
+        $this->handleDelete($this->autobusModel, (int)$id, null, ['image_url']);
     }
 }

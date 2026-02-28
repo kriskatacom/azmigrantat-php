@@ -110,6 +110,7 @@ class CountryController extends BaseController
         }
 
         $data['image_url'] = $finalImageUrl;
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
         unset($data['remove_image_url']);
 
@@ -139,11 +140,6 @@ class CountryController extends BaseController
 
     public function delete($id)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->countryModel->delete($id);
-            $this->flash('success', 'Изтриването беше успешно!');
-            header('Location: /admin/countries?success=deleted');
-            exit;
-        }
+        $this->handleDelete($this->countryModel, (int)$id, null, ['image_url']);
     }
 }

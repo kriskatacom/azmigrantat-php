@@ -171,44 +171,13 @@ class EmbassyController extends BaseController
         exit;
     }
 
-    public function delete($id)
-    {
-        $this->middleware('admin');
-
-        $embassy = $this->embassyModel->find((int)$id);
-
-        if (!$embassy) {
-            $this->flash('error', 'Посолството не е намерено.');
-            header('Location: /admin/embassies');
-            exit;
-        }
-
-        FileService::delete($embassy['image_url']);
-        FileService::delete($embassy['logo']);
-        FileService::delete($embassy['right_heading_image']);
-
-        if (!empty($embassy['additional_images'])) {
-            $gallery = json_decode($embassy['additional_images'], true);
-            if (is_array($gallery)) {
-                foreach ($gallery as $imgPath) {
-                    FileService::delete($imgPath);
-                }
-            }
-        }
-
-        if ($this->embassyModel->delete((int)$id)) {
-            $this->flash('success', 'Посолството беше изтрито успешно!');
-        } else {
-            $this->flash('error', 'Възникна грешка при изтриването.');
-        }
-
-        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/embassies';
-        header('Location: ' . $redirectUrl);
-        exit;
-    }
-
     public function updateOrder()
     {
         return $this->handleOrderUpdate($this->embassyModel);
+    }
+    
+    public function delete($id)
+    {
+        $this->handleDelete($this->embassyModel, (int)$id, null, ['logo', 'image_url', 'right_heading_image']);
     }
 }
