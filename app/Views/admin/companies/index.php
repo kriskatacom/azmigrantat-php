@@ -22,6 +22,7 @@ use App\Core\View;
         ['label' => 'Компания'],
         ['label' => 'Локация', 'align' => 'center'],
         ['label' => 'Категория', 'align' => 'center'],
+        ['label' => 'Собственик', 'align' => 'center'],
         ['label' => 'Действия', 'align' => 'right']
     ];
 
@@ -68,6 +69,21 @@ use App\Core\View;
                 <span class="inline-flex items-center justify-center bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs border border-emerald-100">
                     📂 <?= htmlspecialchars($company['category_name'] ?? 'Без категория') ?>
                 </span>
+            </td>
+
+            <td class="px-5 py-4 text-center">
+                <?php if (!empty($company['owner_name'])): ?>
+                    <div class="flex flex-col items-center">
+                        <span class="text-xs font-semibold text-gray-700">
+                            👤 <?= htmlspecialchars($company['owner_name']) ?>
+                        </span>
+                        <span class="text-[10px] text-indigo-500 font-medium lowercase italic">
+                            <?= htmlspecialchars($company['owner_email']) ?>
+                        </span>
+                    </div>
+                <?php else: ?>
+                    <span class="text-xs text-gray-300 italic">Няма зададен</span>
+                <?php endif; ?>
             </td>
 
             <td class="px-5 py-4 text-right">

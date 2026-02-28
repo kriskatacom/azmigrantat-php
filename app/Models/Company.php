@@ -9,15 +9,18 @@ class Company extends Model
     public function getAllWithRelations(int $limit = 10, int $offset = 0): array
     {
         $sql = "SELECT c.*, 
-                       co.name as country_name, 
-                       ci.name as city_name, 
-                       cat.name as category_name
-                FROM {$this->table} c
-                LEFT JOIN countries co ON c.country_id = co.id
-                LEFT JOIN cities ci ON c.city_id = ci.id
-                LEFT JOIN categories cat ON c.category_id = cat.id
-                ORDER BY c.sort_order ASC 
-                LIMIT :limit OFFSET :offset";
+                   co.name as country_name, 
+                   ci.name as city_name, 
+                   cat.name as category_name,
+                   u.name as owner_name,
+                   u.email as owner_email
+            FROM {$this->table} c
+            LEFT JOIN countries co ON c.country_id = co.id
+            LEFT JOIN cities ci ON c.city_id = ci.id
+            LEFT JOIN categories cat ON c.category_id = cat.id
+            LEFT JOIN users u ON c.user_id = u.id
+            ORDER BY c.sort_order ASC 
+            LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
@@ -67,6 +70,7 @@ class Company extends Model
         $data['country_id']  = !empty($data['country_id']) ? (int)$data['country_id'] : null;
         $data['city_id']     = !empty($data['city_id']) ? (int)$data['city_id'] : null;
         $data['category_id'] = !empty($data['category_id']) ? (int)$data['category_id'] : null;
+        $data['user_id'] = !empty($data['user_id']) ? $data['user_id'] : null;
 
         $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 

@@ -21,21 +21,21 @@ $action = $isEdit ? "/admin/companies/update/{$company['id']}" : "/admin/compani
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <?php View::component('image-upload', 'admin/components', [
             'name'  => 'image_url',
-            'label' => 'Основно лого/снимка',
+            'label' => 'Предно изображение',
             'value' => $company['image_url'] ?? null,
             'id'    => 'company-main-image'
         ]); ?>
 
         <?php View::component('image-upload', 'admin/components', [
             'name'  => 'offer_image_url',
-            'label' => 'Изображение за оферта',
+            'label' => 'Изображение по за обявите',
             'value' => $company['offer_image_url'] ?? null,
             'id'    => 'company-offer-image'
         ]); ?>
 
         <?php View::component('image-upload', 'admin/components', [
             'name'  => 'ads_image_url',
-            'label' => 'Рекламен банер',
+            'label' => 'Изображение за рекламите',
             'value' => $company['ads_image_url'] ?? null,
             'id'    => 'company-ads-image'
         ]); ?>
@@ -47,8 +47,26 @@ $action = $isEdit ? "/admin/companies/update/{$company['id']}" : "/admin/compani
             'id'    => 'company-bottom-image'
         ]); ?>
     </div>
+    
     <?php View::component('lightbox', 'admin/components'); ?>
     <?php View::component('card', 'admin/components', ['title' => 'Медия и Реклама', 'slot' => ob_get_clean()]); ?>
+
+    <?php ob_start(); ?>
+        <div class="space-y-4">
+            <?php
+            $gallery = [];
+            if (!empty($company['additional_images'])) {
+                $gallery = json_decode($company['additional_images'], true) ?: [];
+            }
+
+            View::component('multi-image-upload', 'admin/components', [
+                'name'   => 'additional_images[]',
+                'images' => $gallery,
+                'label'  => 'Галерия на обекта'
+            ]);
+            ?>
+        </div>
+        <?php View::component('card', 'admin/components', ['title' => 'Фото галерия', 'slot' => ob_get_clean()]); ?>
 
     <?php ob_start(); ?>
     <div class="space-y-5">
@@ -139,6 +157,20 @@ $action = $isEdit ? "/admin/companies/update/{$company['id']}" : "/admin/compani
     </div>
 
     <?php View::component('card', 'admin/components', ['title' => 'Локация и Връзки', 'slot' => ob_get_clean()]); ?>
+
+    <?php ob_start(); ?>
+    <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-600">Собственик (Потребител)</label>
+        <select name="user_id" class="form-control bg-white cursor-pointer">
+            <option value="">-- Без собственик (Административен) --</option>
+            <?php foreach ($users as $user): ?>
+                <option value="<?= $user['id'] ?>" <?= (isset($company) && $company['user_id'] == $user['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($user['name']) ?> (<?= htmlspecialchars($user['email']) ?>)
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <?php View::component('card', 'admin/components', ['title' => 'Администриране', 'slot' => ob_get_clean()]); ?>
 
     <?php View::component('toggle', 'admin/components', [
         'name'  => 'is_active',
