@@ -12,7 +12,7 @@ class CountryController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin', ['index']);
+        $this->middleware('admin', ['show']);
 
         $this->countryModel = new Country();
     }

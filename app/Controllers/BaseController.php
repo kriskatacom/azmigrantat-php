@@ -33,11 +33,20 @@ abstract class BaseController
 
     protected function middleware(string $type = 'auth', array $except = [])
     {
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-        $callingMethod = $backtrace[1]['function'] ?? '';
+        // Вземаме текущия URL път
+        $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $currentPath = preg_replace('/^(\/public)/', '', $currentPath); // Махаме /public за хостинга
+        $currentPath = rtrim($currentPath, '/') ?: '/';
 
-        if (in_array($callingMethod, $except)) {
-            return;
+        // Проверяваме дали текущият път съвпада с някой от изключенията
+        // Това е по-сигурно от debug_backtrace в конструктора
+        foreach ($except as $excludedMethod) {
+            // Ако сме в show($slug), трябва да проверим дали пътят не съвпада с динамичния маршрут
+            // За по-просто: ако сме в CountryController и методът е 'show', 
+            // просто проверяваме дали пътят НЕ започва с /admin или /auth
+            if ($excludedMethod === 'show' && strpos($currentPath, '/admin') === false && strpos($currentPath, '/auth') === false) {
+                return;
+            }
         }
 
         $user = User::auth();
@@ -51,11 +60,11 @@ abstract class BaseController
         }
 
         if (!$user) {
-            header('Location: /login');
+            header('Location: /auth/login');
             exit;
         }
 
-        if ($type !== 'auth' && $user['role'] !== $type) {
+        if ($type !== 'auth' && (!isset($user['role']) || $user['role'] !== $type)) {
             $_SESSION['error'] = "Нямате достъп до тази секция!";
             header('Location: /');
             exit;

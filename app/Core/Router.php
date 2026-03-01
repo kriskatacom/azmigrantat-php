@@ -18,44 +18,54 @@ class Router
 
     public function resolve(?string $path = null): void
     {
+        // 1. Вземаме чистия път от URL
         $path = $path ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $path = rtrim($path, '/'); // Премахваме наклонената черта в края за консистентност
+
+        // 2. ВАЖНО ЗА CPANEL: Премахваме "/public" от началото, ако съществува
+        if (strpos($path, '/public') === 0) {
+            $path = substr($path, 7);
+        }
+
+        // 3. Нормализираме наклонените черти
+        $path = rtrim($path, '/');
         $path = $path === '' ? '/' : $path;
 
         $method = $_SERVER['REQUEST_METHOD'];
 
         if (!isset($this->routes[$method])) {
-            http_response_code(404);
-            echo "404 - Method Not Allowed";
+            http_response_code(405);
+            echo "405 - Method Not Allowed";
             return;
         }
 
         foreach ($this->routes[$method] as $routePath => $handler) {
-            // 1. Първо подменяме "catch-all" параметрите (тези със *), за да позволяват всичко, включително /
+            // Превръщаме маршрута в регулярен израз
+            // Поддържаме {param}, {param*} и директни (\d+)
             $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\*\}/', '(.+)', $routePath);
-
-            // 2. След това подменяме стандартните параметри (без /)
-            $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([a-zA-Z0-9_-]+)', $pattern);
-
+            $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([^/]+)', $pattern);
+            
+            // Ако вече имаш (\d+) в маршрута, това ще го остави както е
             $pattern = "#^" . $pattern . "$#";
 
             if (preg_match($pattern, $path, $matches)) {
-                array_shift($matches);
+                array_shift($matches); // Махаме пълното съвпадение
 
                 $controllerClass = $handler[0];
                 $methodName = $handler[1];
 
                 if (class_exists($controllerClass)) {
                     $controller = new $controllerClass();
-                    // Декодираме параметрите, в случай че има интервали или специални символи в URL
                     $params = array_map('urldecode', $matches);
-                    call_user_func_array([$controller, $methodName], $params);
-                    return;
+                    
+                    if (method_exists($controller, $methodName)) {
+                        call_user_func_array([$controller, $methodName], $params);
+                        return;
+                    }
                 }
             }
         }
 
         http_response_code(404);
-        echo "404 - Page Not Found";
+        echo "404 - Page Not Found (Path: " . htmlspecialchars($path) . ")";
     }
 }

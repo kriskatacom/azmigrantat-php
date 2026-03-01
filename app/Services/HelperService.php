@@ -6,7 +6,7 @@ class HelperService
 {
     public static function icon(string $name, string $class = "w-6 h-6"): void
     {
-        $filePath = dirname(__DIR__, 2) . "/app/icons/{$name}.php";
+        $filePath = BASE_PATH . "/app/Icons/{$name}.php";
 
         if (file_exists($filePath)) {
             echo '<span class="' . htmlspecialchars($class) . ' inline-flex items-center justify-center">';
