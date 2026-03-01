@@ -18,6 +18,7 @@
         ['label' => 'Ред'],
         ['label' => 'Държава'],
         ['label' => 'Градове', 'align' => 'center'],
+        ['label' => 'Елементи', 'align' => 'center'],
         ['label' => 'Действия', 'align' => 'right']
     ];
 
@@ -37,10 +38,21 @@
                 </a>
             </td>
             <td class="px-5 py-4 text-center">
-                <span class="inline-flex items-center justify-center bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">
+                <span class="inline-flex items-center justify-center bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full text-xs font-medium">
                     <?= $country['cities_count'] ?? 0 ?> градове
                 </span>
             </td>
+
+            <td class="px-5 py-4 text-center">
+                <a href="/admin/countries/country-elements?country_id=<?= $country['id'] ?>"
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all duration-200 text-xs font-bold border border-indigo-100 group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    Елементи
+                </a>
+            </td>
+
             <td class="px-5 py-4 text-right whitespace-nowrap">
                 <?php View::component('table-actions', 'admin/components', [
                     'edit_url' => "/admin/countries/edit/{$country['id']}",

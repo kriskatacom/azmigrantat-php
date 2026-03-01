@@ -37,18 +37,13 @@ $action = $isEdit ? "/admin/cities/update/{$city['id']}" : "/admin/cities/store"
                     required placeholder="напр. Рим" class="form-control">
             </div>
 
-            <div class="space-y-2">
-                <label class="text-sm font-semibold text-gray-600">Държава</label>
-                <select name="country_id" required class="form-control bg-white">
-                    <option value="">-- Изберете държава --</option>
-                    <?php foreach ($countries as $country): ?>
-                        <option value="<?= $country['id'] ?>"
-                            <?= (isset($city['country_id']) && $city['country_id'] == $country['id']) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($country['name']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+            <?php View::component('category-select', 'admin/components', [
+                'name'       => 'country_id',
+                'label'      => 'Държава',
+                'placeholder'      => '-- Изберете държава --',
+                'options'    => $countries,
+                'selectedId' => $city['country_id'] ?? null,
+            ]); ?>
         </div>
 
         <div class="mt-4">

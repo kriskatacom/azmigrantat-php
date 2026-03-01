@@ -1,4 +1,5 @@
 <?php
+
 use App\Core\View;
 
 $isEdit = isset($airport);
@@ -25,6 +26,7 @@ $action = $isEdit ? "/admin/airports/update/{$airport['id']}" : "/admin/airports
             'id'    => 'airport-image'
         ]); ?>
     </div>
+    <?php View::component('lightbox', 'admin/components'); ?>
     <?php View::component('card', 'admin/components', ['title' => 'Визуализация', 'slot' => ob_get_clean()]); ?>
 
     <?php ob_start(); ?>
@@ -34,18 +36,14 @@ $action = $isEdit ? "/admin/airports/update/{$airport['id']}" : "/admin/airports
             <input type="text" name="name" id="airport-name" value="<?= htmlspecialchars($airport['name'] ?? '') ?>" required
                 placeholder="напр. Летище София" class="form-control">
         </div>
-
-        <div class="space-y-2">
-            <label class="font-semibold text-gray-600">Държава</label>
-            <select name="country_id" required class="form-control bg-white">
-                <option value="">-- Изберете държава --</option>
-                <?php foreach ($countries as $country): ?>
-                    <option value="<?= $country['id'] ?>" <?= (isset($airport) && $airport['country_id'] == $country['id']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($country['name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+        
+        <?php View::component('category-select', 'admin/components', [
+            'name'       => 'country_id',
+            'label'      => 'Държава',
+            'placeholder'      => '-- Изберете държава --',
+            'options'    => $countries,
+            'selectedId' => $airport['country_id'] ?? null,
+        ]); ?>
     </div>
 
     <div class="mt-4">

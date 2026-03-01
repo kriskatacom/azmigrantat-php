@@ -17,6 +17,7 @@ use App\Controllers\EmbassyController;
 use App\Controllers\AutobusController;
 use App\Controllers\CategoryController;
 use App\Controllers\CompanyController;
+use App\Controllers\CountryElementController;
 use App\Controllers\TaxiController;
 
 $router = new Router();
@@ -46,6 +47,15 @@ $router->get('/admin/countries/edit/{id}', [CountryController::class, 'edit']);
 $router->post('/admin/countries/update/{id}', [CountryController::class, 'update']);
 $router->post('/admin/countries/update-order', [CountryController::class, 'updateOrder']);
 $router->post('/admin/countries/delete/{id}', [CountryController::class, 'delete']);
+
+// --- Елементи на държава (Countries elements) ---
+$router->get('/admin/countries/country-elements', [CountryElementController::class, 'index']);
+$router->get('/admin/countries/country-elements/create', [CountryElementController::class, 'create']);
+$router->post('/admin/countries/country-elements/store', [CountryElementController::class, 'store']);
+$router->get('/admin/countries/country-elements/edit/{id}', [CountryElementController::class, 'edit']);
+$router->post('/admin/countries/country-elements/update/{id}', [CountryElementController::class, 'update']);
+$router->post('/admin/countries/country-elements/update-order', [CountryElementController::class, 'updateOrder']);
+$router->post('/admin/countries/country-elements/delete/{id}', [CountryElementController::class, 'delete']);
 
 // --- Забележителности (Landmarks) ---
 $router->get('/admin/landmarks', [LandmarkController::class, 'index']);
