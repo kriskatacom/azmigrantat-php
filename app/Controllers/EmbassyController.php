@@ -11,10 +11,12 @@ use App\Models\CountryElement;
 class EmbassyController extends BaseController
 {
     private Embassy $embassyModel;
+    private Country $countryModel;
 
     public function __construct()
     {
         $this->embassyModel = new Embassy();
+        $this->countryModel = new Country();
     }
 
     // public routes
@@ -53,6 +55,32 @@ class EmbassyController extends BaseController
             'country'        => $country,
             'embassyElement' => $embassyElement,
             'embassies'      => $embassies
+        ]);
+    }
+
+    public function show($countrySlug, $embassySlug)
+    {
+        $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
+
+        if (!$country) {
+            $this->abort(404);
+        }
+
+        $embassy = $this->embassyModel->all([
+            'where' => [
+                'slug' => $embassySlug,
+                'country_id' => $country['id']
+            ]
+        ])[0] ?? null;
+
+        if (!$embassy) {
+            $this->abort(404);
+        }
+
+        View::render('embassies/show', [
+            'title'   => $embassy['name'],
+            'embassy' => $embassy,
+            'country' => $country
         ]);
     }
 

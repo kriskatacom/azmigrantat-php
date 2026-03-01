@@ -12,6 +12,7 @@ use App\Services\HelperService;
     <title><?= $title ?? "My PHP MVC" ?></title>
     <link rel="stylesheet" href="/assets/css/min/tailwind.css">
     <script type="module" src="/assets/js/main.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body>

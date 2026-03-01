@@ -7,6 +7,16 @@
     --color-primary-blue: #8fd5e7;
 }
 
+[x-cloak] {
+    display: none !important;
+}
+
+@layer components {
+    .btn-primary {
+        @apply flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto;
+    }
+}
+
 .image-fallback {
     object-fit: contain !important;
     background-color: #f3f4f6;

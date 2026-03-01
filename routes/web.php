@@ -167,6 +167,7 @@ $router->get('/', [HomeController::class, 'index']);
 $router->get('/travel', [HomeController::class, 'travel']);
 $router->get('/{countrySlug}', [CountryController::class, 'show']);
 $router->get('/{countrySlug}/embassies', [EmbassyController::class, 'indexByCountry']);
+$router->get('/{countrySlug}/embassies/{embassySlug}', [EmbassyController::class, 'show']);
 $router->get('/{countrySlug}/landmarks', [LandmarkController::class, 'indexByCountry']);
 $router->get('/{countrySlug}/cities', [CityController::class, 'indexByCountry']);
 $router->get('/{countrySlug}/cities/{citySlug}', [CategoryController::class, 'categoriesShow']);

@@ -230,4 +230,26 @@ abstract class BaseController
 
         return json_encode(array_values($remainingImages));
     }
+
+    protected function abort(int $code = 404, ?string $message = null, $layout = 'layout'): void
+    {
+        http_response_code($code);
+
+        $titles = [
+            403 => 'Достъпът е забранен',
+            404 => 'Страницата не е намерена',
+            500 => 'Сървърна грешка'
+        ];
+
+        $title = $titles[$code] ?? 'Възникна грешка';
+
+        View::render('errors/error', [
+            'title'   => "$code - $title",
+            'code'    => $code,
+            'message' => $message ?? $title,
+            'layout'  => $layout
+        ]);
+
+        exit;
+    }
 }
