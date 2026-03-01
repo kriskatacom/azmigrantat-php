@@ -3,25 +3,29 @@
 use App\Services\HelperService;
 
 $style = $style ?? 'grid';
-$slug = $country['slug'] ?? '';
-$name = $country['name'] ?? '';
-$image = $country['image_url'] ?? '/assets/images/default-country.jpg';
-$excerpt = $country['excerpt'] ?? '';
-$url = '/' . ($base_url ?? '') . $slug;
+
+$name    = !empty($item['name']) ? $item['name'] : 'Обект';
+$slug    = $item['slug'] ?? '';
+$excerpt = $item['excerpt'] ?? $item['description'] ?? '';
+
+$image = !empty($item['image_url']) ? $item['image_url'] : '/assets/images/no-image.jpg';
+
+$url = rtrim($base_url ?? '', '/') . '/' . ltrim($slug, '/');
 ?>
 
 <?php if ($style === 'grid'): ?>
-    <div class="relative group overflow-hidden rounded-xl shadow-md aspect-4/2.5">
+    <div class="relative group overflow-hidden rounded-xl shadow-md aspect-4/2.5 bg-gray-200">
         <a href="<?= $url ?>" class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
 
         <img src="<?= $image ?>"
-            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            alt="<?= htmlspecialchars($name) ?>">
+             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+             alt="<?= htmlspecialchars($name) ?>"
+             loading="lazy">
 
-        <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+        <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent pointer-events-none"></div>
 
         <div class="absolute bottom-0 left-0 p-6 w-full z-20 pointer-events-none">
-            <h3 class="text-white text-2xl font-bold mb-4 drop-shadow-lg">
+            <h3 class="text-white text-xl md:text-2xl font-bold mb-4 drop-shadow-lg truncate">
                 <?= htmlspecialchars($name) ?>
             </h3>
 
@@ -32,22 +36,24 @@ $url = '/' . ($base_url ?? '') . $slug;
     </div>
 
 <?php else: ?>
-    <div class="relative flex flex-row bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
+    <div class="relative flex flex-row bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 h-45">
         <a href="<?= $url ?>" class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
 
-        <div class="w-5/12 xl:w-4/12 relative overflow-hidden">
+        <div class="w-5/12 xl:w-4/12 relative overflow-hidden bg-gray-100 shrink-0">
             <img src="<?= $image ?>"
-                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                alt="<?= htmlspecialchars($name) ?>">
+                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                 alt="<?= htmlspecialchars($name) ?>"
+                 loading="lazy">
         </div>
 
-        <div class="w-7/12 xl:w-8/12 p-5 h-auto flex flex-col justify-between">
+        <div class="w-7/12 xl:w-8/12 p-5 flex flex-col justify-between overflow-hidden">
             <div>
-                <h3 class="text-gray-900 text-xl font-bold mb-2">
+                <h3 class="text-gray-900 text-xl font-bold mb-2 truncate">
                     <?= htmlspecialchars($name) ?>
                 </h3>
-                <div class="text-gray-500 text-sm line-clamp-2 mb-4 leading-relaxed">
-                    <?= strip_tags($excerpt) ?>
+                
+                <div class="text-gray-500 text-sm line-clamp-2 mb-4 leading-relaxed min-h-10">
+                    <?= !empty($excerpt) ? strip_tags($excerpt) : 'Няма налично описание за този обект.' ?>
                 </div>
             </div>
 

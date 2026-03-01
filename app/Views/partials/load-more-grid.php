@@ -1,6 +1,15 @@
 <?php
+
 use App\Core\View;
 use App\Services\HelperService;
+
+/**
+ * Универсален Grid компонент със зареждане
+ * @var array $items       - Масив с обекти
+ * @var string $card_name  - Име на компонента за карта (напр. country-card)
+ * @var string $base_url   - Път, към който се лепи slug-а
+ * @var int $limit         - Колко елемента да се виждат първоначално
+ */
 
 $limit = $limit ?? 8;
 $card_path = $card_path ?? 'partials';
@@ -10,6 +19,7 @@ $base_url = $base_url ?? '';
 $containerId = 'grid-' . uniqid();
 $btnId = 'btn-' . uniqid();
 
+// Настройка на колоните спрямо стила
 $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-cols-4';
 ?>
 
@@ -21,14 +31,13 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
     <div id="<?= $containerId ?>" class="grid grid-cols-1 md:grid-cols-2 <?= $gridCols ?> gap-6 px-4">
         <?php foreach ($items as $index => $item): ?>
             <div class="grid-item <?= $index >= $limit ? 'hidden' : '' ?>">
-                <?php 
-                $itemKey = str_replace('-card', '', $card_name);
-                
+                <?php
+                // Предаваме обекта като 'item', за да е напълно универсално
                 View::component($card_name, $card_path, [
-                    $itemKey   => $item,
+                    'item'     => $item,
                     'base_url' => $base_url,
                     'style'    => $style,
-                ]); 
+                ]);
                 ?>
             </div>
         <?php endforeach; ?>
@@ -46,32 +55,40 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
 <script>
     (function() {
         const btn = document.getElementById('<?= $btnId ?>');
+        if (!btn) return;
+
         const limit = <?= (int)$limit ?>;
-        
-        if (btn) {
-            btn.addEventListener('click', function() {
-                const container = document.getElementById('<?= $containerId ?>');
-                const hiddenItems = container.querySelectorAll('.grid-item.hidden');
+        const container = document.getElementById('<?= $containerId ?>');
 
-                for (let i = 0; i < limit && i < hiddenItems.length; i++) {
-                    hiddenItems[i].classList.remove('hidden');
-                    hiddenItems[i].classList.add('animate-fade-in');
-                }
+        btn.addEventListener('click', function() {
+            const hiddenItems = container.querySelectorAll('.grid-item.hidden');
 
-                if (container.querySelectorAll('.grid-item.hidden').length === 0) {
-                    btn.parentElement.remove();
-                }
-            });
-        }
+            for (let i = 0; i < limit && i < hiddenItems.length; i++) {
+                hiddenItems[i].classList.remove('hidden');
+                hiddenItems[i].classList.add('animate-fade-in');
+            }
+
+            if (container.querySelectorAll('.grid-item.hidden').length === 0) {
+                btn.parentElement.remove();
+            }
+        });
     })();
 </script>
 
 <style>
     @keyframes gridFadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
+
     .animate-fade-in {
-        animation: gridFadeIn 0.5s ease forwards;
+        animation: gridFadeIn 0.4s ease-out forwards;
     }
 </style>

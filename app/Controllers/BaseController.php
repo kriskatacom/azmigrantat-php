@@ -33,12 +33,11 @@ abstract class BaseController
 
     protected function middleware(string $type = 'auth', array $except = [])
     {
-        $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        $callingMethod = $backtrace[1]['function'] ?? '';
 
-        foreach ($except as $method) {
-            if (str_contains($currentUri, $method)) {
-                return;
-            }
+        if (in_array($callingMethod, $except)) {
+            return;
         }
 
         $user = User::auth();

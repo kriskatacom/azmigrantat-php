@@ -53,8 +53,12 @@ abstract class Model
         if (isset($options['where']) && is_array($options['where'])) {
             $whereClauses = [];
             foreach ($options['where'] as $column => $value) {
-                $whereClauses[] = "{$column} = :{$column}";
-                $params[":{$column}"] = $value;
+                if ($value === null) {
+                    $whereClauses[] = "{$column} IS NULL";
+                } else {
+                    $whereClauses[] = "{$column} = :{$column}";
+                    $params[":{$column}"] = $value;
+                }
             }
             $sql .= " WHERE " . implode(' AND ', $whereClauses);
         }

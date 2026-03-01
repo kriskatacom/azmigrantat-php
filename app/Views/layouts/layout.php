@@ -11,6 +11,7 @@ use App\Services\HelperService;
     <meta charset="UTF-8">
     <title><?= $title ?? "My PHP MVC" ?></title>
     <link rel="stylesheet" href="/assets/css/min/tailwind.css">
+    <script type="module" src="/assets/js/main.js"></script>
 </head>
 
 <body>
@@ -23,8 +24,6 @@ use App\Services\HelperService;
     <footer>
         <p>&copy; <?= date('Y') ?> My PHP MVC</p>
     </footer>
-
-    <script type="module" src="/assets/js/main.js"></script>
 </body>
 
 </html>
