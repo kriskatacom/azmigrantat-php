@@ -5,9 +5,7 @@ use App\Core\View;
 
 <section class="relative h-125 md:h-150 flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0 z-0">
-        <img src="<?= $country['image_url'] ?>"
-            class="w-full h-full object-cover"
-            alt="<?= htmlspecialchars($country['name']) ?>">
+        <img src="<?= $country['image_url'] ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($country['name']) ?>">
         <div class="absolute inset-0 bg-black/60"></div>
     </div>
 

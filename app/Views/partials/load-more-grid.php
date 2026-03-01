@@ -1,13 +1,16 @@
 <?php
-
 use App\Core\View;
 use App\Services\HelperService;
 
 $limit = $limit ?? 8;
 $card_path = $card_path ?? 'partials';
+$card_name = $card_name ?? 'country-card';
+$style = $style ?? 'grid';
 $base_url = $base_url ?? '';
 $containerId = 'grid-' . uniqid();
 $btnId = 'btn-' . uniqid();
+
+$gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-cols-4';
 ?>
 
 <section class="mx-auto py-5">
@@ -15,7 +18,7 @@ $btnId = 'btn-' . uniqid();
         <h2 class="text-3xl font-bold text-center mb-6"><?= htmlspecialchars($title) ?></h2>
     <?php endif; ?>
 
-    <div id="<?= $containerId ?>" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+    <div id="<?= $containerId ?>" class="grid grid-cols-1 md:grid-cols-2 <?= $gridCols ?> gap-6 px-4">
         <?php foreach ($items as $index => $item): ?>
             <div class="grid-item <?= $index >= $limit ? 'hidden' : '' ?>">
                 <?php 
@@ -23,7 +26,8 @@ $btnId = 'btn-' . uniqid();
                 
                 View::component($card_name, $card_path, [
                     $itemKey   => $item,
-                    'base_url' => $base_url
+                    'base_url' => $base_url,
+                    'style'    => $style,
                 ]); 
                 ?>
             </div>
@@ -42,7 +46,7 @@ $btnId = 'btn-' . uniqid();
 <script>
     (function() {
         const btn = document.getElementById('<?= $btnId ?>');
-        const limit = <?= $limit ?>;
+        const limit = <?= (int)$limit ?>;
         
         if (btn) {
             btn.addEventListener('click', function() {

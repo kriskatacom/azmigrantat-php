@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\Embassy;
 use App\Models\Country;
 use App\Core\View;
+use App\Models\CountryElement;
 
 class EmbassyController extends BaseController
 {
@@ -17,6 +18,47 @@ class EmbassyController extends BaseController
 
         $this->embassyModel = new Embassy();
     }
+
+    // public routes
+
+    public function indexByCountry($countrySlug)
+    {
+        $countryModel = new Country();
+        $embassyModel = new Embassy();
+        $elementModel = new CountryElement();
+
+        $country = $countryModel->where('slug', $countrySlug)[0] ?? null;
+
+        if (!$country) {
+            header("HTTP/1.0 404 Not Found");
+            exit('Държавата не е намерена.');
+        }
+
+        $embassyElement = $elementModel->all([
+            'where' => [
+                'country_id' => $country['id'],
+                'slug'       => 'embassies',
+                'is_active'  => 1
+            ]
+        ])[0] ?? null;
+
+        $embassies = $embassyModel->all([
+            'where' => [
+                'country_id' => $country['id'],
+                'is_active'  => 1
+            ],
+            'order' => 'sort_order ASC'
+        ]);
+
+        View::render('embassies/index', [
+            'title'          => 'Посолства в ' . $country['name'],
+            'country'        => $country,
+            'embassyElement' => $embassyElement,
+            'embassies'      => $embassies
+        ]);
+    }
+
+    // admin routes
 
     public function index()
     {

@@ -21,8 +21,14 @@ class Router
         $path = $path ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
 
+        if (!isset($this->routes[$method])) {
+            http_response_code(404);
+            echo "404 - Method Not Allowed";
+            return;
+        }
+
         foreach ($this->routes[$method] as $routePath => $handler) {
-            $pattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $routePath);
+            $pattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_-]+)', $routePath);
             $pattern = "#^" . $pattern . "$#";
 
             if (preg_match($pattern, $path, $matches)) {
@@ -33,7 +39,6 @@ class Router
 
                 if (class_exists($controllerClass)) {
                     $controller = new $controllerClass();
-
                     call_user_func_array([$controller, $methodName], $matches);
                     return;
                 }

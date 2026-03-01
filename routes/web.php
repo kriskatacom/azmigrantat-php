@@ -22,11 +22,6 @@ use App\Controllers\TaxiController;
 
 $router = new Router();
 
-// --- Публични страници ---
-$router->get('/', [HomeController::class, 'index']);
-$router->get('/travel', [HomeController::class, 'travel']);
-$router->get('/{countrySlug}', [CountryController::class, 'show']);
-
 // --- Аутентикация ---
 $router->get('/auth/login', [AuthController::class, 'showLogin']);
 $router->post('/auth/login', [AuthController::class, 'login']);
@@ -166,5 +161,13 @@ $router->get('/admin/categories/edit/(\d+)', [CategoryController::class, 'edit']
 $router->post('/admin/categories/update/(\d+)', [CategoryController::class, 'update']);
 $router->post('/admin/categories/delete/(\d+)', [CategoryController::class, 'delete']);
 $router->post('/admin/categories/update-order', [CategoryController::class, 'updateOrder']);
+
+// --- Публични страници ---
+$router->get('/', [HomeController::class, 'index']);
+$router->get('/travel', [HomeController::class, 'travel']);
+$router->get('/{countrySlug}', [CountryController::class, 'show']);
+$router->get('/{countrySlug}/embassies', [EmbassyController::class, 'indexByCountry']);
+$router->get('/{countrySlug}/landmarks', [LandmarkController::class, 'indexByCountry']);
+$router->get('/{countrySlug}/cities', [CityController::class, 'indexByCountry']);
 
 return $router;

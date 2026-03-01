@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\City;
 use App\Models\Country;
 use App\Core\View;
+use App\Models\CountryElement;
 use App\Services\FileService;
 use App\Services\HelperService;
 
@@ -17,10 +18,53 @@ class CityController extends BaseController
     public function __construct()
     {
         $this->middleware('admin', ['index', 'getByCountry']);
-        
+
         $this->cityModel = new City();
         $this->countryModel = new Country();
     }
+
+    // public routes
+
+    public function indexByCountry($countrySlug)
+    {
+        $countryModel = new Country();
+        $cityModel = new City();
+        $elementModel = new CountryElement();
+
+        $countryResults = $countryModel->where('slug', $countrySlug);
+        $country = $countryResults[0] ?? null;
+
+        if (!$country || (isset($country['is_active']) && !$country['is_active'])) {
+            header("HTTP/1.0 404 Not Found");
+            exit('Държавата не е намерена.');
+        }
+
+        $elementResults = $elementModel->all([
+            'where' => [
+                'country_id' => $country['id'],
+                'slug'       => 'cities',
+                'is_active'  => 1
+            ]
+        ]);
+        $cityElement = $elementResults[0] ?? null;
+
+        $cities = $cityModel->all([
+            'where' => [
+                'country_id' => $country['id'],
+                'is_active'  => 1
+            ],
+            'order' => 'sort_order ASC'
+        ]);
+
+        View::render('cities/index', [
+            'title'       => 'Градове в ' . $country['name'],
+            'country'     => $country,
+            'cityElement' => $cityElement,
+            'cities'      => $cities
+        ]);
+    }
+
+    // admin routes
 
     public function index()
     {

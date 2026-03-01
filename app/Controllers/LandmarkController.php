@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\Landmark;
 use App\Models\Country;
 use App\Core\View;
+use App\Models\CountryElement;
 
 class LandmarkController extends BaseController
 {
@@ -17,6 +18,47 @@ class LandmarkController extends BaseController
 
         $this->landmarkModel = new Landmark();
     }
+
+    // public routes
+
+    public function indexByCountry($countrySlug)
+    {
+        $countryModel = new Country();
+        $landmarkModel = new Landmark();
+        $elementModel = new CountryElement();
+
+        $country = $countryModel->where('slug', $countrySlug)[0] ?? null;
+
+        if (!$country) {
+            header("HTTP/1.0 404 Not Found");
+            exit('Държавата не е намерена.');
+        }
+
+        $landmarkElement = $elementModel->all([
+            'where' => [
+                'country_id' => $country['id'],
+                'slug'       => 'landmarks',
+                'is_active'  => 1
+            ]
+        ])[0] ?? null;
+
+        $landmarks = $landmarkModel->all([
+            'where' => [
+                'country_id' => $country['id'],
+                'is_active'  => 1
+            ],
+            'order' => 'sort_order ASC'
+        ]);
+
+        View::render('landmarks/index', [
+            'title'          => 'Забележителности в ' . $country['name'],
+            'country'        => $country,
+            'landmarkElement' => $landmarkElement,
+            'landmarks'      => $landmarks
+        ]);
+    }
+
+    // admin routes
 
     public function index()
     {
