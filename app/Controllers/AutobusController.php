@@ -6,7 +6,6 @@ use App\Core\View;
 use App\Models\Autobus;
 use App\Models\City;
 use App\Models\Country;
-use App\Services\FileService;
 
 class AutobusController extends BaseController
 {
@@ -16,8 +15,6 @@ class AutobusController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin', ['index']);
-
         $this->autobusModel = new Autobus();
         $this->countryModel = new Country();
         $this->cityModel = new City();
@@ -25,6 +22,7 @@ class AutobusController extends BaseController
 
     public function index()
     {
+        $this->checkAccess('admin');
         $pageData = $this->paginate($this->autobusModel);
 
         $autobuses = $this->autobusModel->getWithRelations(
@@ -42,6 +40,7 @@ class AutobusController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         $countries = $this->countryModel->all();
 
         View::render('admin/autobuses/form', [
@@ -53,6 +52,7 @@ class AutobusController extends BaseController
 
     public function edit($id)
     {
+        $this->checkAccess('admin');
         $autobus = $this->autobusModel->find($id);
 
         if (!$autobus) {
@@ -74,16 +74,19 @@ class AutobusController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->autobusModel, '/admin/autobuses', ['image_url'], 'airlines');
     }
 
     public function update($id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->autobusModel, (int)$id, '/admin/autobuses', ['image_url'], 'autobuses');
     }
 
     public function delete($id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->autobusModel, (int)$id, null, ['image_url']);
     }
 }

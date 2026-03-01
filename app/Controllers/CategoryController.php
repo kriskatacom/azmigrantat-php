@@ -16,8 +16,6 @@ class CategoryController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin', ['except' => ['categoriesShow']]);
-
         $this->categoryModel = new Category();
     }
 
@@ -104,6 +102,7 @@ class CategoryController extends BaseController
 
     public function index()
     {
+        $this->checkAccess('admin');
         $parentId = isset($_GET['parent_id']) ? (int)$_GET['parent_id'] : null;
         $this->categoryModel->setFilterParent($parentId);
         $paginationData = $this->paginate($this->categoryModel);
@@ -128,6 +127,7 @@ class CategoryController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         $this->render('admin/categories/form', [
             'title'      => 'Нова категория',
             'categories' => $this->categoryModel->getTree(),
@@ -138,11 +138,13 @@ class CategoryController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->categoryModel, $this->baseRoute, ['image_url', 'companies_background_url'], 'categories');
     }
 
     public function edit(int $id)
     {
+        $this->checkAccess('admin');
         $category = $this->categoryModel->find($id);
         if (!$category) {
             $this->flash('error', 'Записът не е намерен.');
@@ -159,16 +161,19 @@ class CategoryController extends BaseController
 
     public function update(int $id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->categoryModel, $id, $this->baseRoute, ['image_url', 'companies_background_url'], 'categories');
     }
 
     public function delete(int $id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->categoryModel, $id, $this->baseRoute, ['image_url', 'companies_background_url']);
     }
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         $this->handleOrderUpdate($this->categoryModel);
     }
 }

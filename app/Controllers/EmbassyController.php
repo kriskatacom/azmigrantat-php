@@ -14,8 +14,6 @@ class EmbassyController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin', ['index']);
-
         $this->embassyModel = new Embassy();
     }
 
@@ -62,6 +60,7 @@ class EmbassyController extends BaseController
 
     public function index()
     {
+        $this->checkAccess('admin');
         $pageData = $this->paginate($this->embassyModel);
 
         $embassies = $this->embassyModel->getAllWithCountries([
@@ -80,6 +79,7 @@ class EmbassyController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         $countryModel = new Country();
         return View::render('admin/embassies/form', [
             'countries' => $countryModel->all(['order' => 'name ASC']),
@@ -90,11 +90,13 @@ class EmbassyController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->embassyModel, '/admin/embassies', ['image_url', 'logo', 'right_heading_image'], 'embassies');
     }
 
     public function edit($id)
     {
+        $this->checkAccess('admin');
         $embassy = $this->embassyModel->find((int)$id);
         if (!$embassy) {
             header('Location: /admin/embassies?error=notfound');
@@ -112,16 +114,19 @@ class EmbassyController extends BaseController
 
     public function update($id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->embassyModel, (int)$id, '/admin/embassies', ['image_url', 'logo', 'right_heading_image'], 'embassies');
     }
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         return $this->handleOrderUpdate($this->embassyModel);
     }
 
     public function delete($id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->embassyModel, (int)$id, null, ['logo', 'image_url', 'right_heading_image']);
     }
 }

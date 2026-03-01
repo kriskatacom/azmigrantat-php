@@ -11,11 +11,10 @@ class AdminController extends BaseController
 {
     private Country $countryModel;
     private Landmark $landmarkModel;
+    private User $userModel;
 
     public function __construct()
     {
-        $this->middleware('auth');
-
         $user = User::auth();
         if ($user['role'] !== 'admin') {
             header('Location: /');
@@ -24,32 +23,28 @@ class AdminController extends BaseController
 
         $this->countryModel = new Country();
         $this->landmarkModel = new Landmark();
+        $this->userModel = new User();
     }
 
     public function dashboard()
     {
-        $this->middleware('admin');
+        $this->checkAccess('admin');
 
-        $userModel = new User();
-
-        $countryModel = new Country();
-        $landmarkModel = new Landmark();
-
-        $totalUsers = $userModel->count();
-        $newUsersThisMonth = count($userModel->where('created_at >=', date('Y-m-d', strtotime('-30 days'))));
+        $totalUsers = $this->userModel->count();
+        $newUsersThisMonth = count($this->userModel->where('created_at >=', date('Y-m-d', strtotime('-30 days'))));
         $growthPercentage = ($totalUsers > 0) ? round(($newUsersThisMonth / $totalUsers) * 100) : 0;
 
-        $totalCountries = $countryModel->count();
-        $totalLandmarks = $landmarkModel->count();
+        $totalCountries = $this->countryModel->count();
+        $totalLandmarks = $this->landmarkModel->count();
 
-        $activeLandmarks = count($landmarkModel->where('is_active =', 1));
+        $activeLandmarks = count($this->landmarkModel->where('is_active =', 1));
 
-        $recentUsers = $userModel->all([
+        $recentUsers = $this->userModel->all([
             'limit' => 5,
             'order' => 'created_at DESC'
         ]);
 
-        $recentLandmarks = $landmarkModel->all([
+        $recentLandmarks = $this->landmarkModel->all([
             'limit' => 5,
             'order' => 'created_at DESC'
         ]);

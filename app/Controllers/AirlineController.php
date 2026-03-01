@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\Airline;
 use App\Models\Country;
-use App\Models\City;
 use App\Models\Category;
 
 class AirlineController extends BaseController
@@ -14,12 +13,12 @@ class AirlineController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin');
         $this->airlineModel = new Airline();
     }
 
     public function index()
     {
+        $this->checkAccess('admin');
         $pageData = $this->paginate($this->airlineModel);
 
         $airlines = $this->airlineModel->all([
@@ -38,6 +37,7 @@ class AirlineController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         $this->render('admin/airlines/form', [
             'title'      => 'Нова авиокомпания',
             'countries'  => (new Country())->all(['order' => 'name ASC']),
@@ -48,12 +48,14 @@ class AirlineController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
         $this->handleStore($this->airlineModel, '/admin/airlines', $fileFields, 'airlines');
     }
 
     public function edit($id)
     {
+        $this->checkAccess('admin');
         $airline = $this->airlineModel->find((int)$id);
 
         if (!$airline) {
@@ -71,17 +73,20 @@ class AirlineController extends BaseController
 
     public function update($id)
     {
+        $this->checkAccess('admin');
         $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
         $this->handleUpdate($this->airlineModel, (int)$id, '/admin/airlines', $fileFields, 'airlines');
     }
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         $this->handleOrderUpdate($this->airlineModel);
     }
 
     public function delete($id)
     {
+        $this->checkAccess('admin');
         $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
         $this->handleDelete($this->airlineModel, (int)$id, null, $fileFields);
     }

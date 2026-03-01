@@ -14,12 +14,12 @@ class TaxiController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin');
         $this->taxi = new Taxi();
     }
 
     public function index()
     {
+        $this->checkAccess('admin');
         $paginationData = $this->paginate($this->taxi);
         $taxis = $this->taxi->all([
             'limit' => $paginationData['limit'],
@@ -37,6 +37,7 @@ class TaxiController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         $countryModel = new Country();
         $this->render('admin/taxis/form', [
             'title' => 'Създаване на нова такси компания',
@@ -48,11 +49,13 @@ class TaxiController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->taxi, $this->baseRoute, ['image_url'], 'taxis');
     }
 
     public function edit(int $id)
     {
+        $this->checkAccess('admin');
         $taxi = $this->taxi->find($id);
         if (!$taxi) {
             $this->flash('error', 'Такси компанията не е намерена.');
@@ -73,16 +76,19 @@ class TaxiController extends BaseController
 
     public function update(int $id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->taxi, $id, $this->baseRoute, ['image_url'], 'taxis');
     }
 
     public function delete(int $id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->taxi, $id, $this->baseRoute);
     }
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         $this->handleOrderUpdate($this->taxi);
     }
 }

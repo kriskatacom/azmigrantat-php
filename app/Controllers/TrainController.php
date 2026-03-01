@@ -14,12 +14,12 @@ class TrainController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin');
         $this->train = new Train();
     }
 
     public function index()
     {
+        $this->checkAccess('admin');
         $paginationData = $this->paginate($this->train);
         $trains = $this->train->all([
             'limit' => $paginationData['limit'],
@@ -37,6 +37,7 @@ class TrainController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         $countryModel = new Country();
         $this->render('admin/trains/form', [
             'title' => 'Нова ЖП гара',
@@ -48,11 +49,13 @@ class TrainController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->train, $this->baseRoute, ['image_url'], 'trains');
     }
 
     public function edit(int $id)
     {
+        $this->checkAccess('admin');
         $train = $this->train->find($id);
         if (!$train) {
             $this->flash('error', 'ЖП гарата не е намерена.');
@@ -73,16 +76,19 @@ class TrainController extends BaseController
 
     public function update(int $id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->train, $id, $this->baseRoute, ['image_url'], 'trains');
     }
 
     public function delete(int $id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->train, $id, $this->baseRoute);
     }
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         $this->handleOrderUpdate($this->train);
     }
 }

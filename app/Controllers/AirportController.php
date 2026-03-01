@@ -13,13 +13,13 @@ class AirportController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin');
         $this->airportModel = new Airport();
         $this->countryModel = new Country();
     }
 
     public function index()
     {
+        $this->checkAccess('admin');
         $pageData = $this->paginate($this->airportModel);
 
         $airports = $this->airportModel->getAllWithCountries([
@@ -38,6 +38,7 @@ class AirportController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         $this->render('admin/airports/form', [
             'countries' => $this->countryModel->all(['order' => 'name ASC']),
             'title'     => 'Добавяне на летище',
@@ -47,11 +48,13 @@ class AirportController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->airportModel, '/admin/airports', ['image_url'], 'airports');
     }
 
     public function edit($id)
     {
+        $this->checkAccess('admin');
         $airport = $this->airportModel->find((int)$id);
         if (!$airport) $this->redirect('/admin/airports');
 
@@ -65,16 +68,19 @@ class AirportController extends BaseController
 
     public function update($id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->airportModel, (int)$id, '/admin/airports', ['image_url'], 'airports');
     }
 
     public function delete($id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->airportModel, (int)$id, '/admin/airports', ['image_url']);
     }
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         $this->handleOrderUpdate($this->airportModel);
     }
 }

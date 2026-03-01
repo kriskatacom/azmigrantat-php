@@ -14,8 +14,6 @@ class LandmarkController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin', ['index']);
-
         $this->landmarkModel = new Landmark();
     }
 
@@ -62,6 +60,7 @@ class LandmarkController extends BaseController
 
     public function index()
     {
+        $this->checkAccess('admin');
         $pageData = $this->paginate($this->landmarkModel);
 
         $landmarks = $this->landmarkModel->getAllWithCountries([
@@ -80,6 +79,7 @@ class LandmarkController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         $countryModel = new Country();
         return View::render('admin/landmarks/form', [
             'countries' => $countryModel->all(['order' => 'name ASC']),
@@ -90,6 +90,7 @@ class LandmarkController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $_POST['additional_images'] = $this->handleGalleryUpdate(['additional_images' => '[]'], $_POST, 'additional_images', 'landmarks/gallery');
 
         $this->handleStore($this->landmarkModel, '/admin/landmarks', ['image_url'], 'landmarks');
@@ -97,6 +98,7 @@ class LandmarkController extends BaseController
 
     public function edit($id)
     {
+        $this->checkAccess('admin');
         $landmark = $this->landmarkModel->find((int)$id);
 
         if (!$landmark) {
@@ -115,6 +117,7 @@ class LandmarkController extends BaseController
 
     public function update($id)
     {
+        $this->checkAccess('admin');
         $landmark = $this->landmarkModel->find((int)$id);
         if (!$landmark) $this->redirect('/admin/landmarks');
 
@@ -125,11 +128,13 @@ class LandmarkController extends BaseController
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         return $this->handleOrderUpdate($this->landmarkModel);
     }
 
     public function delete($id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->landmarkModel, (int)$id, null, ['image_url'], ['additional_images']);
     }
 }

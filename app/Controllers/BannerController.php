@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\Banner;
 use App\Core\View;
-use App\Services\FileService;
 
 class BannerController extends BaseController
 {
@@ -17,6 +16,7 @@ class BannerController extends BaseController
 
     public function index()
     {
+        $this->checkAccess('admin');
         $groupKey = $_GET['group_key'] ?? null;
 
         $paginationData = $this->paginate($this->bannerModel, 10);
@@ -46,6 +46,7 @@ class BannerController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         return View::render('admin/banners/form', [
             'title'      => 'Добавяне на банер',
             'positions'  => $this->getPositions(),
@@ -55,11 +56,13 @@ class BannerController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->bannerModel, '/admin/banners', ['image_url'], 'banners');
     }
 
     public function edit($id)
     {
+        $this->checkAccess('admin');
         $banner = $this->bannerModel->find((int)$id);
         if (!$banner) exit('Банерът не е намерен');
 
@@ -73,17 +76,19 @@ class BannerController extends BaseController
 
     public function update($id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->bannerModel, (int)$id, '/admin/banners', ['image_url'], 'banners');
     }
 
     public function updateOrder()
     {
-        $this->middleware('admin');
+        $this->checkAccess('admin');
         return $this->handleOrderUpdate($this->bannerModel);
     }
 
     public function delete($id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->bannerModel, (int)$id, null, ['image']);
     }
 

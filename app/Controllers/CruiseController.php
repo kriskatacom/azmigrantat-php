@@ -4,8 +4,6 @@ namespace App\Controllers;
 
 use App\Models\Cruise;
 use App\Core\View;
-use App\Services\FileService;
-use App\Services\HelperService;
 
 class CruiseController extends BaseController
 {
@@ -13,13 +11,12 @@ class CruiseController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin', ['index']);
-
         $this->cruiseModel = new Cruise();
     }
 
     public function index()
     {
+        $this->checkAccess('admin');
         $pageData = $this->paginate($this->cruiseModel);
 
         $cruises = $this->cruiseModel->all([
@@ -38,6 +35,7 @@ class CruiseController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         return View::render('admin/cruises/form', [
             'title'  => 'Добавяне на круизна компания',
             'layout' => 'admin'
@@ -46,11 +44,13 @@ class CruiseController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->cruiseModel, '/admin/cruises', ['image_url'], 'cruises');
     }
 
     public function edit($id)
     {
+        $this->checkAccess('admin');
         $cruise = $this->cruiseModel->find((int)$id);
         if (!$cruise) exit('Круизът не е намерен');
 
@@ -63,16 +63,19 @@ class CruiseController extends BaseController
 
     public function update($id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->cruiseModel, (int)$id, '/admin/cruises', ['image_url'], 'cruises');
     }
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         return $this->handleOrderUpdate($this->cruiseModel);
     }
 
     public function delete(int $id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->cruiseModel, (int)$id, null, ['image_url']);
     }
 }

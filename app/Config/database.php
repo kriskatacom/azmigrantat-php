@@ -1,8 +1,9 @@
 <?php
+
 return [
-    'host' => 'localhost',
-    'db_name' => 'az_migrantat',
-    'username' => 'root',
-    'password' => '',
-    'charset' => 'utf8mb4'
+    'host'     => getenv('DB_HOST') ?: 'localhost',
+    'db_name'  => getenv('DB_NAME') ?: 'az_migrantat',
+    'username' => getenv('DB_USER') ?: 'root',
+    'password' => getenv('DB_PASS') ?: '',
+    'charset'  => 'utf8mb4'
 ];

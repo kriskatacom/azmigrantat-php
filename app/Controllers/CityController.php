@@ -7,8 +7,6 @@ use App\Models\City;
 use App\Models\Country;
 use App\Core\View;
 use App\Models\CountryElement;
-use App\Services\FileService;
-use App\Services\HelperService;
 
 class CityController extends BaseController
 {
@@ -17,8 +15,6 @@ class CityController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin', ['index', 'getByCountry']);
-
         $this->cityModel = new City();
         $this->countryModel = new Country();
     }
@@ -68,6 +64,7 @@ class CityController extends BaseController
 
     public function index()
     {
+        $this->checkAccess('admin');
         $pageData = $this->paginate($this->cityModel);
 
         $cities = $this->cityModel->getWithCountry(
@@ -85,6 +82,7 @@ class CityController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         View::render('admin/cities/form', [
             'title' => 'Добавяне на град',
             'countries' => $this->countryModel->all(['order' => 'name ASC']),
@@ -94,11 +92,13 @@ class CityController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->cityModel, '/admin/cities', ['image_url'], 'cities');
     }
 
     public function edit(int $id)
     {
+        $this->checkAccess('admin');
         $city = $this->cityModel->find($id);
 
         if (!$city) {
@@ -116,6 +116,7 @@ class CityController extends BaseController
 
     public function update(int $id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->cityModel, (int)$id, '/admin/cities', ['image_url'], 'cities');
     }
 
@@ -129,11 +130,13 @@ class CityController extends BaseController
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         return $this->handleOrderUpdate($this->cityModel);
     }
 
     public function delete(int $id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->cityModel, (int)$id, null, ['image_url']);
     }
 }

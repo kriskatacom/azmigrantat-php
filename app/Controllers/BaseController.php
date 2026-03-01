@@ -8,6 +8,34 @@ use App\Services\FileService;
 
 abstract class BaseController
 {
+    protected function checkAccess(?string $requiredRole = null): void
+    {
+        $user = User::auth();
+
+        if (!$user) {
+            header('Location: /auth/login');
+            exit;
+        }
+
+        if ($requiredRole !== null && ($user['role'] ?? '') !== $requiredRole) {
+            $_SESSION['error'] = "Нямате необходимите права за този достъп!";
+            header('Location: /');
+            exit;
+        }
+    }
+
+    protected function allowOnlyGuests(): void
+    {
+        $user = User::auth();
+
+        if ($user) {
+            $_SESSION['info'] = "Вече сте влезли в профила си.";
+
+            header('Location: /');
+            exit;
+        }
+    }
+
     protected function json(mixed $data, int $code = 200): void
     {
         header('Content-Type: application/json');
@@ -29,46 +57,6 @@ abstract class BaseController
     protected function render(string $view, array $data = []): void
     {
         View::render($view, $data);
-    }
-
-    protected function middleware(string $type = 'auth', array $except = [])
-    {
-        // Вземаме текущия URL път
-        $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $currentPath = preg_replace('/^(\/public)/', '', $currentPath); // Махаме /public за хостинга
-        $currentPath = rtrim($currentPath, '/') ?: '/';
-
-        // Проверяваме дали текущият път съвпада с някой от изключенията
-        // Това е по-сигурно от debug_backtrace в конструктора
-        foreach ($except as $excludedMethod) {
-            // Ако сме в show($slug), трябва да проверим дали пътят не съвпада с динамичния маршрут
-            // За по-просто: ако сме в CountryController и методът е 'show', 
-            // просто проверяваме дали пътят НЕ започва с /admin или /auth
-            if ($excludedMethod === 'show' && strpos($currentPath, '/admin') === false && strpos($currentPath, '/auth') === false) {
-                return;
-            }
-        }
-
-        $user = User::auth();
-
-        if ($type === 'guest') {
-            if ($user) {
-                header('Location: /');
-                exit;
-            }
-            return;
-        }
-
-        if (!$user) {
-            header('Location: /auth/login');
-            exit;
-        }
-
-        if ($type !== 'auth' && (!isset($user['role']) || $user['role'] !== $type)) {
-            $_SESSION['error'] = "Нямате достъп до тази секция!";
-            header('Location: /');
-            exit;
-        }
     }
 
     protected function flash(string $type, string $message)

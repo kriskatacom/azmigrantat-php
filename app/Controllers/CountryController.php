@@ -12,8 +12,6 @@ class CountryController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin', ['show']);
-
         $this->countryModel = new Country();
     }
 
@@ -48,6 +46,7 @@ class CountryController extends BaseController
 
     public function index()
     {
+        $this->checkAccess('admin');
         $pageData = $this->paginate($this->countryModel);
 
         $countries = $this->countryModel->all([
@@ -66,16 +65,19 @@ class CountryController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         View::render('admin/countries/form', ['title' => 'Добавяне на държава', 'layout' => 'admin']);
     }
 
     public function store()
     {
+        $this->checkAccess('admin');
         $this->handleStore($this->countryModel, '/admin/countries', ['image_url'], 'countries');
     }
 
     public function edit($id)
     {
+        $this->checkAccess('admin');
         $country = $this->countryModel->find($id);
         View::render('admin/countries/form', [
             'title' => 'Редактиране на ' . $country['name'],
@@ -86,16 +88,19 @@ class CountryController extends BaseController
 
     public function update($id)
     {
+        $this->checkAccess('admin');
         $this->handleUpdate($this->countryModel, (int)$id, '/admin/countries', ['image_url'], 'countries');
     }
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         return $this->handleOrderUpdate($this->countryModel);
     }
 
     public function delete($id)
     {
+        $this->checkAccess('admin');
         $this->handleDelete($this->countryModel, (int)$id, null, ['image_url']);
     }
 }

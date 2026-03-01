@@ -11,14 +11,12 @@ class UserController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin');
         $this->userModel = new User();
     }
 
     public function index()
     {
-        $this->middleware('admin');
-
+        $this->checkAccess('admin');
         $page = (int)($_GET['page'] ?? 1);
         $perPage = (int)($_GET['per_page'] ?? 5);
 

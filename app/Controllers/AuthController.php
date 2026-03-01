@@ -11,12 +11,12 @@ class AuthController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('guest', ['logout']);
         $this->userModel = new User();
     }
 
     public function showLogin()
     {
+        $this->allowOnlyGuests();
         View::render('auth/login', [
             'title' => 'Вход в профила - Аз мигрантът'
         ]);
@@ -24,6 +24,7 @@ class AuthController extends BaseController
 
     public function showRegister()
     {
+        $this->allowOnlyGuests();
         View::render('auth/register', [
             'title' => 'Създаване на профил - Аз мигрантът'
         ]);
@@ -31,6 +32,7 @@ class AuthController extends BaseController
 
     public function login()
     {
+        $this->allowOnlyGuests();
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
@@ -52,6 +54,7 @@ class AuthController extends BaseController
 
     public function logout()
     {
+        $this->checkAccess();
         User::logout();
         header('Location: /auth/login');
         exit;

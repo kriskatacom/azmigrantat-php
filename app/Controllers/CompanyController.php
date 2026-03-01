@@ -16,7 +16,6 @@ class CompanyController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('admin');
         $this->companyModel = new Company();
         $this->categoryModel = new Category();
         $this->userModel = new User();
@@ -24,6 +23,7 @@ class CompanyController extends BaseController
 
     public function index()
     {
+        $this->checkAccess('admin');
         $pageData = $this->paginate($this->companyModel, 10);
 
         $companies = $this->companyModel->getAllWithRelations(
@@ -41,6 +41,7 @@ class CompanyController extends BaseController
 
     public function create()
     {
+        $this->checkAccess('admin');
         $categoriesTree = $this->categoryModel->getTree();
         $users = $this->userModel->all();
 
@@ -55,6 +56,7 @@ class CompanyController extends BaseController
 
     public function store()
     {
+        $this->checkAccess('admin');
         $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
 
         $_POST['additional_images'] = $this->handleGalleryUpdate(['additional_images' => '[]'], $_POST, 'additional_images', 'landmarks/gallery');
@@ -64,6 +66,7 @@ class CompanyController extends BaseController
 
     public function edit($id)
     {
+        $this->checkAccess('admin');
         $company = $this->companyModel->find((int)$id);
         $users = $this->userModel->all();
 
@@ -85,6 +88,7 @@ class CompanyController extends BaseController
 
     public function update($id)
     {
+        $this->checkAccess('admin');
         $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
 
         $company = $this->companyModel->find((int)$id);
@@ -97,11 +101,13 @@ class CompanyController extends BaseController
 
     public function updateOrder()
     {
+        $this->checkAccess('admin');
         $this->handleOrderUpdate($this->companyModel);
     }
 
     public function delete($id)
     {
+        $this->checkAccess('admin');
         $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
         $this->handleDelete($this->companyModel, (int)$id, null, $fileFields, ['additional_images']);
     }
