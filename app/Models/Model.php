@@ -47,10 +47,20 @@ abstract class Model
     public function all(array $options = []): array
     {
         $columns = isset($options['columns']) ? implode(', ', $options['columns']) : '*';
+        $sql = "SELECT {$columns} FROM {$this->table}";
+        $params = [];
+
+        if (isset($options['where']) && is_array($options['where'])) {
+            $whereClauses = [];
+            foreach ($options['where'] as $column => $value) {
+                $whereClauses[] = "{$column} = :{$column}";
+                $params[":{$column}"] = $value;
+            }
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
 
         $orderBy = $options['order'] ?? 'id DESC';
-
-        $sql = "SELECT {$columns} FROM {$this->table} ORDER BY {$orderBy}";
+        $sql .= " ORDER BY {$orderBy}";
 
         if (isset($options['limit'])) {
             $sql .= " LIMIT " . (int)$options['limit'];
@@ -59,7 +69,8 @@ abstract class Model
             }
         }
 
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 

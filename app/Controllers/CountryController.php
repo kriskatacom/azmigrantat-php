@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Models\Country;
+use App\Models\CountryElement;
 
 class CountryController extends BaseController
 {
@@ -15,6 +16,35 @@ class CountryController extends BaseController
 
         $this->countryModel = new Country();
     }
+
+    // public routes
+
+    public function show($countrySlug)
+    {
+        $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
+
+        if (!$country || !$country['is_active']) {
+            header("HTTP/1.0 404 Not Found");
+            exit('Държавата не е намерена или е деактивирана.');
+        }
+
+        $elementModel = new CountryElement();
+        $elements = $elementModel->all([
+            'where' => [
+                'country_id' => $country['id'],
+                'is_active' => 1
+            ],
+            'order' => 'sort_order ASC'
+        ]);
+
+        View::render('countries/show', [
+            'country'  => $country,
+            'elements' => $elements,
+            'title'    => $country['heading'] ?: $country['name']
+        ]);
+    }
+
+    // admin routes
 
     public function index()
     {
@@ -57,17 +87,6 @@ class CountryController extends BaseController
     public function update($id)
     {
         $this->handleUpdate($this->countryModel, (int)$id, '/admin/countries', ['image_url'], 'countries');
-    }
-
-    public function show(int $id)
-    {
-        $country = $this->countryModel->find($id);
-
-        if (!$country) {
-            $this->json(['message' => 'Country not found'], 404);
-        }
-
-        $this->json($country);
     }
 
     public function updateOrder()

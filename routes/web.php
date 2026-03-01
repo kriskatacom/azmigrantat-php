@@ -25,6 +25,7 @@ $router = new Router();
 // --- Публични страници ---
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/travel', [HomeController::class, 'travel']);
+$router->get('/{countrySlug}', [CountryController::class, 'show']);
 
 // --- Аутентикация ---
 $router->get('/auth/login', [AuthController::class, 'showLogin']);
