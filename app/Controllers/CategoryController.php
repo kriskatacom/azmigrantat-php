@@ -12,83 +12,142 @@ use App\Models\Company;
 class CategoryController extends BaseController
 {
     protected Category $categoryModel;
+    protected Country $countryModel;
+    protected City $cityModel;
+    protected Company $companyModel;
+
     protected string $baseRoute = '/admin/categories';
 
     public function __construct()
     {
         $this->categoryModel = new Category();
+        $this->countryModel = new Country();
+        $this->cityModel = new City();
+        $this->companyModel = new Company();
     }
 
     // Public Routes
 
     public function categoriesShow($countrySlug, $citySlug, $categoriesPath = null)
     {
-        $countryModel = new Country();
-        $cityModel = new City();
-        $companyModel = new Company();
-
-        $country = $countryModel->where('slug', $countrySlug)[0] ?? null;
+        // 1. Валидация на Държава и Град
+        $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
         if (!$country || !$country['is_active']) return $this->abort404('Държавата не е намерена.');
 
-        $city = $cityModel->all([
+        $city = $this->cityModel->all([
             'where' => ['slug' => $citySlug, 'country_id' => $country['id'], 'is_active' => 1]
         ])[0] ?? null;
         if (!$city) return $this->abort404('Градът не е намерен.');
 
-        $displayItems = [];
-        $showType = 'categories';
-        $category = null;
-        $categoryPathArr = [];
-        $baseUrl = "/{$countrySlug}/cities/{$citySlug}/";
+        // 2. Обработка на пътя
+        $categoryPathArr = $categoriesPath ? explode('/', trim($categoriesPath, '/')) : [];
+        $lastSlug = !empty($categoryPathArr) ? end($categoryPathArr) : null;
 
-        if (!empty($categoriesPath)) {
-            $categoriesPath = trim($categoriesPath, '/');
-            $categoryPathArr = explode('/', $categoriesPath);
-            $currentCategorySlug = end($categoryPathArr);
-
-            $category = $this->categoryModel->all([
-                'where' => ['slug' => $currentCategorySlug, 'is_active' => 1]
+        // 3. ПРОВЕРКА: Дали последната част е компания?
+        // Търсим компания със съответния slug в този град
+        if ($lastSlug) {
+            $company = $this->companyModel->all([
+                'where' => ['slug' => $lastSlug, 'city_id' => $city['id'], 'is_active' => 1]
             ])[0] ?? null;
 
-            if (!$category) return $this->abort404('Категорията не е намерена.');
-
-            $subCategories = $this->categoryModel->all([
-                'where' => ['parent_id' => $category['id'], 'is_active' => 1],
-                'order' => 'sort_order ASC'
-            ]);
-
-            if (empty($subCategories)) {
-                $showType = 'companies';
-                $displayItems = $companyModel->all([
-                    'where' => [
-                        'category_id' => $category['id'],
-                        'city_id'     => $city['id'],
-                        'is_active'   => 1
-                    ],
-                    'order' => 'sort_order ASC'
-                ]);
-                $baseUrl = "/{$countrySlug}/cities/{$citySlug}/{$categoriesPath}/";
-            } else {
-                $displayItems = $subCategories;
-                $baseUrl = "/{$countrySlug}/cities/{$citySlug}/{$categoriesPath}/";
+            if ($company) {
+                return $this->renderCompanyDetail($company, $country, $city, $categoryPathArr);
             }
-        } else {
-            $displayItems = $this->categoryModel->all([
-                'where' => ['parent_id' => null, 'is_active' => 1],
-                'order' => 'sort_order ASC'
-            ]);
         }
+
+        // 4. Ако не е компания, продължаваме по стандартната логика за категории
+        $category = null;
+        if ($lastSlug) {
+            $category = $this->categoryModel->all(['where' => ['slug' => $lastSlug, 'is_active' => 1]])[0] ?? null;
+            if (!$category) return $this->abort404('Страницата не е намерена.');
+        }
+
+        $data = $this->resolveDisplayItems($category, $city['id']);
 
         View::render('categories/show', [
             'title'        => ($category ? $category['name'] : 'Категории') . ' - ' . $city['name'],
             'country'      => $country,
             'city'         => $city,
             'category'     => $category,
-            'items'        => $displayItems,
-            'showType'     => $showType,
-            'base_url'     => $baseUrl,
+            'items'        => $data['items'],
+            'showType'     => $data['type'],
+            'base_url'     => "/{$countrySlug}/cities/{$citySlug}/" . ($categoriesPath ? trim($categoriesPath, '/') . '/' : ''),
             'categoryPath' => $categoryPathArr
         ]);
+    }
+
+    private function renderCompanyDetail($company, $country, $city, $pathArray)
+    {
+        $category = null;
+        if (!empty($company['category_id'])) {
+            $category = $this->categoryModel->where('id', $company['category_id'])[0] ?? null;
+        }
+
+        $breadcrumbs = [
+            ['label' => $country['name'], 'url' => '/' . $country['slug']],
+            ['label' => 'Градове', 'url' => '/' . $country['slug'] . '/cities'],
+            ['label' => $city['name'], 'url' => '/' . $country['slug'] . '/cities/' . $city['slug']],
+        ];
+
+        $currentPath = '/' . $country['slug'] . '/cities/' . $city['slug'];
+
+        if (count($pathArray) > 1) {
+            $categorySlugs = array_slice($pathArray, 0, -1);
+            $runningPath = '';
+
+            foreach ($categorySlugs as $slug) {
+                $runningPath .= '/' . $slug;
+                $cat = $this->categoryModel->where('slug', $slug)[0] ?? null;
+
+                $breadcrumbs[] = [
+                    'label' => $cat ? $cat['name'] : mb_convert_case(str_replace('-', ' ', $slug), MB_CASE_TITLE, "UTF-8"),
+                    'url' => $currentPath . $runningPath
+                ];
+            }
+        }
+
+        View::render('companies/details', [
+            'title'       => $company['name'] . ' - ' . $city['name'],
+            'company'     => $company,
+            'country'     => $country,
+            'city'        => $city,
+            'category'    => $category,
+            'breadcrumbs' => $breadcrumbs
+        ]);
+    }
+
+    private function resolveDisplayItems(?array $category, int $cityId): array
+    {
+        if (!$category) {
+            return [
+                'type'  => 'categories',
+                'items' => $this->categoryModel->all([
+                    'where' => ['parent_id' => null, 'is_active' => 1],
+                    'order' => 'sort_order ASC'
+                ])
+            ];
+        }
+
+        $subCategories = $this->categoryModel->all([
+            'where' => ['parent_id' => $category['id'], 'is_active' => 1],
+            'order' => 'sort_order ASC'
+        ]);
+
+        if (!empty($subCategories)) {
+            return ['type' => 'categories', 'items' => $subCategories];
+        }
+
+        return [
+            'type'  => 'companies',
+            'items' => $this->companyModel->all([
+                'where' => [
+                    'category_id' => $category['id'],
+                    'city_id'     => $cityId,
+                    'is_active'   => 1
+                ],
+                'order' => 'sort_order ASC'
+            ])
+        ];
     }
 
     private function abort404($message)

@@ -29,6 +29,7 @@ $cancelText = $cancelText ?? 'Отказ';
         class="fixed inset-0 bg-gray-900/40 bg-opacity-50 backdrop-blur-sm"></div>
 
     <div
+        x-cloak
         x-show="isOpen"
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 scale-95"

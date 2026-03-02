@@ -9,7 +9,7 @@
 
 @layer components {
     .btn-primary {
-        @apply flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto;
+        @apply inline-flex items-center gap-2 bg-primary-darken hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-all font-bold uppercase text-sm cursor-pointer;
     }
 }
 

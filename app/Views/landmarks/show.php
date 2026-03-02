@@ -34,7 +34,7 @@ $breadcrumbs = [
                 <button @click="$dispatch('open-modal-show-description')" class="flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto">
                     Повече информация
                 </button>
-                <div class="text-gray-700 leading-relaxed text-xs md:text-base line-clamp-3 md:line-clamp-5 xl:line-clamp-none">
+                <div class="text-gray-700 leading-relaxed text-xs md:text-base line-clamp-3 sm:line-clamp-8 md:line-clamp-6 lg:line-clamp-8 xl:line-clamp-12 2xl:line-clamp-none">
                     <?= $landmark['content'] ?>
                 </div>
             </div>
