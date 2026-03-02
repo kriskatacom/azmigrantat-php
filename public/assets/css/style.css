@@ -7,10 +7,6 @@
     --color-primary-blue: #8fd5e7;
 }
 
-[x-cloak] {
-    display: none !important;
-}
-
 @layer components {
     .btn-primary {
         @apply flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto;
@@ -67,4 +63,37 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background-color: #1f2937;
+}
+
+/* Fancy Gallery */
+
+.fancybox__container:has(.fancybox__thumbs.is-scrollable) {
+    flex-direction: row;
+}
+
+.fancybox__thumbs.is-scrollable {
+    --f-thumbs-cols: 1;
+    --f-thumbs-gap: 4px;
+    --f-thumbs-bg: #ddd;
+
+    --f-thumbs-padding-x: 2px;
+    --f-thumbs-padding-y: 2px;
+    --f-thumbs-viewport-padding-x: 2px;
+    --f-thumbs-viewport-padding-y: 2px;
+
+    --f-thumb-width: 100px;
+    --f-thumb-height: 75px;
+    --f-thumb-bg: rgba(0, 0, 0, 0.1);
+    --f-thumb-focus-shadow: inset 0 0 0 5px rgba(255, 82, 104, 0.5);
+    --f-thumb-selected-shadow: inset 0 0 0 5px rgb(255, 82, 104);
+    --f-thumb-border-radius: 0;
+
+    --f-scrollbar-track-bg: #fff;
+    --f-scrollbar-thumb-bg: #2a2a2a;
+}
+
+@media (min-width: 576px) {
+    .fancybox__thumbs.is-scrollable {
+        --f-thumbs-cols: 2;
+    }
 }

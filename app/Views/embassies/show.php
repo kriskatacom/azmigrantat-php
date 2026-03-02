@@ -45,26 +45,33 @@ $breadcrumbs = [
                 <?php HelperService::icon('location', 'w-5 h-5 md:w-10 md:h-10 md:w-10 md:h-10'); ?> Информация за контакти
             </div>
             <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base">
-                <div class="flex items-center gap-3">
-                    <?php HelperService::icon('address', 'w-5 h-5 md:w-10 md:h-10 text-gray-500'); ?>
-                    <span class="break-all"><?= $embassy['address'] ?></span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <?php HelperService::icon('phone', 'w-5 h-5 md:w-10 md:h-10 text-gray-500'); ?>
-                    <a class="break-all" href="tel:<?= $embassy['phone'] ?>"><?= $embassy['phone'] ?></a>
-                </div>
-                <div class="flex items-center gap-3">
-                    <?php HelperService::icon('mail', 'w-5 h-5 md:w-10 md:h-10 text-gray-500'); ?>
-                    <a class="break-all" href="mailto:<?= $embassy['email'] ?>"><?= $embassy['email'] ?></a>
-                </div>
-                <div class="flex items-center gap-3">
-                    <?php HelperService::icon('phone', 'w-5 h-5 md:w-10 md:h-10 text-gray-500'); ?>
-                    <a class="break-all" href="mailto:<?= $embassy['phone'] ?>"><?= $embassy['phone'] ?></a>
-                </div>
-                <div class="flex items-center gap-3">
-                    <?php HelperService::icon('globe-icon', 'w-5 h-5 md:w-10 md:h-10'); ?>
-                    <a class="break-all" href="<?= $embassy['website_link'] ?>" target="__blank" title="Уебсайт на <?= $embassy['heading'] ?>"><?= $embassy['website_link'] ?></a>
-                </div>
+                <?php if (!empty($embassy['address'])): ?>
+                    <div class="flex items-center gap-3">
+                        <?php HelperService::icon('address', 'w-5 h-5 md:w-10 md:h-10 text-gray-500'); ?>
+                        <span class="break-all"><?= $embassy['address'] ?></span>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($embassy['phone'])): ?>
+                    <div class="flex items-center gap-3">
+                        <?php HelperService::icon('phone', 'w-5 h-5 md:w-10 md:h-10 text-gray-500'); ?>
+                        <a class="break-all" href="tel:<?= $embassy['phone'] ?>"><?= $embassy['phone'] ?></a>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($embassy['email'])): ?>
+                    <div class="flex items-center gap-3">
+                        <?php HelperService::icon('mail', 'w-5 h-5 md:w-10 md:h-10 text-gray-500'); ?>
+                        <a class="break-all" href="mailto:<?= $embassy['email'] ?>"><?= $embassy['email'] ?></a>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($embassy['website_link'])): ?>
+                    <div class="flex items-center gap-3">
+                        <?php HelperService::icon('globe-icon', 'w-5 h-5 md:w-10 md:h-10'); ?>
+                        <a class="break-all" href="<?= $embassy['website_link'] ?>" target="_blank" title="Уебсайт на <?= $embassy['heading'] ?>"><?= $embassy['website_link'] ?></a>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 

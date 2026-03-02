@@ -11,28 +11,28 @@ use App\Models\CountryElement;
 class LandmarkController extends BaseController
 {
     private Landmark $landmarkModel;
+    private Country $countryModel;
+    private CountryElement $elementModel;
 
     public function __construct()
     {
         $this->landmarkModel = new Landmark();
+        $this->countryModel = new Country();
+        $this->elementModel = new CountryElement();
     }
 
     // public routes
 
     public function indexByCountry($countrySlug)
     {
-        $countryModel = new Country();
-        $landmarkModel = new Landmark();
-        $elementModel = new CountryElement();
-
-        $country = $countryModel->where('slug', $countrySlug)[0] ?? null;
+        $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
 
         if (!$country) {
             header("HTTP/1.0 404 Not Found");
             exit('Държавата не е намерена.');
         }
 
-        $landmarkElement = $elementModel->all([
+        $landmarkElement = $this->elementModel->all([
             'where' => [
                 'country_id' => $country['id'],
                 'slug'       => 'landmarks',
@@ -40,7 +40,7 @@ class LandmarkController extends BaseController
             ]
         ])[0] ?? null;
 
-        $landmarks = $landmarkModel->all([
+        $landmarks = $this->landmarkModel->all([
             'where' => [
                 'country_id' => $country['id'],
                 'is_active'  => 1
@@ -53,6 +53,32 @@ class LandmarkController extends BaseController
             'country'        => $country,
             'landmarkElement' => $landmarkElement,
             'landmarks'      => $landmarks
+        ]);
+    }
+
+    public function show($countrySlug, $landmarkSlug)
+    {
+        $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
+
+        if (!$country) {
+            $this->abort(404);
+        }
+
+        $landmark = $this->landmarkModel->all([
+            'where' => [
+                'slug' => $landmarkSlug,
+                'country_id' => $country['id']
+            ]
+        ])[0] ?? null;
+
+        if (!$landmark) {
+            $this->abort(404);
+        }
+
+        View::render('landmarks/show', [
+            'title'   => $landmark['name'],
+            'landmark' => $landmark,
+            'country' => $country
         ]);
     }
 
