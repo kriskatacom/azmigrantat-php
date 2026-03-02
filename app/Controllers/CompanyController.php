@@ -10,12 +10,14 @@ use App\Models\User;
 
 class CompanyController extends BaseController
 {
+    private Country $countryModel;
     private Company $companyModel;
     private Category $categoryModel;
     private User $userModel;
 
     public function __construct()
     {
+        $this->countryModel = new Country();
         $this->companyModel = new Company();
         $this->categoryModel = new Category();
         $this->userModel = new User();
@@ -42,14 +44,12 @@ class CompanyController extends BaseController
     public function create()
     {
         $this->checkAccess('admin');
-        $categoriesTree = $this->categoryModel->getTree();
-        $users = $this->userModel->all();
 
         $this->render('admin/companies/form', [
             'title'      => 'Нова компания',
-            'countries'  => (new Country())->all(['order' => 'name ASC']),
-            'categories' => $categoriesTree,
-            'users' => $users,
+            'countries'  => $this->countryModel->all(['order' => 'name ASC']),
+            'categories' => $this->categoryModel->getTree(),
+            'users' => $this->userModel->all(),
             'layout'     => 'admin'
         ]);
     }
@@ -80,7 +80,7 @@ class CompanyController extends BaseController
             'company'    => $company,
             'countries'  => (new Country())->all(['order' => 'name ASC']),
             'cities'     => (new City())->where('country_id', $company['country_id']),
-            'categories' => (new Category())->all(['order' => 'name ASC']),
+            'categories' => $this->categoryModel->getTree(),
             'users' => $users,
             'layout'     => 'admin'
         ]);

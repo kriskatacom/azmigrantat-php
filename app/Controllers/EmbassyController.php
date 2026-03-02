@@ -12,29 +12,27 @@ class EmbassyController extends BaseController
 {
     private Embassy $embassyModel;
     private Country $countryModel;
+    private CountryElement $elementModel;
 
     public function __construct()
     {
         $this->embassyModel = new Embassy();
         $this->countryModel = new Country();
+        $this->elementModel = new CountryElement();
     }
 
     // public routes
 
     public function indexByCountry($countrySlug)
     {
-        $countryModel = new Country();
-        $embassyModel = new Embassy();
-        $elementModel = new CountryElement();
-
-        $country = $countryModel->where('slug', $countrySlug)[0] ?? null;
+        $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
 
         if (!$country) {
             header("HTTP/1.0 404 Not Found");
             exit('Държавата не е намерена.');
         }
 
-        $embassyElement = $elementModel->all([
+        $embassyElement = $this->elementModel->all([
             'where' => [
                 'country_id' => $country['id'],
                 'slug'       => 'embassies',
@@ -42,7 +40,7 @@ class EmbassyController extends BaseController
             ]
         ])[0] ?? null;
 
-        $embassies = $embassyModel->all([
+        $embassies = $this->embassyModel->all([
             'where' => [
                 'country_id' => $country['id'],
                 'is_active'  => 1

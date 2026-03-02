@@ -47,26 +47,26 @@ $action = $isEdit ? "/admin/companies/update/{$company['id']}" : "/admin/compani
             'id'    => 'company-bottom-image'
         ]); ?>
     </div>
-    
+
     <?php View::component('lightbox', 'admin/components'); ?>
     <?php View::component('card', 'admin/components', ['title' => 'Медия и Реклама', 'slot' => ob_get_clean()]); ?>
 
     <?php ob_start(); ?>
-        <div class="space-y-4">
-            <?php
-            $gallery = [];
-            if (!empty($company['additional_images'])) {
-                $gallery = json_decode($company['additional_images'], true) ?: [];
-            }
+    <div class="space-y-4">
+        <?php
+        $gallery = [];
+        if (!empty($company['additional_images'])) {
+            $gallery = json_decode($company['additional_images'], true) ?: [];
+        }
 
-            View::component('multi-image-upload', 'admin/components', [
-                'name'   => 'additional_images[]',
-                'images' => $gallery,
-                'label'  => 'Галерия на обекта'
-            ]);
-            ?>
-        </div>
-        <?php View::component('card', 'admin/components', ['title' => 'Фото галерия', 'slot' => ob_get_clean()]); ?>
+        View::component('multi-image-upload', 'admin/components', [
+            'name'   => 'additional_images[]',
+            'images' => $gallery,
+            'label'  => 'Галерия на обекта'
+        ]);
+        ?>
+    </div>
+    <?php View::component('card', 'admin/components', ['title' => 'Фото галерия', 'slot' => ob_get_clean()]); ?>
 
     <?php ob_start(); ?>
     <div class="space-y-5">
@@ -146,6 +146,12 @@ $action = $isEdit ? "/admin/companies/update/{$company['id']}" : "/admin/compani
             <input type="text" name="facebook_page_link" value="<?= htmlspecialchars($company['facebook_page_link'] ?? '') ?>" placeholder="https://facebook.com/..."
                 class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none">
         </div>
+    </div>
+
+    <div class="space-y-2 mt-5">
+        <label class="text-sm font-semibold text-gray-600">Уебсайт</label>
+        <input type="text" name="website_link" value="<?= htmlspecialchars($company['website_link'] ?? '') ?>" placeholder="https://example.com"
+            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none">
     </div>
 
     <div class="mt-5">

@@ -41,6 +41,8 @@ class Embassy extends Model
             $data['slug'] = $this->generateSlug($data['slug']);
         }
 
+        unset($data['latitude'], $data['longitude']);
+
         if (empty($data['heading']) && !empty($data['name'])) {
             $data['heading'] = $data['name'];
         }
