@@ -23,12 +23,12 @@ use App\Core\View;
 </section>
 
 <main>
-    <?php
-    View::component('load-more-grid', 'partials', [
-        'items'     => $elements,
-        'base_url'  => $country['slug'] . '/',
-        'card_name' => 'country-card',
-        'limit'     => 8,
-    ]); 
-    ?>
+    <section id="elements-grid">
+        <?php View::component('load-more-grid', 'partials', [
+            'items'     => $elements,
+            'base_url'  => $country['slug'] . '/',
+            'card_name' => 'country-card',
+            'limit'     => 8,
+        ]); ?>
+    </section>
 </main>

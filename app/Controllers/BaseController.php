@@ -13,14 +13,12 @@ abstract class BaseController
         $user = User::auth();
 
         if (!$user) {
-            header('Location: /auth/login');
-            exit;
+            $this->redirect('/auth/login');
         }
 
         if ($requiredRole !== null && ($user['role'] ?? '') !== $requiredRole) {
-            $_SESSION['error'] = "Нямате необходимите права за този достъп!";
-            header('Location: /');
-            exit;
+            $this->flash('error', "Нямате необходимите права за този достъп!");
+            $this->redirect('/');
         }
     }
 
@@ -101,7 +99,7 @@ abstract class BaseController
         ];
     }
 
-    protected function handleDelete($model, int $id, string|null $redirectUrl = null, array $fileFields = ['image_url'], array $jsonFileFields = [], callable|null $callback = null)
+    protected function handleDelete($model, $id, string|null $redirectUrl = null, array $fileFields = ['image_url'], array $jsonFileFields = [], callable|null $callback = null)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return;

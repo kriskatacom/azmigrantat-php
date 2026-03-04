@@ -34,6 +34,7 @@ $router->get('/admin/dashboard', [AdminController::class, 'dashboard']);
 
 // --- Потребители ---
 $router->get('/admin/users', [UserController::class, 'index']);
+$router->post('/admin/users/update-role', [UserController::class, 'updateRole']);
 
 // --- Държави (Countries) ---
 $router->get('/admin/countries', [CountryController::class, 'index']);

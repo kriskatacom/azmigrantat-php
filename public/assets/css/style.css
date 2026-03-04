@@ -1,17 +1,28 @@
 @import "tailwindcss";
 
+[x-cloak] {
+    display: none !important;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 @theme {
     --color-primary-dark: #0b2935;
     --color-primary-darken: #0e3545;
     --color-primary-light: #e3e295;
     --color-primary-blue: #8fd5e7;
-    
+
     --breakpoint-xs: 480px;
 }
 
 @layer components {
     .btn-primary {
         @apply inline-flex items-center gap-2 bg-primary-darken hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-all font-bold uppercase text-sm cursor-pointer;
+    }
+    .icon-button-primary {
+        @apply overflow-hidden w-10 h-10 flex justify-center items-center bg-gray-100 hover:bg-gray-200 focus:bg-gray-300 rounded;
     }
 }
 

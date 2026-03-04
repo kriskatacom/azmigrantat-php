@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Models\User;
+use App\Models\Role;
 
 class UserController extends BaseController
 {
@@ -17,33 +18,43 @@ class UserController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $page = (int)($_GET['page'] ?? 1);
-        $perPage = (int)($_GET['per_page'] ?? 5);
 
-        if (!in_array($perPage, [5, 10, 20, 50, 100])) {
-            $perPage = 10;
-        }
+        $paginationData = $this->paginate($this->userModel, 10);
 
-        $offset = ($page - 1) * $perPage;
-
-        $users = $this->userModel->all([
-            'limit' => $perPage,
-            'offset' => $offset,
-            'order' => 'created_at DESC'
-        ]);
-
-        $totalUsers = $this->userModel->count();
-        $totalPages = ceil($totalUsers / $perPage);
+        $users = $this->userModel->getPaginatedWithRoles(
+            $paginationData['limit'],
+            $paginationData['offset']
+        );
 
         View::render('admin/users/index', [
             'title' => 'Потребители',
             'users' => $users,
-            'pagination' => [
-                'current' => $page,
-                'total' => $totalPages,
-                'per_page' => $perPage,
-            ],
+            'pagination' => $paginationData['pagination'],
             'layout' => 'admin'
         ]);
+    }
+
+    public function updateRole()
+    {
+        $this->checkAccess('admin');
+
+        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/users';
+
+        $userId = $_POST['user_id'] ?? null;
+        $roleId = (int)($_POST['role_id'] ?? 0);
+        $currentUser = User::auth();
+
+        if ($userId === $currentUser['id']) {
+            $this->flash('error', 'Не можете да променяте собствената си роля!');
+            $this->redirect($redirectUrl);
+        }
+
+        if ($userId && $roleId) {
+            $this->userModel->updateRole($userId, $roleId);
+            $this->flash('success', 'Ролята беше актуализирана успешно!');
+        }
+
+        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/users';
+        $this->redirect($redirectUrl);
     }
 }
