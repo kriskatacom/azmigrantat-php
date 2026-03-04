@@ -1,5 +1,4 @@
 <?php
-
 use App\Services\HelperService; ?>
 
 <div class="min-h-screen bg-[#030d16] flex items-center justify-center relative overflow-hidden font-sans">
@@ -34,8 +33,7 @@ use App\Services\HelperService; ?>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span class="text-red-200 text-sm font-medium">
-                                <?= $_SESSION['error'];
-                                unset($_SESSION['error']); ?>
+                                <?= $_SESSION['error']; unset($_SESSION['error']); ?>
                             </span>
                         </div>
                     <?php endif; ?>
@@ -44,20 +42,31 @@ use App\Services\HelperService; ?>
                         <label class="block text-gray-400 text-sm font-medium mb-2 pl-1">Email</label>
                         <input type="email" name="email" required
                             placeholder="ivan@example.com"
-                            class="w-full border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-primary-light/50 transition-all placeholder:text-gray-600">
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-primary-light/50 transition-all placeholder:text-gray-600">
                     </div>
 
                     <div>
                         <label class="block text-gray-400 text-sm font-medium mb-2 pl-1">Парола</label>
                         <input type="password" name="password" required
                             placeholder="••••••"
-                            class="w-full border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-primary-light/50 transition-all placeholder:text-gray-600">
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-primary-light/50 transition-all placeholder:text-gray-600">
                     </div>
 
-                    <button type="submit"
-                        class="w-full bg-linear-to-r from-[#143141] to-[#0d212b] hover:from-primary-light hover:to-primary-dark text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-black/20 group overflow-hidden relative">
-                        <span class="relative z-10 group-hover:text-black transition-colors">Влизане в профила</span>
-                    </button>
+                    <div class="space-y-4">
+                        <button type="submit"
+                            class="w-full bg-linear-to-r from-[#143141] to-[#0d212b] hover:from-primary-light hover:to-primary-dark text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-black/20 group overflow-hidden relative">
+                            <span class="relative z-10 group-hover:text-black transition-colors uppercase tracking-widest text-sm">Влизане в профила</span>
+                        </button>
+
+                        <div class="text-center">
+                            <p class="text-gray-500 text-sm">
+                                Нямате профил? 
+                                <a href="/auth/register" class="text-primary-light hover:text-white transition-colors font-semibold underline underline-offset-4 decoration-primary-light/30">
+                                    Регистрирайте се тук
+                                </a>
+                            </p>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password_hash` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `username` varchar(50) DEFAULT NULL,
+  `username` varchar(50) DEFAULT NULL,
   `role` enum('user','moderator','admin','entrepreneur') NOT NULL DEFAULT 'user',
   `profile_image` text DEFAULT NULL,
   `bio` text DEFAULT NULL,

@@ -6,14 +6,41 @@ class User extends Model
 {
     protected string $table = 'users';
 
-    public function register(string $name, string $email, string $password): bool
+    public function register(string $name, string $email, string $password): string|bool
     {
-        return $this->create([
-            'name' => $name,
-            'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT),
-            'status' => 'active'
+        $id = $this->generateUuid();
+
+        $username = $this->generateUniqueUsername($name);
+
+        $result = $this->create([
+            'id'            => $id,
+            'name'          => $name,
+            'username'      => $username,
+            'email'         => $email,
+            'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+            'is_active'     => 1,
+            'role_id'       => 3,
         ]);
+
+        return $result ? $id : false;
+    }
+
+    private function generateUniqueUsername(string $name): string
+    {
+        $latinName = $this->generateSlug($name);
+        
+        $baseUsername = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $latinName)));
+        $baseUsername = trim($baseUsername, '-');
+
+        $username = $baseUsername;
+        $counter = 1;
+
+        while ($this->where('username', $username)) {
+            $username = $baseUsername . '-' . $counter;
+            $counter++;
+        }
+
+        return $username;
     }
 
     public function login(string $email, string $password): ?array
@@ -82,7 +109,7 @@ class User extends Model
     public function updateProfile(int $id, array $newData): bool
     {
         if (isset($newData['password'])) {
-            $newData['password'] = password_hash($newData['password'], PASSWORD_DEFAULT);
+            $newData['password_hash'] = password_hash($newData['password'], PASSWORD_DEFAULT);
         }
 
         return $this->update($id, $newData);

@@ -24,7 +24,7 @@ abstract class Model
         $stmt = $this->db->prepare($sql);
 
         if ($stmt->execute($data)) {
-            return $this->db->lastInsertId();
+            return $data['id'] ?? $this->db->lastInsertId();
         }
 
         return false;
