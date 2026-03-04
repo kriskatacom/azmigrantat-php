@@ -1,4 +1,5 @@
 <?php
+
 use App\Core\View;
 
 $isEdit = isset($banner);
@@ -28,70 +29,80 @@ $positions = [
 
 <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         <div class="lg:col-span-2 space-y-6">
-            
+
             <?php ob_start(); ?>
-                <?php View::component('image-upload', 'admin/components', [
-                    'name' => 'image_url',
-                    'value' => $banner['image_url'] ?? null,
-                    'label' => 'Фоново изображение'
-                ]); ?>
-                <?php View::component('lightbox', 'admin/components'); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name' => 'image_url',
+                'value' => $banner['image_url'] ?? null,
+                'label' => 'Фоново изображение'
+            ]); ?>
+            <?php View::component('lightbox', 'admin/components'); ?>
             <?php View::component('card', 'admin/components', ['title' => 'Визуализация', 'slot' => ob_get_clean()]); ?>
 
             <?php ob_start(); ?>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Заглавие на банера</label>
-                        <input type="text" name="name" value="<?= htmlspecialchars($banner['name'] ?? '') ?>" class="form-control">
-                    </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Заглавие на банера</label>
+                    <input type="text" name="name" value="<?= htmlspecialchars($banner['name'] ?? '') ?>" class="form-control">
+                </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Описание (подзаглавие)</label>
-                        <textarea name="description" rows="3" class="form-control"><?= htmlspecialchars($banner['description'] ?? '') ?></textarea>
-                    </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Цел</label>
+                    <input type="text" name="link" value="<?= htmlspecialchars($banner['link'] ?? '') ?>" class="form-control">
+                </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Текст на бутона</label>
-                            <input type="text" name="button_text" value="<?= htmlspecialchars($banner['button_text'] ?? 'Научи повече') ?>" class="form-control">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Линк (URL)</label>
-                            <input type="text" name="href" value="<?= htmlspecialchars($banner['href'] ?? '') ?>" placeholder="https://..." class="form-control">
-                        </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Описание (подзаглавие)</label>
+                    <textarea name="description" rows="3" class="form-control"><?= htmlspecialchars($banner['description'] ?? '') ?></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Текст на бутона</label>
+                        <input type="text" name="button_text" value="<?= htmlspecialchars($banner['button_text'] ?? 'Научи повече') ?>" class="form-control">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Линк (URL)</label>
+                        <input type="text" name="href" value="<?= htmlspecialchars($banner['href'] ?? '') ?>" placeholder="https://..." class="form-control">
                     </div>
                 </div>
+            </div>
             <?php View::component('card', 'admin/components', ['title' => 'Основна информация', 'slot' => ob_get_clean()]); ?>
         </div>
 
         <div class="space-y-6">
-            
+
             <?php ob_start(); ?>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Група (Group Key)</label>
-                        <select name="group_key" class="form-control bg-white">
-                            <option value="HOME_ELEMENTS" <?= ($banner['group_key'] ?? '') == 'HOME_ELEMENTS' ? 'selected' : '' ?>>HOME_ELEMENTS</option>
-                            <option value="" <?= ($banner['group_key'] ?? '') == '' ? 'selected' : '' ?>>Без група</option>
-                        </select>
-                    </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Група (Group Key)</label>
+                    <select name="group_key" class="form-control bg-white border border-gray-300 rounded-lg p-2 w-full">
+                        <option value="" <?= empty($banner['group_key']) ? 'selected' : '' ?>>Без група</option>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Позиция на съдържанието</label>
-                        <select name="content_place" class="form-control bg-white">
-                            <?php foreach ($positions as $key => $label): ?>
-                                <option value="<?= $key ?>" <?= ($banner['content_place'] ?? 'center_center') == $key ? 'selected' : '' ?>><?= $label ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Височина (px)</label>
-                        <input type="number" name="height" value="<?= $banner['height'] ?? 520 ?>" class="form-control">
-                    </div>
+                        <?php foreach (BANNER_GROUPS as $key => $label): ?>
+                            <option value="<?= $key ?>" <?= ($banner['group_key'] ?? '') == $key ? 'selected' : '' ?>>
+                                <?= $label ?> (<?= $key ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Позиция на съдържанието</label>
+                    <select name="content_place" class="form-control bg-white">
+                        <?php foreach ($positions as $key => $label): ?>
+                            <option value="<?= $key ?>" <?= ($banner['content_place'] ?? 'center_center') == $key ? 'selected' : '' ?>><?= $label ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Височина (px)</label>
+                    <input type="number" name="height" value="<?= $banner['height'] ?? 520 ?>" class="form-control">
+                </div>
+            </div>
             <?php View::component('card', 'admin/components', ['title' => 'Настройки', 'slot' => ob_get_clean()]); ?>
 
             <div class="bg-[#1e293b] p-6 rounded-2xl shadow-sm text-white">

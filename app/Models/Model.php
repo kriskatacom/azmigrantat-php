@@ -93,11 +93,15 @@ abstract class Model
         return $stmt->execute(['id' => $id]);
     }
 
-    public function where(string $column, $value): array
+    public function where(string $column, $value, string|null $orderBy = null): array
     {
         $hasOperator = preg_match('/[<>=!]/', $column);
 
         $sql = "SELECT * FROM {$this->table} WHERE " . ($hasOperator ? $column : "{$column} =") . " :val";
+
+        if ($orderBy) {
+            $sql .= " ORDER BY " . preg_replace('/[^A-Za-z0-9_ ]/', '', $orderBy);
+        }
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['val' => $value]);

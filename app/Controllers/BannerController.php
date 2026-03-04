@@ -47,9 +47,13 @@ class BannerController extends BaseController
     public function create()
     {
         $this->checkAccess('admin');
+
+        $groups = $this->bannerModel->getUniqueGroups();
+
         return View::render('admin/banners/form', [
             'title'      => 'Добавяне на банер',
             'positions'  => $this->getPositions(),
+            'groups'  => $groups,
             'layout'     => 'admin'
         ]);
     }
@@ -63,13 +67,17 @@ class BannerController extends BaseController
     public function edit($id)
     {
         $this->checkAccess('admin');
+        
         $banner = $this->bannerModel->find((int)$id);
         if (!$banner) exit('Банерът не е намерен');
+
+        $groups = $this->bannerModel->getUniqueGroups();
 
         return View::render('admin/banners/form', [
             'title'     => 'Редактиране на банер',
             'banner'    => $banner,
             'positions' => $this->getPositions(),
+            'groups'  => $groups,
             'layout'    => 'admin'
         ]);
     }
