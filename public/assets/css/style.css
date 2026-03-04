@@ -5,6 +5,8 @@
     --color-primary-darken: #0e3545;
     --color-primary-light: #e3e295;
     --color-primary-blue: #8fd5e7;
+    
+    --breakpoint-xs: 480px;
 }
 
 @layer components {
