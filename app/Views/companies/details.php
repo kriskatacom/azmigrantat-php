@@ -19,19 +19,17 @@ $user = User::auth();
     <img class="fixed top-0 left-0 w-full h-full -z-10" src="<?= $category['companies_background_url'] ?>" alt="">
 <?php endif; ?>
 
-<div x-data="{ isOpen: false }" class="relative w-full aspect-video max-h-100 overflow-hidden">
-    <img src="<?= HelperService::getImage($company['image_url']) ?>"
-        class="w-full h-full object-cover"
-        alt="<?= htmlspecialchars($company['name']) ?>">
+<div x-data="{ isOpen: false }" class="relative w-full aspect-video max-h-100 min-h-60 overflow-hidden">
+    <img src="<?= HelperService::getImage($company['image_url']) ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($company['name']) ?>">
 
     <div class="absolute inset-0 bg-black/40"></div>
 
     <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
-        <h1 class="text-white uppercase text-3xl md:text-5xl lg:text-6xl font-black text-center mb-8 tracking-tighter drop-shadow-2xl">
+        <h1 class="text-white uppercase sm:text-xl text-2xl md:text-5xl lg:text-6xl font-black text-center mb-8 tracking-tighter drop-shadow-2xl">
             <?= htmlspecialchars($company['name']) ?>
         </h1>
 
-        <div class="flex items-center gap-2 md:gap-5">
+        <div class="flex flex-col sm:flex-row sm:justify-center items-center gap-2 md:gap-5 w-full">
             <button @click="$dispatch('open-modal-show-description')" class="btn-primary">
                 Научете повече за нас
             </button>
@@ -159,7 +157,7 @@ $user = User::auth();
         <?php $facebook_page_url = $company['facebook_page_link'] ?> ?>
 
         <div class="md:text-center">
-            <div class="fb-page"
+            <div class="fb-page w-full"
                 data-href="<?php echo htmlspecialchars($facebook_page_url); ?>"
                 data-tabs="timeline"
                 data-width="500"

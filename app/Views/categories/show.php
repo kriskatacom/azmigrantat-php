@@ -22,13 +22,7 @@ use App\Services\HelperService;
                     Информационен справочник на <?= htmlspecialchars($city['name']) ?> - <?= $country['name'] ?>
                 <?php endif; ?>
             </h1>
-            <?php View::component('breadcrumbs', 'partials', [
-                'items' => [
-                    ['label' => 'Начало', 'url' => '/'],
-                    ['label' => $country['name'], 'url' => '/' . $country['slug']],
-                    ['label' => 'Градове']
-                ]
-            ]); ?>
+            <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
         </div>
     </div>
 </section>

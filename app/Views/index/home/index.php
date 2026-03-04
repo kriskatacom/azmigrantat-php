@@ -8,7 +8,6 @@ use App\Core\View;
 
 <main>
     <?php View::component('load-more-grid', 'partials', [
-        'title'         => 'Държави',
         'items'         => $countries,
         'card_path'     => 'partials',
         'card_name'     => 'country-card',

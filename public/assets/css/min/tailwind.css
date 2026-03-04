@@ -336,6 +336,9 @@
   .top-2 {
     top: calc(var(--spacing) * 2);
   }
+  .top-2\.5 {
+    top: calc(var(--spacing) * 2.5);
+  }
   .top-5 {
     top: calc(var(--spacing) * 5);
   }
@@ -368,6 +371,9 @@
   }
   .left-2 {
     left: calc(var(--spacing) * 2);
+  }
+  .left-3 {
+    left: calc(var(--spacing) * 3);
   }
   .left-5 {
     left: calc(var(--spacing) * 5);
@@ -603,17 +609,11 @@
   .h-auto {
     height: auto;
   }
-  .h-fit {
-    height: fit-content;
-  }
   .h-full {
     height: 100%;
   }
   .h-screen {
     height: 100vh;
-  }
-  .max-h-50 {
-    max-height: calc(var(--spacing) * 50);
   }
   .max-h-100 {
     max-height: calc(var(--spacing) * 100);
@@ -624,17 +624,8 @@
   .min-h-10 {
     min-height: calc(var(--spacing) * 10);
   }
-  .min-h-50 {
-    min-height: calc(var(--spacing) * 50);
-  }
   .min-h-60 {
     min-height: calc(var(--spacing) * 60);
-  }
-  .min-h-64 {
-    min-height: calc(var(--spacing) * 64);
-  }
-  .min-h-100 {
-    min-height: calc(var(--spacing) * 100);
   }
   .min-h-125 {
     min-height: calc(var(--spacing) * 125);
@@ -740,9 +731,6 @@
   }
   .shrink-0 {
     flex-shrink: 0;
-  }
-  .flex-grow {
-    flex-grow: 1;
   }
   .grow {
     flex-grow: 1;
@@ -955,9 +943,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .overflow-auto {
-    overflow: auto;
-  }
   .overflow-hidden {
     overflow: hidden;
   }
@@ -1113,22 +1098,10 @@
       background-color: color-mix(in oklab, var(--color-black) 40%, transparent);
     }
   }
-  .bg-black\/50 {
-    background-color: color-mix(in srgb, #000 50%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-black) 50%, transparent);
-    }
-  }
   .bg-black\/60 {
     background-color: color-mix(in srgb, #000 60%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-black) 60%, transparent);
-    }
-  }
-  .bg-black\/70 {
-    background-color: color-mix(in srgb, #000 70%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-black) 70%, transparent);
     }
   }
   .bg-black\/80 {
@@ -1259,12 +1232,6 @@
   }
   .bg-white {
     background-color: var(--color-white);
-  }
-  .bg-white\/20 {
-    background-color: color-mix(in srgb, #fff 20%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
-    }
   }
   .bg-white\/90 {
     background-color: color-mix(in srgb, #fff 90%, transparent);
@@ -1435,11 +1402,17 @@
   .pt-5 {
     padding-top: calc(var(--spacing) * 5);
   }
+  .pr-4 {
+    padding-right: calc(var(--spacing) * 4);
+  }
   .pb-2 {
     padding-bottom: calc(var(--spacing) * 2);
   }
   .pl-1 {
     padding-left: calc(var(--spacing) * 1);
+  }
+  .pl-10 {
+    padding-left: calc(var(--spacing) * 10);
   }
   .text-center {
     text-align: center;
@@ -1908,26 +1881,6 @@
       }
     }
   }
-  .group-hover\:bg-black\/40 {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        background-color: color-mix(in srgb, #000 40%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          background-color: color-mix(in oklab, var(--color-black) 40%, transparent);
-        }
-      }
-    }
-  }
-  .group-hover\:bg-black\/60 {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        background-color: color-mix(in srgb, #000 60%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          background-color: color-mix(in oklab, var(--color-black) 60%, transparent);
-        }
-      }
-    }
-  }
   .group-hover\:bg-white {
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
@@ -2355,16 +2308,6 @@
       }
     }
   }
-  .hover\:bg-white\/30 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: color-mix(in srgb, #fff 30%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          background-color: color-mix(in oklab, var(--color-white) 30%, transparent);
-        }
-      }
-    }
-  }
   .hover\:from-primary-light {
     &:hover {
       @media (hover: hover) {
@@ -2500,6 +2443,11 @@
       }
     }
   }
+  .focus\:border-transparent {
+    &:focus {
+      border-color: transparent;
+    }
+  }
   .focus\:ring-2 {
     &:focus {
       --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
@@ -2567,14 +2515,6 @@
       opacity: 70%;
     }
   }
-  .sm\:line-clamp-5 {
-    @media (width >= 40rem) {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 5;
-    }
-  }
   .sm\:line-clamp-8 {
     @media (width >= 40rem) {
       overflow: hidden;
@@ -2601,6 +2541,17 @@
   .sm\:flex-row {
     @media (width >= 40rem) {
       flex-direction: row;
+    }
+  }
+  .sm\:justify-center {
+    @media (width >= 40rem) {
+      justify-content: center;
+    }
+  }
+  .sm\:text-xl {
+    @media (width >= 40rem) {
+      font-size: var(--text-xl);
+      line-height: var(--tw-leading, var(--text-xl--line-height));
     }
   }
   .md\:left-80 {
@@ -2636,14 +2587,6 @@
   .md\:mb-5 {
     @media (width >= 48rem) {
       margin-bottom: calc(var(--spacing) * 5);
-    }
-  }
-  .md\:line-clamp-5 {
-    @media (width >= 48rem) {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 5;
     }
   }
   .md\:line-clamp-6 {
@@ -2753,11 +2696,6 @@
       border-radius: var(--radius-lg);
     }
   }
-  .md\:rounded-md {
-    @media (width >= 48rem) {
-      border-radius: var(--radius-md);
-    }
-  }
   .md\:rounded-xl {
     @media (width >= 48rem) {
       border-radius: var(--radius-xl);
@@ -2841,36 +2779,12 @@
       grid-column: span 2 / span 2;
     }
   }
-  .lg\:line-clamp-6 {
-    @media (width >= 64rem) {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 6;
-    }
-  }
   .lg\:line-clamp-8 {
     @media (width >= 64rem) {
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 8;
-    }
-  }
-  .lg\:line-clamp-10 {
-    @media (width >= 64rem) {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 10;
-    }
-  }
-  .lg\:line-clamp-12 {
-    @media (width >= 64rem) {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 12;
     }
   }
   .lg\:inline {
@@ -2922,14 +2836,6 @@
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 12;
-    }
-  }
-  .xl\:line-clamp-none {
-    @media (width >= 80rem) {
-      overflow: visible;
-      display: block;
-      -webkit-box-orient: horizontal;
-      -webkit-line-clamp: unset;
     }
   }
   .xl\:h-auto {

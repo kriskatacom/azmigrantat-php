@@ -30,7 +30,6 @@ class CategoryController extends BaseController
 
     public function categoriesShow($countrySlug, $citySlug, $categoriesPath = null)
     {
-        // 1. Валидация на Държава и Град
         $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
         if (!$country || !$country['is_active']) return $this->abort404('Държавата не е намерена.');
 
@@ -39,12 +38,9 @@ class CategoryController extends BaseController
         ])[0] ?? null;
         if (!$city) return $this->abort404('Градът не е намерен.');
 
-        // 2. Обработка на пътя
         $categoryPathArr = $categoriesPath ? explode('/', trim($categoriesPath, '/')) : [];
         $lastSlug = !empty($categoryPathArr) ? end($categoryPathArr) : null;
 
-        // 3. ПРОВЕРКА: Дали последната част е компания?
-        // Търсим компания със съответния slug в този град
         if ($lastSlug) {
             $company = $this->companyModel->all([
                 'where' => ['slug' => $lastSlug, 'city_id' => $city['id'], 'is_active' => 1]
@@ -55,11 +51,29 @@ class CategoryController extends BaseController
             }
         }
 
-        // 4. Ако не е компания, продължаваме по стандартната логика за категории
         $category = null;
         if ($lastSlug) {
             $category = $this->categoryModel->all(['where' => ['slug' => $lastSlug, 'is_active' => 1]])[0] ?? null;
             if (!$category) return $this->abort404('Страницата не е намерена.');
+        }
+
+        $breadcrumbs = [
+            ['label' => $country['name'], 'url' => '/' . $country['slug']],
+            ['label' => 'Градове', 'url' => '/' . $country['slug'] . '/cities'],
+            ['label' => $city['name'], 'url' => '/' . $country['slug'] . '/cities/' . $city['slug']],
+        ];
+
+        $currentPath = '/' . $country['slug'] . '/cities/' . $city['slug'];
+        $runningPath = '';
+
+        foreach ($categoryPathArr as $slug) {
+            $runningPath .= '/' . $slug;
+            $catInfo = $this->categoryModel->all(['where' => ['slug' => $slug]])[0] ?? null;
+
+            $breadcrumbs[] = [
+                'label' => $catInfo ? $catInfo['name'] : mb_convert_case(str_replace('-', ' ', $slug), MB_CASE_TITLE, "UTF-8"),
+                'url'   => $currentPath . $runningPath
+            ];
         }
 
         $data = $this->resolveDisplayItems($category, $city['id']);
@@ -72,7 +86,8 @@ class CategoryController extends BaseController
             'items'        => $data['items'],
             'showType'     => $data['type'],
             'base_url'     => "/{$countrySlug}/cities/{$citySlug}/" . ($categoriesPath ? trim($categoriesPath, '/') . '/' : ''),
-            'categoryPath' => $categoryPathArr
+            'categoryPath' => $categoryPathArr,
+            'breadcrumbs'  => $breadcrumbs,
         ]);
     }
 

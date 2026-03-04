@@ -13,7 +13,6 @@ use App\Core\View; ?>
             </h1>
             <?php View::component('breadcrumbs', 'partials', [
                 'items' => [
-                    ['label' => 'Начало', 'url' => '/'],
                     ['label' => $country['name'], 'url' => '/' . $country['slug']],
                     ['label' => 'Забележителности']
                 ]

@@ -17,5 +17,6 @@ return [
     'footer_rights' => 'All rights reserved',
     'meta_description' => 'Platform for migrants - jobs, ads and services.',
     'information' => 'Information',
-    'load_more' => 'Load more'
+    'load_more' => 'Load more',
+    'search_placeholder' => 'Realtime search...'
 ];

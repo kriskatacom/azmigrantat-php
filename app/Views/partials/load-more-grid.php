@@ -3,23 +3,18 @@
 use App\Core\View;
 use App\Services\HelperService;
 
-/**
- * Универсален Grid компонент със зареждане
- * @var array $items       - Масив с обекти
- * @var string $card_name  - Име на компонента за карта (напр. country-card)
- * @var string $base_url   - Път, към който се лепи slug-а
- * @var int $limit         - Колко елемента да се виждат първоначално
- */
-
 $limit = $limit ?? 8;
 $card_path = $card_path ?? 'partials';
 $card_name = $card_name ?? 'country-card';
 $style = $style ?? 'grid';
 $base_url = $base_url ?? '';
+
+$show_search = $show_search ?? true;
+
 $containerId = 'grid-' . uniqid();
 $btnId = 'btn-' . uniqid();
+$searchId = 'search-' . uniqid();
 
-// Настройка на колоните спрямо стила
 $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-cols-4';
 ?>
 
@@ -28,11 +23,31 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
         <h2 class="text-3xl font-bold text-center mb-6"><?= htmlspecialchars($title) ?></h2>
     <?php endif; ?>
 
+    <?php if ($show_search): ?>
+        <div class="max-w-md mx-auto mb-5 px-4">
+            <div class="relative">
+                <input type="text"
+                    id="<?= $searchId ?>"
+                    placeholder="<?= HelperService::trans('search_placeholder') ?? 'Търсене...' ?>"
+                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                <div class="absolute left-3 top-2.5 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div id="<?= $containerId ?>" class="grid grid-cols-1 md:grid-cols-2 <?= $gridCols ?> gap-6 px-4">
         <?php foreach ($items as $index => $item): ?>
-            <div class="grid-item <?= $index >= $limit ? 'hidden' : '' ?>">
+            <?php
+            $searchText = ($item['name'] ?? '') . ' ' . ($item['slug'] ?? '');
+            $searchLabel = htmlspecialchars(mb_strtolower($searchText));
+            ?>
+            <div class="grid-item <?= $index >= $limit ? 'hidden' : '' ?>"
+                data-label="<?= $searchLabel ?>">
                 <?php
-                // Предаваме обекта като 'item', за да е напълно универсално
                 View::component($card_name, $card_path, [
                     'item'     => $item,
                     'base_url' => $base_url,
@@ -44,7 +59,7 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
     </div>
 
     <?php if (count($items) > $limit): ?>
-        <div class="flex justify-center mt-5 md:mt-10">
+        <div id="btn-container-<?= $btnId ?>" class="flex justify-center mt-5 md:mt-10">
             <button id="<?= $btnId ?>" class="bg-white border border-gray-200 text-gray-800 font-semibold px-10 py-3 rounded-lg shadow-sm hover:bg-gray-50 transition-all cursor-pointer">
                 <?= HelperService::trans('load_more') ?? 'Зареждане на още' ?>
             </button>
@@ -54,41 +69,53 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
 
 <script>
     (function() {
-        const btn = document.getElementById('<?= $btnId ?>');
-        if (!btn) return;
-
-        const limit = <?= (int)$limit ?>;
         const container = document.getElementById('<?= $containerId ?>');
+        const btn = document.getElementById('<?= $btnId ?>');
+        const searchInput = document.getElementById('<?= $searchId ?>');
+        const limit = <?= (int)$limit ?>;
 
-        btn.addEventListener('click', function() {
-            const hiddenItems = container.querySelectorAll('.grid-item.hidden');
+        if (btn) {
+            btn.addEventListener('click', function() {
+                const hiddenItems = container.querySelectorAll('.grid-item.hidden');
+                for (let i = 0; i < limit && i < hiddenItems.length; i++) {
+                    hiddenItems[i].classList.remove('hidden');
+                    hiddenItems[i].classList.add('animate-fade-in');
+                }
+                if (container.querySelectorAll('.grid-item.hidden').length === 0) {
+                    btn.parentElement.style.display = 'none';
+                }
+            });
+        }
 
-            for (let i = 0; i < limit && i < hiddenItems.length; i++) {
-                hiddenItems[i].classList.remove('hidden');
-                hiddenItems[i].classList.add('animate-fade-in');
-            }
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase().trim();
+                const allItems = container.querySelectorAll('.grid-item');
+                const btnContainer = document.getElementById('btn-container-<?= $btnId ?>');
 
-            if (container.querySelectorAll('.grid-item.hidden').length === 0) {
-                btn.parentElement.remove();
-            }
-        });
+                if (term.length > 0) {
+                    if (btnContainer) btnContainer.style.display = 'none';
+
+                    allItems.forEach(item => {
+                        const label = item.getAttribute('data-label');
+                        if (label.includes(term)) {
+                            item.classList.remove('hidden');
+                            item.classList.add('animate-fade-in');
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                } else {
+                    allItems.forEach((item, index) => {
+                        if (index < limit) {
+                            item.classList.remove('hidden');
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                    if (btnContainer) btnContainer.style.display = 'flex';
+                }
+            });
+        }
     })();
 </script>
-
-<style>
-    @keyframes gridFadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(15px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .animate-fade-in {
-        animation: gridFadeIn 0.4s ease-out forwards;
-    }
-</style>
