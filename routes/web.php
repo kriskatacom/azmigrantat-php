@@ -166,6 +166,7 @@ $router->post('/admin/categories/update-order', [CategoryController::class, 'upd
 // --- Публични страници ---
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/travel', [HomeController::class, 'travel']);
+$router->get('/travel/shared-travel', [HomeController::class, 'sharedTravel']);
 $router->get('/{countrySlug}', [CountryController::class, 'show']);
 $router->get('/{countrySlug}/embassies', [EmbassyController::class, 'indexByCountry']);
 $router->get('/{countrySlug}/embassies/{embassySlug}', [EmbassyController::class, 'show']);

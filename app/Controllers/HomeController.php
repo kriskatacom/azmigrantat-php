@@ -5,16 +5,20 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Models\Country;
 use App\Models\Banner;
+use App\Models\City;
+use App\Services\HelperService;
 
 class HomeController
 {
     private Country $countryModel;
     private Banner $bannerModel;
+    private City $cityModel;
 
     public function __construct()
     {
         $this->countryModel = new Country();
         $this->bannerModel = new Banner();
+        $this->cityModel = new City();
     }
 
     public function index()
@@ -49,6 +53,32 @@ class HomeController
             'title'   => 'Пътуване',
             'banner'  => $mainBanner,
             'banners' => $items
+        ]);
+    }
+
+    public function sharedTravel()
+    {
+        $mainBanner = $this->bannerModel->where('link', '/travel/shared-travel')[0] ?? null;
+
+        $breadcrumbs = [
+            [
+                'label' => HelperService::trans('travel') ?? 'Пътуване',
+                'href'  => '/travel'
+            ],
+            [
+                'label' => $mainBanner['name'] ?? 'Споделено пътуване'
+            ],
+        ];
+
+        $allCities = $this->cityModel->all();
+
+        $citiesJson = json_encode($allCities, JSON_UNESCAPED_UNICODE);
+
+        View::render('index/travel/shared-travel/index', [
+            'title'       => $mainBanner['name'] ?? 'Споделено пътуване',
+            'banner'      => $mainBanner,
+            'citiesJson'  => $citiesJson,
+            'breadcrumbs' => $breadcrumbs
         ]);
     }
 }

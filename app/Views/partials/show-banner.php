@@ -1,0 +1,56 @@
+<?php
+
+$places = [
+    'top_left'      => 'justify-start items-start text-left',
+    'top_center'    => 'justify-start items-center text-center',
+    'top_right'     => 'justify-start items-end text-right',
+    'center_left'   => 'justify-center items-start text-left',
+    'center_center' => 'justify-center items-center text-center',
+    'center_right'  => 'justify-center items-end text-right',
+    'bottom_left'   => 'justify-end items-start text-left',
+    'bottom_center' => 'justify-end items-center text-center',
+    'bottom_right'  => 'justify-end items-end text-right',
+];
+
+$alignmentClass = $places[$banner['content_place'] ?? 'center_center'] ?? $places['center_center'];
+$height = !empty($banner['height']) ? (is_numeric($banner['height']) ? $banner['height'] . 'px' : $banner['height']) : '520px';
+$image  = !empty($banner['image_url']) ? $banner['image_url'] : '/assets/img/default-banner.jpg';
+$name   = $banner['name'] ?? '';
+?>
+
+<section class="relative w-full overflow-hidden" style="height: <?= $height ?>; max-height: 85vh;">
+    <img src="<?= $image ?>"
+         class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
+         alt="<?= htmlspecialchars($name ?: 'Banner') ?>">
+
+    <?php if (($banner['show_overlay'] ?? 1) == 1): ?>
+        <div class="absolute inset-0 bg-black/40 backdrop-brightness-90"></div>
+    <?php endif; ?>
+
+    <div class="absolute inset-0 flex flex-col p-6 md:p-16 z-10 <?= $alignmentClass ?>">
+        <div class="max-w-4xl w-full text-white drop-shadow-2xl">
+            
+            <?php if (($banner['show_name'] ?? 1) == 1 && !empty($name)): ?>
+                <h1 class="text-4xl md:text-6xl xl:text-7xl font-black uppercase tracking-tighter mb-4 animate-fade-in-up">
+                    <?= htmlspecialchars($name) ?>
+                </h1>
+            <?php endif; ?>
+
+            <?php if (($banner['show_description'] ?? 1) == 1 && !empty($banner['description'])): ?>
+                <p class="text-lg md:text-2xl font-light mb-8 leading-relaxed max-w-2xl <?= strpos($alignmentClass, 'center') !== false ? 'mx-auto' : '' ?>">
+                    <?= htmlspecialchars($banner['description']) ?>
+                </p>
+            <?php endif; ?>
+
+            <?php if (($banner['show_button'] ?? 0) == 1 && !empty($banner['href'])): ?>
+                <div class="mt-2">
+                    <a href="<?= htmlspecialchars($banner['href']) ?>"
+                       class="inline-block bg-white text-gray-900 font-bold px-10 py-4 rounded-xl shadow-2xl hover:bg-primary-dark hover:text-white transition-all transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-sm">
+                        <?= htmlspecialchars($banner['button_text'] ?: 'Научи повече') ?>
+                    </a>
+                </div>
+            <?php endif; ?>
+            
+        </div>
+    </div>
+</section>
