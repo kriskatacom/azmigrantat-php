@@ -46,6 +46,12 @@ if ($currentLang === 'bg') {
                             </a>
                         <?php endif; ?>
 
+                        <?php if ($user['role'] === 'driver'): ?>
+                            <a href="/travel/shared-travel/drivers/<?= $user['username'] ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition border-b border-white/5 mb-1">
+                                Шофьорски профил
+                            </a>
+                        <?php endif; ?>
+
                         <form action="/auth/logout" method="POST" class="w-full">
                             <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition">
                                 Изход от профила

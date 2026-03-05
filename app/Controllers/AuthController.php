@@ -102,7 +102,7 @@ class AuthController extends BaseController
                 break;
             case 'driver':
                 $username = strtolower($user['username']);
-                header("Location: /drivers/{$username}");
+                header("Location: /travel/shared-travel/drivers/{$username}");
                 break;
             default:
                 header('Location: /users/account');

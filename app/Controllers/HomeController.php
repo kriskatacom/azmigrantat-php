@@ -49,7 +49,7 @@ class HomeController
             ];
         }
 
-        View::render('index/travel/index', [
+        View::render('travel/index', [
             'title'   => 'Пътуване',
             'banner'  => $mainBanner,
             'banners' => $items
@@ -74,7 +74,7 @@ class HomeController
 
         $citiesJson = json_encode($allCities, JSON_UNESCAPED_UNICODE);
 
-        View::render('index/travel/shared-travel/index', [
+        View::render('travel/shared-travel/index', [
             'title'       => $mainBanner['name'] ?? 'Споделено пътуване',
             'banner'      => $mainBanner,
             'citiesJson'  => $citiesJson,

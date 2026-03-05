@@ -28,7 +28,7 @@ class User extends Model
     private function generateUniqueUsername(string $name): string
     {
         $latinName = $this->generateSlug($name);
-        
+
         $baseUsername = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $latinName)));
         $baseUsername = trim($baseUsername, '-');
 
@@ -67,6 +67,7 @@ class User extends Model
         $_SESSION['user'] = [
             'id'    => $user['id'],
             'name'  => $user['name'],
+            'username'  => $user['username'],
             'email' => $user['email'],
             'role'  => $user['role_name'],
             'is_logged_in' => true
@@ -86,13 +87,52 @@ class User extends Model
 
     public function updateRole(string $userId, int $roleId): bool
     {
-        $sql = "UPDATE {$this->table} SET role_id = :role_id WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
+        try {
+            $this->db->beginTransaction();
 
-        return $stmt->execute([
-            'role_id' => $roleId,
-            'id' => $userId
-        ]);
+            $sql = "UPDATE {$this->table} SET role_id = :role_id WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'role_id' => $roleId,
+                'id' => $userId
+            ]);
+
+            $driverRoleId = 2;
+
+            if ($roleId == $driverRoleId) {
+                $checkSql = "SELECT id FROM drivers WHERE user_id = :user_id LIMIT 1";
+                $checkStmt = $this->db->prepare($checkSql);
+                $checkStmt->execute(['user_id' => $userId]);
+
+                if (!$checkStmt->fetch()) {
+                    $user = $this->findUuid($userId);
+
+                    $driverSql = "INSERT INTO drivers (user_id, name, slug, travel_starts_at, status) 
+                              VALUES (:user_id, :name, :slug, NOW(), 'active')";
+
+                    $driverStmt = $this->db->prepare($driverSql);
+                    $driverStmt->execute([
+                        'user_id' => $userId,
+                        'name'    => $user['name'],
+                        'slug'    => $this->generateSlug($user['name'] . '-' . substr($userId, 0, 8)),
+                    ]);
+                }
+            }
+
+            return $this->db->commit();
+        } catch (\Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            return false;
+        }
+    }
+
+    private function findUuid(string $id): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = :id LIMIT 1");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: null;
     }
 
     public static function logout(): void

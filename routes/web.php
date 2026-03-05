@@ -19,6 +19,7 @@ use App\Controllers\CategoryController;
 use App\Controllers\CompanyController;
 use App\Controllers\CountryElementController;
 use App\Controllers\TaxiController;
+use App\Controllers\DriverController;
 
 $router = new Router();
 
@@ -167,6 +168,7 @@ $router->post('/admin/categories/update-order', [CategoryController::class, 'upd
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/travel', [HomeController::class, 'travel']);
 $router->get('/travel/shared-travel', [HomeController::class, 'sharedTravel']);
+$router->get('/travel/shared-travel/drivers/{username}', [DriverController::class, 'show']);
 $router->get('/{countrySlug}', [CountryController::class, 'show']);
 $router->get('/{countrySlug}/embassies', [EmbassyController::class, 'indexByCountry']);
 $router->get('/{countrySlug}/embassies/{embassySlug}', [EmbassyController::class, 'show']);
