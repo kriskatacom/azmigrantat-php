@@ -5,18 +5,21 @@ namespace App\Controllers;
 use App\Models\Driver;
 use App\Models\City;
 use App\Core\View;
+use App\Models\Banner;
 use App\Models\Country;
 use App\Models\User;
 
 class DriverController extends BaseController
 {
     protected Driver $driverModel;
+    protected Banner $bannerModel;
     protected City $cityModel;
     protected Country $countryModel;
 
     public function __construct()
     {
         $this->driverModel = new Driver();
+        $this->bannerModel = new Banner();
         $this->cityModel = new City();
         $this->countryModel = new Country();
     }
@@ -31,13 +34,12 @@ class DriverController extends BaseController
 
         $drivers = $this->driverModel->searchByCityInDetails($fromSlug, $toSlug);
 
+        $mainBanner = $this->bannerModel->where('link', '/travel/shared-travel/drivers')[0] ?? null;
+
         return View::render('travel/drivers/index', [
             'drivers' => $drivers,
             'citiesJson' => $citiesJson,
-            'banner' => [
-                'title' => 'Споделено пътуване',
-                'subtitle' => 'Намерете най-удобния превоз или предложете вашия'
-            ],
+            'banner' => $mainBanner,
             'filters' => [
                 'from' => $fromSlug,
                 'to' => $toSlug

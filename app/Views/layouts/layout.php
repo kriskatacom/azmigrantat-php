@@ -39,6 +39,7 @@ if ($currentUri == '/' || $currentUri == '/home') {
     <script type="module" src="/assets/js/main.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1/dist/fancybox/fancybox.umd.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

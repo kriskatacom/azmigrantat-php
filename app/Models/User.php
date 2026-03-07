@@ -107,14 +107,13 @@ class User extends Model
                 if (!$checkStmt->fetch()) {
                     $user = $this->findUuid($userId);
 
-                    $driverSql = "INSERT INTO drivers (user_id, name, slug, travel_starts_at, status) 
-                              VALUES (:user_id, :name, :slug, NOW(), 'active')";
+                    $driverSql = "INSERT INTO drivers (user_id, name, travel_starts_at, status) 
+                              VALUES (:user_id, :name, NOW(), 'active')";
 
                     $driverStmt = $this->db->prepare($driverSql);
                     $driverStmt->execute([
                         'user_id' => $userId,
                         'name'    => $user['name'],
-                        'slug'    => $this->generateSlug($user['name'] . '-' . substr($userId, 0, 8)),
                     ]);
                 }
             }
@@ -124,6 +123,7 @@ class User extends Model
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
             }
+            throw $e;
             return false;
         }
     }

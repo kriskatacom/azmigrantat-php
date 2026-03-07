@@ -108,7 +108,7 @@ class Driver extends Model
             $data['travel_starts_at'] = date('Y-m-d H:i:s', strtotime($data['travel_starts_at']));
         }
 
-        unset($data['country_id'], $data['city_id'], $data['remove_travel_departure_image'], $data['remove_travel_return_image']);
+        unset($data['country_id'], $data['city_id'], $data['remove_travel_departure_image'], $data['remove_travel_return_image'], $data['slug']);
 
         return $data;
     }

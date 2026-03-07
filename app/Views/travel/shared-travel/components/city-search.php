@@ -1,6 +1,6 @@
 <section>
     <div x-data="citySearchComponent()" class="max-w-5xl mx-auto px-5 md:px-0 -mt-12 relative z-50">
-        <div class="bg-white p-5 md:p-7 rounded-md shadow-2xl flex flex-col md:flex-row gap-4 items-end border border-gray-100">
+        <div class="bg-white p-5 md:p-7 rounded-md shadow-md flex flex-col md:flex-row gap-4 items-end border border-gray-100">
 
             <div class="flex-1 w-full">
                 <label class="block text-xs font-black text-gray-400 uppercase mb-2 ml-1">Тръгване от</label>
@@ -100,9 +100,9 @@
             searchQuery: '',
             targetField: '',
             fromCity: '',
-            fromSlug: '',
+            fromName: '',
             toCity: '',
-            toSlug: '',
+            toName: '',
             displayLimit: 20,
 
             init() {
@@ -128,10 +128,10 @@
             selectCity(city) {
                 if (this.targetField === 'from') {
                     this.fromCity = city.name;
-                    this.fromSlug = city.slug;
+                    this.fromName = city.name;
                 } else {
                     this.toCity = city.name;
-                    this.toSlug = city.slug;
+                    this.toName = city.name;
                 }
                 this.closeModal();
             },
@@ -154,8 +154,8 @@
                 const baseUrl = '/travel/shared-travel/drivers';
                 const params = new URLSearchParams();
 
-                if (this.fromSlug) params.append('from', this.fromSlug);
-                if (this.toSlug) params.append('to', this.toSlug);
+                if (this.fromName) params.append('from', this.fromName);
+                if (this.toName) params.append('to', this.toName);
 
                 window.location.href = baseUrl + '?' + params.toString();
             }
