@@ -1,18 +1,14 @@
 <?php
-/**
- * @var string $name  - Името на input полето (напр. is_active)
- * @var string $label - Текстът до бутона
- * @var bool   $value - Текущото състояние (true/false)
- * @var string $id    - Уникално ID (ако имаш няколко на една страница)
- */
+
 $id = $id ?? 'toggle-' . uniqid();
 $name = $name ?? 'is_active';
 $label = $label ?? 'Активен статус';
+$description = $description ?? null;
 $checked = ($value ?? true) ? 'checked' : '';
 ?>
 
-<div class="flex items-center gap-3 py-2">
-    <label for="<?= $id ?>" class="relative inline-flex items-center cursor-pointer">
+<div class="flex items-start gap-4 py-3 px-1">
+    <label for="<?= $id ?>" class="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
         <input type="checkbox" 
                name="<?= $name ?>" 
                id="<?= $id ?>" 
@@ -24,11 +20,18 @@ $checked = ($value ?? true) ? 'checked' : '';
                     peer-checked:after:translate-x-full peer-checked:after:border-white 
                     after:content-[''] after:absolute after:top-0.5 after:left-0.5 
                     after:bg-white after:border-gray-300 after:border after:rounded-full 
-                    after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-dark">
+                    after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 shadow-inner">
         </div>
-        
-        <span class="ml-3 text-sm font-medium text-gray-600 select-none">
+    </label>
+
+    <div class="flex flex-col select-none cursor-pointer" onclick="document.getElementById('<?= $id ?>').click()">
+        <span class="text-sm font-semibold text-gray-800 leading-tight">
             <?= $label ?>
         </span>
-    </label>
+        <?php if ($description): ?>
+            <span class="text-xs text-gray-500 mt-1 leading-relaxed max-w-sm">
+                <?= $description ?>
+            </span>
+        <?php endif; ?>
+    </div>
 </div>

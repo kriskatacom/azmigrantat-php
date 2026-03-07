@@ -2,20 +2,9 @@
 
 namespace App\Models;
 
-use PDO;
-
 class Driver extends Model
 {
     protected string $table = 'drivers';
-
-    public function findBySlug(string $slug): ?array
-    {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE slug = :slug LIMIT 1");
-        $stmt->execute(['slug' => $slug]);
-        $result = $stmt->fetch();
-
-        return $result ?: null;
-    }
 
     public function findByUsername(string $username): ?array
     {
@@ -41,7 +30,7 @@ class Driver extends Model
             INNER JOIN users u ON d.user_id = u.id
             LEFT JOIN cities c1 ON d.from_city_id = c1.id
             LEFT JOIN cities c2 ON d.to_city_id = c2.id
-            WHERE d.driver_travel_status != 'not_traveling'";
+            WHERE d.driver_travel_status != 'not_traveling' AND d.is_active = '1'";
 
         $params = [];
 
@@ -107,6 +96,8 @@ class Driver extends Model
         if (!empty($data['travel_starts_at'])) {
             $data['travel_starts_at'] = date('Y-m-d H:i:s', strtotime($data['travel_starts_at']));
         }
+        
+        $data['is_active'] = isset($data['is_active']) ? 1 : 0;
 
         unset($data['country_id'], $data['city_id'], $data['remove_travel_departure_image'], $data['remove_travel_return_image'], $data['slug']);
 
@@ -123,7 +114,7 @@ class Driver extends Model
             INNER JOIN users u ON d.user_id = u.id
             LEFT JOIN cities c1 ON d.from_city_id = c1.id
             LEFT JOIN cities c2 ON d.to_city_id = c2.id
-            WHERE d.status = 'active'
+            WHERE d.is_active = '1'
             ORDER BY d.travel_starts_at ASC";
 
         $stmt = $this->db->prepare($sql);

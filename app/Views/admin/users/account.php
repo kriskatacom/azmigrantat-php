@@ -6,16 +6,28 @@ use App\Models\User;
 $sessionUser = User::auth();
 $isEdit = isset($driver);
 
+$isAdmin = ($sessionUser['role'] === 'admin');
+$isDriver = ($sessionUser['role'] === 'driver');
+
 $targetUserId = $isEdit ? $driver['user_id'] : $sessionUser['id'];
-$action = "/admin/drivers/update/{$targetUserId}";
+$action = "/admin/users/update/{$targetUserId}";
+
+if ($isDriver) {
+    $breadcrumbs = [
+        ['label' => 'Моят профил', 'url' => "/travel/shared-travel/drivers/" . $user['username']],
+        ['label' => 'Редактиране на профила']
+    ];
+} else {
+    $breadcrumbs = [
+        ['label' => 'Потребители', 'url' => '/admin/users'],
+        ['label' => $isEdit ? "Редактиране: " . htmlspecialchars($driver['name'] ?? 'Профил') : 'Нов шофьор']
+    ];
+}
 ?>
 
 <div class="mb-5">
     <?php View::component('breadcrumbs', 'admin/components', [
-        'items' => [
-            ['label' => 'Шофьори', 'url' => '/admin/drivers'],
-            ['label' => $isEdit ? "Редактиране: " . htmlspecialchars($driver['name'] ?? 'Профил') : 'Нов шофьор']
-        ]
+        'items' => $breadcrumbs
     ]); ?>
 </div>
 
@@ -155,8 +167,9 @@ $action = "/admin/drivers/update/{$targetUserId}";
     <?php ob_start(); ?>
     <?php View::component('toggle', 'admin/components', [
         'name'  => 'is_active',
-        'label' => 'Показвай в сайта',
-        'value' => $embassy['is_active'] ?? true
+        'label' => '<i class="fas fa-eye mr-1 text-gray-500"></i> Видимост в сайта',
+        'value' => $driver['is_active'] ?? true,
+        'description' => 'Ако е изключено, профилът ще бъде скрит за клиентите.'
     ]); ?>
     <?php View::component('card', 'admin/components', ['title' => 'Настройки на видимост', 'slot' => ob_get_clean()]); ?>
 

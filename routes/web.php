@@ -165,8 +165,8 @@ $router->post('/admin/categories/delete/(\d+)', [CategoryController::class, 'del
 $router->post('/admin/categories/update-order', [CategoryController::class, 'updateOrder']);
 
 // --- Шофьори (Drivers)
-$router->get('/admin/drivers/edit/{id}', [DriverController::class, 'account']);
-$router->post('/admin/drivers/update/{id}', [DriverController::class, 'updateAccount']);
+$router->get('/admin/users/edit/{id}', [DriverController::class, 'account']);
+$router->post('/admin/users/update/{id}', [DriverController::class, 'updateAccount']);
 
 // --- Публични страници ---
 $router->get('/', [HomeController::class, 'index']);

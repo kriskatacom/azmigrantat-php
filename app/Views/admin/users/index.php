@@ -28,7 +28,6 @@ $allRoles = [
         ['label' => 'Име'],
         ['label' => 'Имейл'],
         ['label' => 'Роля'],
-        ['label' => 'Статус', 'align' => 'center'],
         ['label' => 'Действия', 'align' => 'right']
     ];
 
@@ -36,7 +35,7 @@ $allRoles = [
     foreach ($users as $user): ?>
         <tr class="hover:bg-gray-200/50 transition">
             <td class="px-6 py-4">
-                <a href="/admin/drivers/edit/<?= $user['id'] ?>" class="flex items-center gap-3 group">
+                <a href="/admin/users/edit/<?= $user['id'] ?>" class="flex items-center gap-3 group">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500 uppercase">
                             <?= mb_substr($user['name'], 0, 1) ?>
@@ -59,9 +58,6 @@ $allRoles = [
                 <span class="px-2 py-1 rounded-md text-[10px] font-bold uppercase border <?= $badgeClass ?>">
                     <?= htmlspecialchars($user['role_label'] ?? $user['role_name']) ?>
                 </span>
-            </td>
-            <td class="px-6 py-4 text-center">
-                <span class="inline-block w-2 h-2 rounded-full <?= $user['is_active'] ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-400' ?>"></span>
             </td>
             <td class="p-0 w-56 border-l border-gray-100">
                 <div class="flex items-stretch h-full min-h-15">

@@ -14,6 +14,7 @@ use App\Services\HelperService;
     <title><?= $title ?? 'Админ' ?></title>
     <link rel="stylesheet" href="/assets/css/min/tailwind.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 </head>
 
@@ -36,33 +37,43 @@ use App\Services\HelperService;
             $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             $menu = [
-                ['label' => 'Табло', 'url' => '/admin/dashboard', 'icon' => 'dashboard-icon'],
-                ['label' => 'Потребители', 'url' => '/admin/users', 'icon' => 'users-icon'],
-                ['label' => 'Категории', 'url' => '/admin/categories', 'icon' => 'categories-icon'],
-                ['label' => 'Държави', 'url' => '/admin/countries', 'icon' => 'globe-icon'],
-                ['label' => 'Градове', 'url' => '/admin/cities', 'icon' => 'city-icon'],
-                ['label' => 'Посолства', 'url' => '/admin/embassies', 'icon' => 'embassy-icon'],
-                ['label' => 'Забележителности', 'url' => '/admin/landmarks', 'icon' => 'pyramid-icon'],
-                ['label' => 'Круизи', 'url' => '/admin/cruises', 'icon' => 'anchor-icon'],
-                ['label' => 'Автобуси', 'url' => '/admin/autobuses', 'icon' => 'bus-icon'],
-                ['label' => 'Авиокомпании', 'url' => '/admin/airlines', 'icon' => 'plane-icon'],
-                ['label' => 'Компании', 'url' => '/admin/companies', 'icon' => 'building-2-icon'],
-                ['label' => 'Летища', 'url' => '/admin/airports', 'icon' => 'plane-takeoff-icon'],
-                ['label' => 'Влакове', 'url' => '/admin/trains', 'icon' => 'train-front-icon'],
-                ['label' => 'Таксита', 'url' => '/admin/taxis', 'icon' => 'car-taxi-front-icon'],
-                ['label' => 'Банери', 'url' => '/admin/banners', 'icon' => 'rectangle-horizontal-icon'],
+                ['label' => 'Табло', 'url' => '/admin/dashboard', 'icon' => 'fas fa-chart-line'],
+                ['label' => 'Потребители', 'url' => '/admin/users', 'icon' => 'fas fa-users'],
+                ['label' => 'Категории', 'url' => '/admin/categories', 'icon' => 'fas fa-layer-group'],
+                ['label' => 'Държави', 'url' => '/admin/countries', 'icon' => 'fas fa-globe-europe'],
+                ['label' => 'Градове', 'url' => '/admin/cities', 'icon' => 'fas fa-city'],
+                ['label' => 'Посолства', 'url' => '/admin/embassies', 'icon' => 'fas fa-landmark-flag'],
+                ['label' => 'Забележителности', 'url' => '/admin/landmarks', 'icon' => 'fas fa-monument'],
+                ['label' => 'Круизи', 'url' => '/admin/cruises', 'icon' => 'fas fa-ship'],
+                ['label' => 'Автобуси', 'url' => '/admin/autobuses', 'icon' => 'fas fa-bus'],
+                ['label' => 'Авиокомпании', 'url' => '/admin/airlines', 'icon' => 'fas fa-plane'],
+                ['label' => 'Компании', 'url' => '/admin/companies', 'icon' => 'fas fa-building'],
+                ['label' => 'Летища', 'url' => '/admin/airports', 'icon' => 'fas fa-plane-arrival'],
+                ['label' => 'Влакове', 'url' => '/admin/trains', 'icon' => 'fas fa-train'],
+                ['label' => 'Таксита', 'url' => '/admin/taxis', 'icon' => 'fas fa-taxi'],
+                ['label' => 'Банери', 'url' => '/admin/banners', 'icon' => 'fas fa-ad'],
             ];
 
             foreach ($menu as $item):
                 $isActive = (strpos($currentPath, $item['url']) === 0);
-                $activeClass = $isActive ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:bg-gray-800 hover:text-white';
+
+                $activeClass = $isActive
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20'
+                    : 'text-gray-400 hover:bg-gray-800 hover:text-white';
+
+                $iconColorClass = $isActive ? 'text-white' : 'text-gray-200 group-hover:text-white';
             ?>
-                <a href="<?= $item['url'] ?>" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group <?= $activeClass ?>">
-                    <?php HelperService::icon($item['icon'], 'text-white w-8 h-8 group-hover:animate-spin-slow'); ?>
+                <a href="<?= $item['url'] ?>"
+                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group <?= $activeClass ?>">
+
+                    <div class="w-8 flex justify-center items-center">
+                        <i class="<?= $item['icon'] ?> text-lg transition-transform duration-300 group-hover:scale-110 <?= $iconColorClass ?>"></i>
+                    </div>
+
                     <span class="font-medium"><?= $item['label'] ?></span>
 
                     <?php if ($isActive): ?>
-                        <span class="ml-auto w-1.5 h-1.5 bg-white rounded-full"></span>
+                        <span class="ml-auto w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"></span>
                     <?php endif; ?>
                 </a>
             <?php endforeach; ?>

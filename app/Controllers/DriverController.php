@@ -99,13 +99,14 @@ class DriverController extends BaseController
             $toCities = $this->cityModel->where('country_id', $driver['to_country_id'], 'name ASC');
         }
 
-        return View::render('admin/drivers/account', [
+        return View::render('admin/users/account', [
             'driver'    => $driver,
             'countries' => $countries,
             'fromCities' => $fromCities,
             'toCities'  => $toCities,
+            'user' => $sessionUser,
             'title'     => "Редактиране на профил: " . htmlspecialchars($driver['name']),
-            'layout'    => 'admin'
+            'layout'    => $sessionUser['role'] === 'admin' ? 'admin' : 'drivers'
         ]);
     }
 
@@ -135,10 +136,10 @@ class DriverController extends BaseController
         $this->handleUpdate(
             $this->driverModel,
             $driver['id'],
-            '/admin/drivers',
+            '/admin/users',
             ['profile_image_url', 'cover_image_url', 'post_image_url', 'travel_departure_image', 'travel_return_image'],
             'drivers',
-            '/admin/drivers/edit/' . $userId
+            '/admin/users/edit/' . $userId
         );
     }
 
