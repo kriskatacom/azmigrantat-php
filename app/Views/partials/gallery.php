@@ -9,9 +9,13 @@ if (!empty($images)) {
 $jsonImages = htmlspecialchars(json_encode($imagesList), ENT_QUOTES, 'UTF-8');
 $galleryId = 'gallery_' . uniqid();
 $variant = $variant ?? 'card';
+$buttonClasses = "btn-primary w-full sm:w-auto";
+if (!empty($buttonClassesParam)) {
+    $buttonClasses .= " " . $buttonClassesParam;
+}
 ?>
 
-<div x-data="galleryComponent(<?= $jsonImages ?>)" x-init="init()">
+<div class="w-full sm:w-auto" x-data="galleryComponent(<?= $jsonImages ?>)" x-init="init()">
     
     <?php if ($variant === 'card'): ?>
     <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden flex flex-col">
@@ -42,7 +46,7 @@ $variant = $variant ?? 'card';
     <?php elseif ($variant === 'button'): ?>
         <template x-if="images.length > 0">
             <div>
-                <button @click="openGallery()" class="btn-primary">
+                <button @click="openGallery()" class="<?= $buttonClasses ?>">
                     <?php HelperService::icon('image', 'w-5 h-5'); ?>
                     <?= $title ?? 'Виж галерията' ?>
                     <span class="opacity-70" x-text="'(' + images.length + ')'"></span>
@@ -62,7 +66,7 @@ $variant = $variant ?? 'card';
                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <div class="text-white text-center">
                          <?php HelperService::icon('image', 'w-8 h-8 mx-auto mb-2'); ?>
-                         <span class="font-bold uppercase tracking-widest text-sm">Виж всички снимки</span>
+                         <span class="font-bold tracking-widest text-sm">Виж всички снимки</span>
                     </div>
                 </div>
                 <div class="hidden">

@@ -41,6 +41,21 @@ class CategoryController extends BaseController
         $categoryPathArr = $categoriesPath ? explode('/', trim($categoriesPath, '/')) : [];
         $lastSlug = !empty($categoryPathArr) ? end($categoryPathArr) : null;
 
+        if ($lastSlug === 'about') {
+            $companySlug = $categoryPathArr[count($categoryPathArr) - 2] ?? null;
+
+            if ($companySlug) {
+                $company = $this->companyModel->all([
+                    'where' => ['slug' => $companySlug, 'city_id' => $city['id'], 'is_active' => 1]
+                ])[0] ?? null;
+
+                if ($company) {
+                    array_pop($categoryPathArr);
+                    return $this->renderCompanyAbout($company, $country, $city, $categoryPathArr);
+                }
+            }
+        }
+
         if ($lastSlug) {
             $company = $this->companyModel->all([
                 'where' => ['slug' => $lastSlug, 'city_id' => $city['id'], 'is_active' => 1]
@@ -88,6 +103,16 @@ class CategoryController extends BaseController
             'base_url'     => "/{$countrySlug}/cities/{$citySlug}/" . ($categoriesPath ? trim($categoriesPath, '/') . '/' : ''),
             'categoryPath' => $categoryPathArr,
             'breadcrumbs'  => $breadcrumbs,
+        ]);
+    }
+
+    private function renderCompanyAbout($company, $country, $city, $pathArray)
+    {
+        View::render('companies/about', [
+            'company' => $company,
+            'country' => $country,
+            'city' => $city,
+            'categoryPath' => $pathArray
         ]);
     }
 

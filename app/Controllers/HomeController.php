@@ -6,6 +6,7 @@ use App\Core\View;
 use App\Models\Country;
 use App\Models\Banner;
 use App\Models\City;
+use App\Models\Driver;
 use App\Services\HelperService;
 
 class HomeController
@@ -13,12 +14,14 @@ class HomeController
     private Country $countryModel;
     private Banner $bannerModel;
     private City $cityModel;
+    private Driver $driverModel;
 
     public function __construct()
     {
         $this->countryModel = new Country();
         $this->bannerModel = new Banner();
         $this->cityModel = new City();
+        $this->driverModel = new Driver();
     }
 
     public function index()
@@ -72,11 +75,14 @@ class HomeController
 
         $allCities = $this->cityModel->all();
 
+        $drivers = $this->driverModel->getActiveDriversWithUsers();
+
         $citiesJson = json_encode($allCities, JSON_UNESCAPED_UNICODE);
 
         View::render('travel/shared-travel/index', [
             'title'       => $mainBanner['name'] ?? 'Споделено пътуване',
             'banner'      => $mainBanner,
+            'drivers'     => $drivers,
             'citiesJson'  => $citiesJson,
             'breadcrumbs' => $breadcrumbs
         ]);

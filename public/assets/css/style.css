@@ -19,7 +19,7 @@ html {
 
 @layer components {
     .btn-primary {
-        @apply inline-flex items-center gap-2 bg-primary-darken hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-all font-bold uppercase text-sm cursor-pointer;
+        @apply inline-flex items-center gap-2 bg-primary-darken hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-all font-semibold cursor-pointer;
     }
     .icon-button-primary {
         @apply overflow-hidden w-10 h-10 flex justify-center items-center bg-gray-100 hover:bg-gray-200 focus:bg-gray-300 rounded;
@@ -109,4 +109,22 @@ html {
     .fancybox__thumbs.is-scrollable {
         --f-thumbs-cols: 2;
     }
+}
+
+.html-content ul, .html-content ol {
+    margin-left: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.html-content ul {
+    list-style: disc;
+}
+
+.html-content ol {
+    list-style: decimal;
+}
+
+.html-content li {
+    margin-bottom: 5px;
 }

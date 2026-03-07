@@ -114,10 +114,11 @@ $action = $isEdit ? "/admin/companies/update/{$company['id']}" : "/admin/compani
 
     <?php ob_start(); ?>
     <div class="space-y-5">
-        <div class="space-y-2">
-            <label class="text-sm font-semibold text-gray-600">Кратко резюме (Excerpt)</label>
-            <textarea name="excerpt" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none"><?= htmlspecialchars($company['excerpt'] ?? '') ?></textarea>
-        </div>
+        <?php View::component('editor', 'admin/components', [
+            'name'  => 'services_description',
+            'label' => 'Услуги на компанията',
+            'value' => $company['services_description'] ?? null,
+        ]); ?>
 
         <?php View::component('editor', 'admin/components', [
             'name'  => 'description',

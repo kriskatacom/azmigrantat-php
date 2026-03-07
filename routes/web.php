@@ -164,10 +164,15 @@ $router->post('/admin/categories/update/(\d+)', [CategoryController::class, 'upd
 $router->post('/admin/categories/delete/(\d+)', [CategoryController::class, 'delete']);
 $router->post('/admin/categories/update-order', [CategoryController::class, 'updateOrder']);
 
+// --- Шофьори (Drivers)
+$router->get('/admin/drivers/edit/{id}', [DriverController::class, 'account']);
+$router->post('/admin/drivers/update/{id}', [DriverController::class, 'updateAccount']);
+
 // --- Публични страници ---
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/travel', [HomeController::class, 'travel']);
 $router->get('/travel/shared-travel', [HomeController::class, 'sharedTravel']);
+$router->get('/travel/shared-travel/drivers', [DriverController::class, 'index']);
 $router->get('/travel/shared-travel/drivers/{username}', [DriverController::class, 'show']);
 $router->get('/{countrySlug}', [CountryController::class, 'show']);
 $router->get('/{countrySlug}/embassies', [EmbassyController::class, 'indexByCountry']);

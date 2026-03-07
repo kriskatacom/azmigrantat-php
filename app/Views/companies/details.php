@@ -30,22 +30,10 @@ $user = User::auth();
         </h1>
 
         <div class="flex flex-col sm:flex-row sm:justify-center items-center gap-2 md:gap-5 w-full">
-            <button @click="$dispatch('open-modal-show-description')" class="btn-primary">
+            <a href="<?= $_SERVER['REQUEST_URI'] ?>/about" class="btn-primary">
                 Научете повече за нас
-            </button>
-
-            <?php View::component('gallery', 'partials', [
-                'images' => $company['additional_images'],
-                'title' => 'Нашата галерия',
-                'variant' => 'button'
-            ]); ?>
+            </a>
         </div>
-
-        <?php View::component("modal", "partials", [
-            'id' => 'show-description',
-            'title' => 'Описание на ' . htmlspecialchars($company['name']),
-            'content' => $company['description'],
-        ]); ?>
     </div>
 </div>
 
@@ -113,20 +101,6 @@ $user = User::auth();
                     Редактирай обявата
                 </a>
             <?php endif; ?>
-        </div>
-    </div>
-
-    <div class="relative h-80 overflow-hidden rounded-xl shadow-md my-5 md:my-10">
-        <img src="<?= HelperService::getImage($company['bottom_image_url'] ?: 'default-bg.jpg') ?>"
-            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500"
-            alt="Company background">
-
-        <div class="absolute inset-0 bg-black/80"></div>
-
-        <div class="absolute inset-0 overflow-y-auto p-5 md:p-10 custom-scrollbar">
-            <div class="text-white md:text-lg leading-relaxed">
-                <?= $company['contacts_content'] ?>
-            </div>
         </div>
     </div>
 

@@ -1,17 +1,18 @@
 <?php
 /**
- * @var array $countries Списък с всички държави
- * @var array|null $cities Списък с градове (само при редакция)
- * @var int|null $selectedCountry ID на избраната държава
- * @var int|null $selectedCity ID на избрания град
+ * @var string|null $name_country Име на полето за държава (default: country_id)
+ * @var string|null $name_city Име на полето за град (default: city_id)
+ * ... останалите променливи ...
  */
 $uid = uniqid('loc_');
+$finalNameCountry = $name_country ?? 'country_id';
+$finalNameCity = $name_city ?? 'city_id';
 ?>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="container-<?= $uid ?>">
     <div class="space-y-2">
         <label class="text-sm font-semibold text-gray-600">Държава</label>
-        <select name="country_id" 
+        <select name="<?= $finalNameCountry ?>" 
                 class="form-control bg-white country-select" 
                 required>
             <option value="">-- Изберете държава --</option>
@@ -25,7 +26,7 @@ $uid = uniqid('loc_');
 
     <div class="space-y-2">
         <label class="text-sm font-semibold text-gray-600">Град</label>
-        <select name="city_id" 
+        <select name="<?= $finalNameCity ?>" 
                 class="form-control bg-white city-select" 
                 required>
             <?php if ($selectedCountry && $cities): ?>

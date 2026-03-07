@@ -8,7 +8,7 @@ use App\Services\FileService;
 
 abstract class BaseController
 {
-    protected function checkAccess(?string $requiredRole = null): void
+    protected function checkAccess(string|array|null $requiredRoles = null): void
     {
         $user = User::auth();
 
@@ -16,8 +16,16 @@ abstract class BaseController
             $this->redirect('/auth/login');
         }
 
-        if ($requiredRole !== null && ($user['role'] ?? '') !== $requiredRole) {
-            $this->flash('error', "Нямате необходимите права за този достъп!");
+        if ($requiredRoles === null) {
+            return;
+        }
+
+        $allowedRoles = is_array($requiredRoles) ? $requiredRoles : [$requiredRoles];
+
+        $userRole = $user['role'] ?? '';
+
+        if (!in_array($userRole, $allowedRoles)) {
+            $this->flash('error', "Нямате необходимите права за достъп до тази страница!");
             $this->redirect('/');
         }
     }
@@ -163,7 +171,7 @@ abstract class BaseController
         }
     }
 
-    protected function handleUpdate($model, int $id, string $baseRoute, array $fileFields = ['image_url'], string $uploadFolder = 'images')
+    protected function handleUpdate($model, $id, string $baseRoute, array $fileFields = ['image_url'], string $uploadFolder = 'images', ?string $customRedirect = null)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') return;
 
@@ -197,7 +205,9 @@ abstract class BaseController
             $this->flash('success', 'Данните бяха обновени успешно!');
         }
 
-        $this->redirect($baseRoute . '/edit/' . $id);
+        $finalRedirect = $customRedirect ?? ($baseRoute . '/edit/' . $id);
+
+        $this->redirect($finalRedirect);
     }
 
     protected function handleGalleryUpdate(array $currentItem, array $postData, string $field = 'additional_images', string $folder = 'gallery'): string

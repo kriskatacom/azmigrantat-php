@@ -36,12 +36,14 @@ $allRoles = [
     foreach ($users as $user): ?>
         <tr class="hover:bg-gray-200/50 transition">
             <td class="px-6 py-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500 uppercase">
-                        <?= mb_substr($user['name'], 0, 1) ?>
+                <a href="/admin/drivers/edit/<?= $user['id'] ?>" class="flex items-center gap-3 group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500 uppercase">
+                            <?= mb_substr($user['name'], 0, 1) ?>
+                        </div>
+                        <span class="font-medium text-gray-700 group-hover:text-blue-500 duration-300"><?= htmlspecialchars($user['name']) ?></span>
                     </div>
-                    <span class="font-medium text-gray-700"><?= htmlspecialchars($user['name']) ?></span>
-                </div>
+                </a>
             </td>
             <td class="px-6 py-4 text-gray-600 text-sm italic"><?= htmlspecialchars($user['email']) ?></td>
             <td class="px-6 py-4">
@@ -122,12 +124,12 @@ $allRoles = [
 
         <form action="/admin/users/update-role" method="POST" class="grid gap-2">
             <input type="hidden" name="user_id" id="modal-user-id">
-            
+
             <?php foreach ($allRoles as $id => $r): ?>
                 <button type="submit" name="role_id" value="<?= $id ?>"
                     id="role-btn-<?= $id ?>"
                     class="role-option-btn group w-full text-left px-5 py-4 rounded-2xl text-sm font-semibold transition-all duration-200 flex justify-between items-center border-2 border-transparent relative">
-                    
+
                     <div class="flex items-center gap-3">
                         <div class="role-dot w-2 h-2 rounded-full bg-slate-300 group-hover:scale-125 transition-transform"></div>
                         <span class="role-label"><?= $r['label'] ?></span>
@@ -147,62 +149,62 @@ $allRoles = [
 </dialog>
 
 <script>
-const roleModal = document.getElementById('global-role-modal');
-roleModal.addEventListener('click', (e) => {
-    const dialogDimensions = roleModal.getBoundingClientRect();
-    if (
-        e.clientX < dialogDimensions.left ||
-        e.clientX > dialogDimensions.right ||
-        e.clientY < dialogDimensions.top ||
-        e.clientY > dialogDimensions.bottom
-    ) {
-        roleModal.close();
-    }
-});
-
-function openRoleModal(id, email, currentRoleId) {
-    document.getElementById('modal-user-id').value = id;
-    document.getElementById('modal-user-email').innerText = email;
-    
-    document.querySelectorAll('.role-option-btn').forEach(btn => {
-        btn.classList.remove('bg-slate-900', 'text-white', 'border-slate-900', 'shadow-xl', 'shadow-slate-200');
-        btn.classList.add('bg-slate-50', 'text-slate-600', 'hover:bg-slate-100');
-        btn.querySelector('.check-mark').classList.add('opacity-0', 'scale-50');
-        btn.querySelector('.role-dot').classList.remove('bg-blue-400');
-        btn.querySelector('.role-dot').classList.add('bg-slate-300');
+    const roleModal = document.getElementById('global-role-modal');
+    roleModal.addEventListener('click', (e) => {
+        const dialogDimensions = roleModal.getBoundingClientRect();
+        if (
+            e.clientX < dialogDimensions.left ||
+            e.clientX > dialogDimensions.right ||
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+        ) {
+            roleModal.close();
+        }
     });
-    
-    const activeBtn = document.getElementById('role-btn-' + currentRoleId);
-    if(activeBtn) {
-        activeBtn.classList.remove('bg-slate-50', 'text-slate-600', 'hover:bg-slate-100');
-        activeBtn.classList.add('bg-slate-900', 'text-white', 'border-slate-900', 'shadow-xl', 'shadow-slate-200');
-        activeBtn.querySelector('.check-mark').classList.remove('opacity-0', 'scale-50');
-        activeBtn.querySelector('.role-dot').classList.remove('bg-slate-300');
-        activeBtn.querySelector('.role-dot').classList.add('bg-blue-400');
+
+    function openRoleModal(id, email, currentRoleId) {
+        document.getElementById('modal-user-id').value = id;
+        document.getElementById('modal-user-email').innerText = email;
+
+        document.querySelectorAll('.role-option-btn').forEach(btn => {
+            btn.classList.remove('bg-slate-900', 'text-white', 'border-slate-900', 'shadow-xl', 'shadow-slate-200');
+            btn.classList.add('bg-slate-50', 'text-slate-600', 'hover:bg-slate-100');
+            btn.querySelector('.check-mark').classList.add('opacity-0', 'scale-50');
+            btn.querySelector('.role-dot').classList.remove('bg-blue-400');
+            btn.querySelector('.role-dot').classList.add('bg-slate-300');
+        });
+
+        const activeBtn = document.getElementById('role-btn-' + currentRoleId);
+        if (activeBtn) {
+            activeBtn.classList.remove('bg-slate-50', 'text-slate-600', 'hover:bg-slate-100');
+            activeBtn.classList.add('bg-slate-900', 'text-white', 'border-slate-900', 'shadow-xl', 'shadow-slate-200');
+            activeBtn.querySelector('.check-mark').classList.remove('opacity-0', 'scale-50');
+            activeBtn.querySelector('.role-dot').classList.remove('bg-slate-300');
+            activeBtn.querySelector('.role-dot').classList.add('bg-blue-400');
+        }
+
+        roleModal.showModal();
     }
-    
-    roleModal.showModal();
-}
 </script>
 
 <style>
-#global-role-modal::backdrop {
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(8px);
-    transition: opacity 0.3s ease;
-}
+    #global-role-modal::backdrop {
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(8px);
+        transition: opacity 0.3s ease;
+    }
 
-#global-role-modal {
-    transform: scale(0.95) translateY(10px);
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    display: block !important;
-    pointer-events: none;
-}
+    #global-role-modal {
+        transform: scale(0.95) translateY(10px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: block !important;
+        pointer-events: none;
+    }
 
-#global-role-modal[open] {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-    pointer-events: auto;
-}
+    #global-role-modal[open] {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
 </style>
