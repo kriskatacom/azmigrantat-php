@@ -17,6 +17,7 @@ use App\Controllers\EmbassyController;
 use App\Controllers\AutobusController;
 use App\Controllers\CategoryController;
 use App\Controllers\CompanyController;
+use App\Controllers\CompanyAdController;
 use App\Controllers\CountryElementController;
 use App\Controllers\TaxiController;
 use App\Controllers\DriverController;
@@ -127,6 +128,15 @@ $router->get('/admin/companies/edit/(\d+)', [CompanyController::class, 'edit']);
 $router->post('/admin/companies/update/(\d+)', [CompanyController::class, 'update']);
 $router->post('/admin/companies/delete/(\d+)', [CompanyController::class, 'delete']);
 $router->post('/admin/companies/update-order', [CompanyController::class, 'updateOrder']);
+
+// Реклами на компании (Company Ads)
+$router->get('/admin/ads', [CompanyAdController::class, 'index']);
+$router->get('/admin/ads/create', [CompanyAdController::class, 'create']);
+$router->post('/admin/ads/store', [CompanyAdController::class, 'store']);
+$router->get('/admin/ads/edit/(\d+)', [CompanyAdController::class, 'edit']);
+$router->post('/admin/ads/update/(\d+)', [CompanyAdController::class, 'update']);
+$router->post('/admin/ads/delete/(\d+)', [CompanyAdController::class, 'delete']);
+$router->post('/admin/ads/update-order', [CompanyAdController::class, 'updateOrder']);
 
 // Летища (Airports)
 $router->get('/admin/airports', [AirportController::class, 'index']);

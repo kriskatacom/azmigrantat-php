@@ -43,33 +43,107 @@ $user = User::auth();
             <h3 class="text-center font-semibold my-2 md:my-5 text-white text-xl md:text-2xl">Реклами</h3>
 
             <div class="relative h-64 md:h-80 rounded-xl shadow-md overflow-hidden mb-4">
-                <img src="<?= HelperService::getImage($company['ads_image_url'] ?: $company['image_url']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center p-6 text-center">
-                    <?php if (!empty($user['id'])): ?>
-                        <span class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">
-                            Вашите реклами се показват тук
-                        </span>
-                    <?php else: ?>
-                        <div class="space-y-5">
-                            <h3 class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">Управлявайте рекламите си с лекота</h3>
-                            <a href="/auth/login" title="Влизане в профила" class="text-white btn-primary">Влизане в профила</a>
+                <?php if (!empty($ads)): ?>
+                    <div class="swiper adsSwiper h-full w-full">
+                        <div class="swiper-wrapper">
+                            <?php foreach ($ads as $ad): ?>
+                                <div class="swiper-slide">
+                                    <img src="<?= HelperService::getImage($ad['image_url']) ?>"
+                                        class="w-full h-full object-cover"
+                                        alt="<?= htmlspecialchars($ad['name']) ?>">
+                                </div>
+                            <?php endforeach; ?>
                         </div>
-                    <?php endif; ?>
-                </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                <?php else: ?>
+                    <img src="<?= HelperService::getImage($company['ads_image_url'] ?: $company['image_url']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center p-6 text-center">
+                        <?php if (!empty($user['id'])): ?>
+                            <span class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">
+                                Вашите реклами се показват тук
+                            </span>
+                        <?php else: ?>
+                            <div class="space-y-5">
+                                <h3 class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">Управлявайте рекламите си с лекота</h3>
+                                <a href="/auth/login" title="Влизане в профила" class="text-white btn-primary">Влизане в профила</a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <?php if (!empty($user['id']) && $user['id'] === $company['user_id']): ?>
                 <div class="text-white text-sm md:text-base leading-relaxed mb-4 grow italic">
                     Използвайте това пространство за вашите корпоративни банери, имиджови кампании или съобщения за кариерно развитие и свободни работни позиции в структурата на вашата организация.
                 </div>
-                <a href="/admin/companies/edit/<?= $company['id'] ?>" class="flex justify-center btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <a href="/admin/ads" class="flex justify-center btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Редактирай рекламата
+                    Управление на реклами
                 </a>
             <?php endif; ?>
         </div>
+
+        <?php if (!empty($ads)): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const swiper = new Swiper('.adsSwiper', {
+                        effect: 'cube',
+                        grabCursor: true,
+                        loop: true,
+                        observer: true,
+                        observeParents: true,
+                        cubeEffect: {
+                            shadow: true,
+                            slideShadows: true,
+                            shadowOffset: 20,
+                            shadowScale: 0.94,
+                        },
+                        autoplay: {
+                            delay: 3000,
+                            disableOnInteraction: false,
+                        },
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable: true,
+                        },
+                    });
+                });
+            </script>
+            <style>
+                .adsSwiper {
+                    width: 100%;
+                    height: 100%;
+                    position: relative;
+                    overflow: hidden !important;
+                    transform: translate3d(0, 0, 0);
+                    perspective: 1200px;
+                }
+
+                .swiper-slide {
+                    width: 100% !important;
+                    height: 100% !important;
+                    backface-visibility: hidden;
+                    -webkit-backface-visibility: hidden;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .swiper-slide img {
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: cover !important;
+                    display: block;
+                }
+
+                .swiper-wrapper {
+                    box-sizing: border-box;
+                }
+            </style>
+        <?php endif; ?>
 
         <div class="group flex flex-col">
             <h3 class="text-center font-semibold my-2 md:my-5 text-white text-xl md:text-2xl">Обяви</h3>

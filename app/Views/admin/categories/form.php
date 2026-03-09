@@ -43,7 +43,7 @@ $action = $isEdit ? "/admin/categories/update/{$category['id']}" : "/admin/categ
             <input type="text" name="name" id="cat-name" value="<?= htmlspecialchars($category['name'] ?? '') ?>" required class="form-control">
         </div>
 
-        <?php View::component('category-select', 'admin/components', [
+        <?php View::component('select-dropdown', 'admin/components', [
             'name'       => 'parent_id',
             'label'      => 'Родителска категория',
             'options'    => $categories,

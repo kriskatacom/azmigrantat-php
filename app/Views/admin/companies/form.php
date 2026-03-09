@@ -87,7 +87,7 @@ $action = $isEdit ? "/admin/companies/update/{$company['id']}" : "/admin/compani
 
         <div class="grid md:grid-cols-2 gap-5">
 
-            <?php View::component('category-select', 'admin/components', [
+            <?php View::component('select-dropdown', 'admin/components', [
                 'name'       => 'category_id',
                 'label'      => 'Категория',
                 'options'    => $categories,

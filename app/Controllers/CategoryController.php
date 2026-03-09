@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Country;
 use App\Models\City;
 use App\Models\Company;
+use App\Models\CompanyAd;
 
 class CategoryController extends BaseController
 {
@@ -15,6 +16,7 @@ class CategoryController extends BaseController
     protected Country $countryModel;
     protected City $cityModel;
     protected Company $companyModel;
+    protected CompanyAd $adModel;
 
     protected string $baseRoute = '/admin/categories';
 
@@ -24,6 +26,7 @@ class CategoryController extends BaseController
         $this->countryModel = new Country();
         $this->cityModel = new City();
         $this->companyModel = new Company();
+        $this->adModel = new CompanyAd();
     }
 
     // Public Routes
@@ -123,6 +126,16 @@ class CategoryController extends BaseController
             $category = $this->categoryModel->all(['where' => ['id' => $company['category_id']]])[0] ?? null;
         }
 
+        // Вземаме активните реклами за конкретната компания
+        // Предполагаме, че моделът се казва adModel и има метод all()
+        $ads = $this->adModel->all([
+            'where' => [
+                'company_id' => $company['id'],
+                'status'     => 'active'
+            ],
+            'order' => 'sort_order ASC' // Сортираме ги по зададения от нас ред
+        ]);
+
         $breadcrumbs = [
             ['label' => $country['name'], 'href' => '/' . $country['slug']],
             ['label' => 'Градове', 'href' => '/' . $country['slug'] . '/cities'],
@@ -156,6 +169,7 @@ class CategoryController extends BaseController
             'country'     => $country,
             'city'        => $city,
             'category'    => $category,
+            'ads'         => $ads,
             'breadcrumbs' => $breadcrumbs
         ]);
     }

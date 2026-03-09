@@ -37,7 +37,7 @@ $action = $isEdit ? "/admin/airports/update/{$airport['id']}" : "/admin/airports
                 placeholder="напр. Летище София" class="form-control">
         </div>
         
-        <?php View::component('category-select', 'admin/components', [
+        <?php View::component('select-dropdown', 'admin/components', [
             'name'       => 'country_id',
             'label'      => 'Държава',
             'placeholder'      => '-- Изберете държава --',

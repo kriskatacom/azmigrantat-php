@@ -9,6 +9,7 @@ INSERT INTO `roles` (`name`, `label`) VALUES
 ('admin', 'Администратор'),
 ('driver', 'Шофьор'),
 ('user', 'Потребител'),
+('entrepreneur', 'Предприемач'),
 ('moderator', 'Модератор');
 
 ALTER TABLE `users` ADD COLUMN `role_id` INT DEFAULT 3 AFTER `username`;

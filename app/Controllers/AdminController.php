@@ -15,12 +15,6 @@ class AdminController extends BaseController
 
     public function __construct()
     {
-        $user = User::auth();
-        if ($user['role'] !== 'admin') {
-            header('Location: /');
-            exit;
-        }
-
         $this->countryModel = new Country();
         $this->landmarkModel = new Landmark();
         $this->userModel = new User();
@@ -28,7 +22,7 @@ class AdminController extends BaseController
 
     public function dashboard()
     {
-        $this->checkAccess('admin');
+        $this->checkAccess(['admin', 'entrepreneur']);
 
         $totalUsers = $this->userModel->count();
         $newUsersThisMonth = count($this->userModel->where('created_at >=', date('Y-m-d', strtotime('-30 days'))));

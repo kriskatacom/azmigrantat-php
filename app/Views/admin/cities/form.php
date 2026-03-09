@@ -37,7 +37,7 @@ $action = $isEdit ? "/admin/cities/update/{$city['id']}" : "/admin/cities/store"
                     required placeholder="напр. Рим" class="form-control">
             </div>
 
-            <?php View::component('category-select', 'admin/components', [
+            <?php View::component('select-dropdown', 'admin/components', [
                 'name'       => 'country_id',
                 'label'      => 'Държава',
                 'placeholder'      => '-- Изберете държава --',

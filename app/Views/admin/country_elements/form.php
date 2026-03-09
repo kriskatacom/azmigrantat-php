@@ -50,7 +50,7 @@ $action = $isEdit ? "/admin/countries/country-elements/update/{$element['id']}" 
             'source' => 'element-name-input'
         ]); ?>
 
-        <?php View::component('category-select', 'admin/components', [
+        <?php View::component('select-dropdown', 'admin/components', [
             'name'       => 'country_id',
             'label'      => 'Категория',
             'options'    => $countries,
