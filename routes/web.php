@@ -18,6 +18,7 @@ use App\Controllers\AutobusController;
 use App\Controllers\CategoryController;
 use App\Controllers\CompanyController;
 use App\Controllers\CompanyAdController;
+use App\Controllers\CompanyOfferController;
 use App\Controllers\CountryElementController;
 use App\Controllers\TaxiController;
 use App\Controllers\DriverController;
@@ -137,6 +138,15 @@ $router->get('/admin/ads/edit/(\d+)', [CompanyAdController::class, 'edit']);
 $router->post('/admin/ads/update/(\d+)', [CompanyAdController::class, 'update']);
 $router->post('/admin/ads/delete/(\d+)', [CompanyAdController::class, 'delete']);
 $router->post('/admin/ads/update-order', [CompanyAdController::class, 'updateOrder']);
+
+// Обяви на компании (Company Offers)
+$router->get('/admin/offers', [CompanyOfferController::class, 'index']);
+$router->get('/admin/offers/create', [CompanyOfferController::class, 'create']);
+$router->post('/admin/offers/store', [CompanyOfferController::class, 'store']);
+$router->get('/admin/offers/edit/(\d+)', [CompanyOfferController::class, 'edit']);
+$router->post('/admin/offers/update/(\d+)', [CompanyOfferController::class, 'update']);
+$router->post('/admin/offers/delete/(\d+)', [CompanyOfferController::class, 'delete']);
+$router->post('/admin/offers/update-order', [CompanyOfferController::class, 'updateOrder']);
 
 // Летища (Airports)
 $router->get('/admin/airports', [AirportController::class, 'index']);

@@ -86,10 +86,57 @@ $user = User::auth();
             <?php endif; ?>
         </div>
 
-        <?php if (!empty($ads)): ?>
+        <div class="group flex flex-col">
+            <h3 class="text-center font-semibold my-2 md:my-5 text-white text-xl md:text-2xl">Обяви</h3>
+
+            <div class="relative h-64 md:h-80 rounded-xl shadow-md overflow-hidden mb-4">
+                <?php if (!empty($offers)): ?>
+                    <div class="swiper offersSwiper h-full w-full">
+                        <div class="swiper-wrapper">
+                            <?php foreach ($offers as $ad): ?>
+                                <div class="swiper-slide">
+                                    <img src="<?= HelperService::getImage($ad['image_url']) ?>"
+                                        class="w-full h-full object-cover"
+                                        alt="<?= htmlspecialchars($ad['name']) ?>">
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                <?php else: ?>
+                    <img src="<?= HelperService::getImage($company['offer_image_url'] ?: $company['image_url']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center p-6 text-center">
+                        <?php if (!empty($user['id'])): ?>
+                            <span class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">
+                                Вашите обяви се показват тук
+                            </span>
+                        <?php else: ?>
+                            <div class="space-y-5">
+                                <h3 class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">Управлявайте рекламите си с лекота</h3>
+                                <a href="/auth/login" title="Влизане в профила" class="text-white btn-primary">Влизане в профила</a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($user['id']) && $user['id'] === $company['user_id']): ?>
+                <div class="text-white text-sm md:text-base leading-relaxed mb-4 grow italic">
+                    Тук можете да публикувате специфични търговски оферти, нови продукти, сезонни намаления или детайлна информация за услугите, които предлагате на вашите крайни клиенти и партньори.
+                </div>
+                <a href="/admin/companies/edit/<?= $company['id'] ?>" class="flex justify-center btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Редактирай обявата
+                </a>
+            <?php endif; ?>
+        </div>
+
+        <?php if (!empty($ads) || !empty($offers)): ?>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    const swiper = new Swiper('.adsSwiper', {
+                    const swiperOptions = {
                         effect: 'cube',
                         grabCursor: true,
                         loop: true,
@@ -102,18 +149,42 @@ $user = User::auth();
                             shadowScale: 0.94,
                         },
                         autoplay: {
-                            delay: 3000,
+                            delay: 3500, // Малка разлика в забавянето, за да не се въртят абсолютно едновременно
                             disableOnInteraction: false,
                         },
                         pagination: {
-                            el: '.swiper-pagination',
                             clickable: true,
                         },
-                    });
+                    };
+
+                    if (document.querySelector('.adsSwiper')) {
+                        new Swiper('.adsSwiper', {
+                            ...swiperOptions,
+                            pagination: {
+                                el: '.adsSwiper .swiper-pagination',
+                                clickable: true
+                            }
+                        });
+                    }
+
+                    if (document.querySelector('.offersSwiper')) {
+                        new Swiper('.offersSwiper', {
+                            ...swiperOptions,
+                            autoplay: {
+                                delay: 4000
+                            },
+                            pagination: {
+                                el: '.offersSwiper .swiper-pagination',
+                                clickable: true
+                            }
+                        });
+                    }
                 });
             </script>
+
             <style>
-                .adsSwiper {
+                .adsSwiper,
+                .offersSwiper {
                     width: 100%;
                     height: 100%;
                     position: relative;
@@ -138,44 +209,8 @@ $user = User::auth();
                     object-fit: cover !important;
                     display: block;
                 }
-
-                .swiper-wrapper {
-                    box-sizing: border-box;
-                }
             </style>
         <?php endif; ?>
-
-        <div class="group flex flex-col">
-            <h3 class="text-center font-semibold my-2 md:my-5 text-white text-xl md:text-2xl">Обяви</h3>
-
-            <div class="relative h-64 md:min-h-80 rounded-xl shadow-md overflow-hidden mb-4">
-                <img src="<?= HelperService::getImage($company['offer_image_url'] ?: $company['image_url']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center p-6 text-center">
-                    <?php if (!empty($user['id'])): ?>
-                        <span class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">
-                            Вашите обяви се показват тук
-                        </span>
-                    <?php else: ?>
-                        <div class="space-y-5">
-                            <h3 class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">Управлявайте обявите си с лекота</h3>
-                            <a href="/auth/login" title="Влизане в профила" class="text-white btn-primary">Влизане в профила</a>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <?php if (!empty($user['id']) && $user['id'] === $company['user_id']): ?>
-                <div class="text-white text-sm md:text-base leading-relaxed mb-4 grow italic">
-                    Тук можете да публикувате специфични търговски оферти, нови продукти, сезонни намаления или детайлна информация за услугите, които предлагате на вашите крайни клиенти и партньори.
-                </div>
-                <a href="/admin/companies/edit/<?= $company['id'] ?>" class="flex justify-center btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Редактирай обявата
-                </a>
-            <?php endif; ?>
-        </div>
     </div>
 
     <div class="w-fit my-2 md:my-5">

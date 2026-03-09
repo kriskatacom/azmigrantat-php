@@ -53,6 +53,7 @@ $userRole = $currentUser['role'] ?? 'user';
                 ['label' => 'Авиокомпании', 'url' => '/admin/airlines', 'icon' => 'fas fa-plane', 'roles' => ['admin']],
                 ['label' => 'Компании', 'url' => '/admin/companies', 'icon' => 'fas fa-building', 'roles' => ['admin']],
                 ['label' => 'Реклами', 'url' => '/admin/ads', 'icon' => 'fas fa-rectangle-ad', 'roles' => ['admin', 'entrepreneur']],
+                ['label' => 'Обяви', 'url' => '/admin/offers', 'icon' => 'fas fa-tag', 'roles' => ['admin', 'entrepreneur']],
                 ['label' => 'Летища', 'url' => '/admin/airports', 'icon' => 'fas fa-plane-arrival', 'roles' => ['admin']],
                 ['label' => 'Влакове', 'url' => '/admin/trains', 'icon' => 'fas fa-train', 'roles' => ['admin']],
                 ['label' => 'Таксита', 'url' => '/admin/taxis', 'icon' => 'fas fa-taxi', 'roles' => ['admin']],
