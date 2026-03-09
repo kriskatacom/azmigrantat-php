@@ -4,9 +4,9 @@ use App\Core\View;
 use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => $country['name'], 'url' => '/' . $country['slug']],
-    ['label' => 'Посолства', 'url' => '/' . $country['slug'] . '/embassies'],
-    ['label' => $embassy['name'], 'url' => '']
+    ['label' => $country['name'], 'href' => '/' . $country['slug']],
+    ['label' => 'Посолства', 'href' => '/' . $country['slug'] . '/embassies'],
+    ['label' => $embassy['name'], 'href' => '']
 ];
 ?>
 <div class="aspect-video max-h-100 w-full">

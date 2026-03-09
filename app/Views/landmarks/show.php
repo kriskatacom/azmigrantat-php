@@ -4,22 +4,19 @@ use App\Core\View;
 use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => $country['name'], 'url' => '/' . $country['slug']],
-    ['label' => 'Забележителности', 'url' => '/' . $country['slug'] . '/landmarks'],
-    ['label' => $landmark['name'], 'url' => '']
+    ['label' => $country['name'], 'href' => '/' . $country['slug']],
+    ['label' => 'Забележителности', 'href' => '/' . $country['slug'] . '/landmarks'],
+    ['label' => $landmark['name'], 'href' => '']
 ];
 ?>
 <div class="aspect-video max-h-100 w-full">
     <img src="<?= HelperService::getImage($landmark['image_url']) ?>" class="w-full h-full object-cover">
 </div>
 
-<div class="flex items-center justify-center gap-5 p-5">
-    <h1 class="text-xl md:text-2xl lg:text-3xl font-semibold text-primary-dark text-center">
+<div class="text-white bg-primary-dark py-3 md:py-5">
+    <h1 class="text-xl md:text-2xl lg:text-3xl font-semibold text-center">
         <?= $landmark['name'] ?>
     </h1>
-</div>
-
-<div class="text-white bg-primary-dark py-3 md:py-5">
     <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
 </div>
 

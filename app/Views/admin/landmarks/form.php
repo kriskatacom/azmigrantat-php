@@ -135,7 +135,14 @@ $action = $isEdit ? "/admin/landmarks/update/{$landmark['id']}" : "/admin/landma
             'value' => $landmark['google_map'] ?? ''
         ]); ?>
     </div>
+
     <?php View::component('card', 'admin/components', ['title' => 'Локация и Контакти', 'slot' => ob_get_clean()]); ?>
+
+    <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-600">Линк за навигация</label>
+        <input type="text" name="your_location" value="<?= htmlspecialchars($landmark['your_location'] ?? '') ?>" placeholder="https://google.com/maps..."
+            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-light outline-none transition">
+    </div>
 
     <?php ob_start(); ?>
     <?php View::component('toggle', 'admin/components', [

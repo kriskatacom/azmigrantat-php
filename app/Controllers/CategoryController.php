@@ -73,9 +73,9 @@ class CategoryController extends BaseController
         }
 
         $breadcrumbs = [
-            ['label' => $country['name'], 'url' => '/' . $country['slug']],
-            ['label' => 'Градове', 'url' => '/' . $country['slug'] . '/cities'],
-            ['label' => $city['name'], 'url' => '/' . $country['slug'] . '/cities/' . $city['slug']],
+            ['label' => $country['name'], 'href' => '/' . $country['slug']],
+            ['label' => 'Градове', 'href' => '/' . $country['slug'] . '/cities'],
+            ['label' => $city['name'], 'href' => '/' . $country['slug'] . '/cities/' . $city['slug']],
         ];
 
         $currentPath = '/' . $country['slug'] . '/cities/' . $city['slug'];
@@ -87,7 +87,7 @@ class CategoryController extends BaseController
 
             $breadcrumbs[] = [
                 'label' => $catInfo ? $catInfo['name'] : mb_convert_case(str_replace('-', ' ', $slug), MB_CASE_TITLE, "UTF-8"),
-                'url'   => $currentPath . $runningPath
+                'href'   => $currentPath . $runningPath
             ];
         }
 
@@ -120,31 +120,35 @@ class CategoryController extends BaseController
     {
         $category = null;
         if (!empty($company['category_id'])) {
-            $category = $this->categoryModel->where('id', $company['category_id'])[0] ?? null;
+            $category = $this->categoryModel->all(['where' => ['id' => $company['category_id']]])[0] ?? null;
         }
 
         $breadcrumbs = [
-            ['label' => $country['name'], 'url' => '/' . $country['slug']],
-            ['label' => 'Градове', 'url' => '/' . $country['slug'] . '/cities'],
-            ['label' => $city['name'], 'url' => '/' . $country['slug'] . '/cities/' . $city['slug']],
+            ['label' => $country['name'], 'href' => '/' . $country['slug']],
+            ['label' => 'Градове', 'href' => '/' . $country['slug'] . '/cities'],
+            ['label' => $city['name'], 'href' => '/' . $country['slug'] . '/cities/' . $city['slug']],
         ];
 
         $currentPath = '/' . $country['slug'] . '/cities/' . $city['slug'];
+        $runningPath = '';
 
-        if (count($pathArray) > 1) {
-            $categorySlugs = array_slice($pathArray, 0, -1);
-            $runningPath = '';
+        if (!empty($pathArray)) {
+            foreach ($pathArray as $slug) {
+                if ($slug === $company['slug']) {
+                    continue;
+                }
 
-            foreach ($categorySlugs as $slug) {
                 $runningPath .= '/' . $slug;
-                $cat = $this->categoryModel->where('slug', $slug)[0] ?? null;
+                $cat = $this->categoryModel->all(['where' => ['slug' => $slug]])[0] ?? null;
 
                 $breadcrumbs[] = [
                     'label' => $cat ? $cat['name'] : mb_convert_case(str_replace('-', ' ', $slug), MB_CASE_TITLE, "UTF-8"),
-                    'url' => $currentPath . $runningPath
+                    'href'  => $currentPath . $runningPath
                 ];
             }
         }
+
+        $breadcrumbs[] = ['label' => '', 'href' => ''];
 
         View::render('companies/details', [
             'title'       => $company['name'] . ' - ' . $city['name'],

@@ -13,8 +13,8 @@ use App\Core\View; ?>
             </h1>
             <?php View::component('breadcrumbs', 'partials', [
                 'items' => [
-                    ['label' => $country['name'], 'url' => '/' . $country['slug']],
-                    ['label' => 'Посолства']
+                    ['label' => $country['name'], 'href' => '/' . $country['slug']],
+                    ['label' => 'Посолства', 'href' => '']
                 ]
             ]); ?>
         </div>
