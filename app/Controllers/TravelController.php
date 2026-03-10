@@ -92,4 +92,52 @@ class TravelController extends BaseController
             'banner' => $banner,
         ]);
     }
+
+    public function taxis()
+    {
+        $banner = $this->bannerModel->where('link', '/travel/taxis')[0];
+        $banners = $this->bannerModel->where('group_key', 'TAXIS_ELEMENTS', 'sort_order ASC');
+
+        $items = [];
+        foreach ($banners as $b) {
+            $items[] = [
+                'name'        => $b['name'],
+                'slug'        => $b['link'],
+                'description' => $b['description'],
+                'image_url'   => $b['image_url'],
+                'button_text' => $b['button_text'] ?? null,
+                'show_name'   => $b['show_name']
+            ];
+        }
+
+        $this->render('travel/taxis/index', [
+            'title' => 'Таксиметрови компании в Европа – информация и адреси',
+            'banners' => $items,
+            'banner' => $banner,
+        ]);
+    }
+
+    public function cruises()
+    {
+        $banner = $this->bannerModel->where('link', '/travel/cruises')[0];
+        $banners = $this->bannerModel->where('group_key', 'CRUISES_ELEMENTS', 'sort_order ASC');
+
+        $items = [];
+        foreach ($banners as $b) {
+            $items[] = [
+                'name'        => $b['name'],
+                'slug'        => $b['link'],
+                'description' => $b['description'],
+                'image_url'   => $b['image_url'],
+                'button_text' => $b['button_text'] ?? null,
+                'show_name'   => $b['show_name']
+            ];
+        }
+
+        $this->render('travel/cruises/index', [
+            'title' => 'Таксиметрови компании в Европа – информация и адреси',
+            'banners' => $items,
+            'banner' => $banner,
+        ]);
+    }
 }

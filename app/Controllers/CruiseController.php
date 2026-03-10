@@ -4,14 +4,32 @@ namespace App\Controllers;
 
 use App\Models\Cruise;
 use App\Core\View;
+use App\Models\Banner;
 
 class CruiseController extends BaseController
 {
     private Cruise $cruiseModel;
+    private Banner $bannerModel;
 
     public function __construct()
     {
         $this->cruiseModel = new Cruise();
+        $this->bannerModel = new Banner();
+    }
+
+    public function show()
+    {
+        $banner = $this->bannerModel->findByColumn('link', '/travel/cruises/cruise-companies');
+        $cruisesBanner = $this->bannerModel->findByColumn('link', '/travel/cruises');
+
+        $cruises = $this->cruiseModel->all();
+
+        $this->render('travel/cruises/cruise-companies/index', [
+            'title' => 'Кризни компании – информация и връзки към официални сайтове',
+            'banner' => $banner,
+            'cruisesBanner' => $cruisesBanner,
+            'cruises' => $cruises,
+        ]);
     }
 
     public function index()

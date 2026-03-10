@@ -32,7 +32,7 @@ $positions = [
                 <option value="">Всички групи</option>
                 <?php foreach ($groups as $group): ?>
                     <option value="<?= htmlspecialchars($group) ?>" <?= $selectedGroup == $group ? 'selected' : '' ?>>
-                        📁 <?= htmlspecialchars($group) ?>
+                        📁 <?= htmlspecialchars(BANNER_GROUPS[$group] ?? $group) ?>
                     </option>
                 <?php endforeach; ?>
             </select>

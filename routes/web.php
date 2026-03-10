@@ -233,4 +233,12 @@ $router->get('/travel/trains/countries', [TrainController::class, 'showCountries
 $router->get('/travel/trains/countries/{countrySlug}', [TrainController::class, 'showCitiesByCountry']);
 $router->get('/travel/trains/countries/{countrySlug}/{citySlug}', [TrainController::class, 'showByCityAndCountry']);
 
+$router->get('/travel/taxis', [TravelController::class, 'taxis']);
+$router->get('/travel/taxis/countries', [TaxiController::class, 'showCountries']);
+$router->get('/travel/taxis/countries/{countrySlug}', [TaxiController::class, 'showCitiesByCountry']);
+$router->get('/travel/taxis/countries/{countrySlug}/{citySlug}', [TaxiController::class, 'showByCityAndCountry']);
+
+$router->get('/travel/cruises', [TravelController::class, 'cruises']);
+$router->get('/travel/cruises/cruise-companies', [CruiseController::class, 'show']);
+
 return $router;

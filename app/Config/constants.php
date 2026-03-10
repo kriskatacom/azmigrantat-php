@@ -6,4 +6,6 @@ define('BANNER_GROUPS', [
     'AIR_TICKETS_ELEMENTS' => 'Елементи за Самолетни билети',
     'AUTOBUSES_ELEMENTS' => 'Елементи за Автобуси',
     'TRAINS_ELEMENTS' => 'Елементи за Влакове',
+    'TAXIS_ELEMENTS' => 'Елементи за Таксита',
+    'CRUISES_ELEMENTS' => 'Елементи за Круиз компании',
 ]);
