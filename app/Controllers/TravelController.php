@@ -42,4 +42,30 @@ class TravelController extends BaseController
             'airports' => $airports
         ]);
     }
+
+    public function autobuses()
+    {
+        $banner = $this->bannerModel->where('link', '/travel/autobuses')[0];
+        $banners = $this->bannerModel->where('group_key', 'AUTOBUSES_ELEMENTS', 'sort_order ASC');
+        $airports = $this->airportModel->all();
+
+        $items = [];
+        foreach ($banners as $b) {
+            $items[] = [
+                'name'        => $b['name'],
+                'slug'        => $b['link'],
+                'description' => $b['description'],
+                'image_url'   => $b['image_url'],
+                'button_text' => $b['button_text'] ?? null,
+                'show_name'   => $b['show_name']
+            ];
+        }
+
+        $this->render('travel/autobuses/index', [
+            'title' => 'Автобусни гари и автобусни превози в Европа – информация и адреси',
+            'banners' => $items,
+            'banner' => $banner,
+            'airports' => $airports
+        ]);
+    }
 }

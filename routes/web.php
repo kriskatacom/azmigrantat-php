@@ -223,4 +223,9 @@ $router->get('/travel/air-tickets/airports/{countrySlug}', [AirportController::c
 
 $router->get('/travel/air-tickets/airlines', [AirlineController::class, 'all']);
 
+$router->get('/travel/autobuses', [TravelController::class, 'autobuses']);
+$router->get('/travel/autobuses/countries', [AutobusController::class, 'showCountries']);
+$router->get('/travel/autobuses/countries/{countrySlug}', [AutobusController::class, 'showCitiesByCountry']);
+$router->get('/travel/autobuses/countries/{countrySlug}/{citySlug}', [AutobusController::class, 'showByCityAndCountry']);
+
 return $router;
