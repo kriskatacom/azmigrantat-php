@@ -36,6 +36,12 @@ $action = $isEdit ? "/admin/airports/update/{$airport['id']}" : "/admin/airports
             <input type="text" name="name" id="airport-name" value="<?= htmlspecialchars($airport['name'] ?? '') ?>" required
                 placeholder="напр. Летище София" class="form-control">
         </div>
+
+        <div class="space-y-2">
+            <label class="font-semibold text-gray-600">Уебсайт</label>
+            <input type="text" name="website_url" value="<?= htmlspecialchars($airport['website_url'] ?? '') ?>" required
+                placeholder="напр. https://google.com" class="form-control">
+        </div>
         
         <?php View::component('select-dropdown', 'admin/components', [
             'name'       => 'country_id',

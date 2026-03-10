@@ -87,6 +87,19 @@ abstract class Model
         return $result ?: null;
     }
 
+    public function findByColumn(string $column, $value): ?array
+    {
+        $cleanColumn = preg_replace('/[^a-zA-Z0-9_]/', '', $column);
+
+        $sql = "SELECT * FROM {$this->table} WHERE {$cleanColumn} = :value LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['value' => $value]);
+        $result = $stmt->fetch();
+
+        return $result ?: null;
+    }
+
     public function delete($id): bool
     {
         $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = :id");

@@ -4,17 +4,52 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\Airport;
+use App\Models\Banner;
 use App\Models\Country;
 
 class AirportController extends BaseController
 {
     protected Airport $airportModel;
     protected Country $countryModel;
+    protected Banner $bannerModel;
 
     public function __construct()
     {
         $this->airportModel = new Airport();
         $this->countryModel = new Country();
+        $this->bannerModel = new Banner();
+    }
+
+    public function showCountries()
+    {
+        $banner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airports');
+        $airTicketsBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets');
+        $countries = $this->countryModel->all();
+
+        $this->render('travel/air-tickets/airports/index', [
+            'title' => 'Европейски летища – информация и връзки към официални сайтове',
+            'banner' => $banner,
+            'airTicketsBanner' => $airTicketsBanner,
+            'countries' => $countries
+        ]);
+    }
+
+    public function showByCountry($countrySlug)
+    {
+        $banner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airports/' . $countrySlug);
+        $airTicketsBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets');
+        $airportsBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airports');
+        $country = $this->countryModel->findByColumn('slug', $countrySlug);
+        $airports = $this->airportModel->where('country_id', $country['id']);
+
+        $this->render('travel/air-tickets/airports/show-by-country/index', [
+            'title' => 'Европейски летища – информация и връзки към официални сайтове',
+            'banner' => $banner ?? $airportsBanner,
+            'airTicketsBanner' => $airTicketsBanner,
+            'airportsBanner' => $airportsBanner,
+            'country' => $country,
+            'airports' => $airports
+        ]);
     }
 
     public function index()

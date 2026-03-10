@@ -10,7 +10,7 @@ use App\Core\View;
     <?php View::component('load-more-grid', 'partials', [
         'items'         => $countries,
         'card_path'     => 'partials',
-        'card_name'     => 'country-card',
+        'card_name'     => 'item-card',
         'limit'         => 8
     ]); ?>
 </main>

@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Controllers\BaseController;
+use App\Models\Airline;
+use App\Models\Banner;
+
+class TravelController extends BaseController
+{
+    private Airline $airlineModel;
+    private Banner $bannerModel;
+
+    public function __construct()
+    {
+        $this->airlineModel = new Airline();
+        $this->bannerModel = new Banner();
+    }
+
+    public function airTickets()
+    {
+        $banner = $this->bannerModel->where('link', '/travel/air-tickets')[0];
+        $banners = $this->bannerModel->where('group_key', 'AIR_TICKETS_ELEMENTS', 'sort_order ASC');
+        $airlines = $this->airlineModel->all();
+
+        $items = [];
+        foreach ($banners as $b) {
+            $items[] = [
+                'name'        => $b['name'],
+                'slug'        => $b['link'],
+                'description' => $b['description'],
+                'image_url'   => $b['image_url'],
+                'button_text' => $b['button_text'] ?? null,
+                'show_name'   => $b['show_name']
+            ];
+        }
+
+        $this->render('travel/air-tickets/index', [
+            'title' => 'Европейски летища – информация и връзки към официални сайтове',
+            'banners' => $items,
+            'banner' => $banner,
+            'airlines' => $airlines
+        ]);
+    }
+}

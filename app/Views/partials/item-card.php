@@ -2,20 +2,29 @@
 
 use App\Services\HelperService;
 
-$style = $style ?? 'grid';
+$style    = $style ?? 'grid';
+$link_key = $link_key ?? 'slug';
 
-$name    = !empty($item['name']) ? $item['name'] : 'Обект';
-$slug    = $item['slug'] ?? '';
+$name    = $item['name'] ?? 'Обект';
 $excerpt = $item['excerpt'] ?? $item['description'] ?? '';
+$image   = !empty($item['image_url']) ? $item['image_url'] : '/assets/images/no-image.jpg';
 
-$image = !empty($item['image_url']) ? $item['image_url'] : '/assets/images/no-image.jpg';
+$raw_path = $item[$link_key] ?? '';
 
-$url = rtrim($base_url ?? '', '/') . '/' . ltrim($slug, '/');
+if ($link_key === 'slug' && !empty($item['final_url'])) {
+    $url = $item['final_url'];
+} else {
+    $is_external = preg_match('/^(http|https|\/\/)/i', trim($raw_path));
+    $url = $is_external ? $raw_path : rtrim($base_url ?? '', '/') . '/' . ltrim($raw_path, '/');
+}
+
+$is_external_link = preg_match('/^(http|https|\/\/)/i', $url);
+$target = $is_external_link ? 'target="_blank" rel="noopener noreferrer"' : '';
 ?>
 
 <?php if ($style === 'grid'): ?>
     <div class="relative group overflow-hidden rounded-xl shadow-md aspect-4/2.5 bg-gray-200">
-        <a href="<?= $url ?>" class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
+        <a href="<?= $url ?>" <?= $target ?> class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
 
         <img src="<?= $image ?>"
              class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -37,7 +46,7 @@ $url = rtrim($base_url ?? '', '/') . '/' . ltrim($slug, '/');
 
 <?php else: ?>
     <div class="relative flex flex-row bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 h-45">
-        <a href="<?= $url ?>" class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
+        <a href="<?= $url ?>" <?= $target ?> class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
 
         <div class="w-5/12 xl:w-4/12 relative overflow-hidden bg-gray-100 shrink-0">
             <img src="<?= $image ?>"

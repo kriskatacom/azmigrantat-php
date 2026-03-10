@@ -3,17 +3,18 @@
 use App\Core\View;
 
 $breadcrumbs = [
-    ['label' => 'Пътуване']
+    ['label' => 'Пътуване', 'href' => '/travel'],
+    ['label' => $banner['name']]
 ];
 ?>
+
 <section>
-    <div class="aspect-video max-h-100 w-full">
-        <img src="<?= !empty($banner['image_url']) ? $banner['image_url'] : '/assets/img/default-banner.jpg' ?>" class="w-full h-full object-cover transition-opacity duration-500" alt="<?= htmlspecialchars($banner['name'] ?? 'Banner Image') ?>">
-    </div>
+    <?= View::component('show-banner', 'partials', ['banner' => $banner]) ?>
+    
     <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
         <div class="container mx-auto px-4">
             <h1 class="text-xl md:text-2xl xl:text-3xl font-bold uppercase tracking-wide">
-                Пътувай с "Аз мигрантът"!
+                <?= $banner['name'] ?>
             </h1>
             <?php View::component('breadcrumbs', 'partials', [
                 'items' => $breadcrumbs,

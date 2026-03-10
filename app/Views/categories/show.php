@@ -71,7 +71,7 @@ use App\Services\HelperService;
     <?php if (!empty($items)): ?>
         <?php View::component('load-more-grid', 'partials', [
             'items'     => $items,
-            'card_name' => 'country-card',
+            'card_name' => 'item-card',
             'base_url'  => $base_url,
             'limit'     => 8
         ]); ?>
@@ -121,7 +121,6 @@ use App\Services\HelperService;
                     slidesPerView: 4
                 }
             },
-            // Важно за плавния ефект
             allowTouchMove: true,
         });
     });
@@ -130,16 +129,5 @@ use App\Services\HelperService;
 <style>
     .categoryOffersSwiper .swiper-wrapper {
         transition-timing-function: linear !important;
-    }
-
-    /* Спира слайдъра при посочване с мишката (опционално) */
-    .categoryOffersSwiper:hover .swiper-wrapper {
-        /* animation-play-state: paused; -- това не работи директно със swiper, 
-           но за истински marquee ефект се ползва JS stop */
-    }
-
-    .categoryOffersSwiper .swiper-slide {
-        height: auto;
-        /* Гарантира еднаква височина на картите */
     }
 </style>

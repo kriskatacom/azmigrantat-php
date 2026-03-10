@@ -22,6 +22,7 @@ use App\Controllers\CompanyOfferController;
 use App\Controllers\CountryElementController;
 use App\Controllers\TaxiController;
 use App\Controllers\DriverController;
+use App\Controllers\TravelController;
 
 $router = new Router();
 
@@ -188,19 +189,36 @@ $router->post('/admin/categories/update-order', [CategoryController::class, 'upd
 $router->get('/admin/users/edit/{id}', [DriverController::class, 'account']);
 $router->post('/admin/users/update/{id}', [DriverController::class, 'updateAccount']);
 
-// --- Публични страници ---
+// --- Начална страница & Общи ---
 $router->get('/', [HomeController::class, 'index']);
+
+// --- Пътувания (Travel) ---
 $router->get('/travel', [HomeController::class, 'travel']);
 $router->get('/travel/shared-travel', [HomeController::class, 'sharedTravel']);
 $router->get('/travel/shared-travel/drivers', [DriverController::class, 'index']);
 $router->get('/travel/shared-travel/drivers/{username}', [DriverController::class, 'show']);
+
+// --- Държави & Локации ({countrySlug}) ---
 $router->get('/{countrySlug}', [CountryController::class, 'show']);
+
+// Посолства
 $router->get('/{countrySlug}/embassies', [EmbassyController::class, 'indexByCountry']);
 $router->get('/{countrySlug}/embassies/{embassySlug}', [EmbassyController::class, 'show']);
+
+// Забележителности
 $router->get('/{countrySlug}/landmarks', [LandmarkController::class, 'indexByCountry']);
 $router->get('/{countrySlug}/landmarks/{landmarkSlug}', [LandmarkController::class, 'show']);
+
+// --- Градове & Категории ---
 $router->get('/{countrySlug}/cities', [CityController::class, 'indexByCountry']);
 $router->get('/{countrySlug}/cities/{citySlug}', [CategoryController::class, 'categoriesShow']);
+
+// Динамични пътища за категории (Catch-all)
 $router->get('/{countrySlug}/cities/{citySlug}/{categories*}', [CategoryController::class, 'categoriesShow']);
+
+// Ламолетни билети
+$router->get('/travel/air-tickets', [TravelController::class, 'airTickets']);
+$router->get('/travel/air-tickets/airports', [AirportController::class, 'showCountries']);
+$router->get('/travel/air-tickets/airports/{countrySlug}', [AirportController::class, 'showByCountry']);
 
 return $router;
