@@ -68,4 +68,28 @@ class TravelController extends BaseController
             'airports' => $airports
         ]);
     }
+
+    public function trains()
+    {
+        $banner = $this->bannerModel->where('link', '/travel/trains')[0];
+        $banners = $this->bannerModel->where('group_key', 'TRAINS_ELEMENTS', 'sort_order ASC');
+
+        $items = [];
+        foreach ($banners as $b) {
+            $items[] = [
+                'name'        => $b['name'],
+                'slug'        => $b['link'],
+                'description' => $b['description'],
+                'image_url'   => $b['image_url'],
+                'button_text' => $b['button_text'] ?? null,
+                'show_name'   => $b['show_name']
+            ];
+        }
+
+        $this->render('travel/autobuses/index', [
+            'title' => 'Жележопътни гари и жележопътни превози в Европа – информация и адреси',
+            'banners' => $items,
+            'banner' => $banner,
+        ]);
+    }
 }

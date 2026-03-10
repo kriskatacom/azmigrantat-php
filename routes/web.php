@@ -228,4 +228,9 @@ $router->get('/travel/autobuses/countries', [AutobusController::class, 'showCoun
 $router->get('/travel/autobuses/countries/{countrySlug}', [AutobusController::class, 'showCitiesByCountry']);
 $router->get('/travel/autobuses/countries/{countrySlug}/{citySlug}', [AutobusController::class, 'showByCityAndCountry']);
 
+$router->get('/travel/trains', [TravelController::class, 'trains']);
+$router->get('/travel/trains/countries', [TrainController::class, 'showCountries']);
+$router->get('/travel/trains/countries/{countrySlug}', [TrainController::class, 'showCitiesByCountry']);
+$router->get('/travel/trains/countries/{countrySlug}/{citySlug}', [TrainController::class, 'showByCityAndCountry']);
+
 return $router;
