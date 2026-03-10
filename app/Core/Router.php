@@ -18,13 +18,21 @@ class Router
 
     public function resolve(?string $path = null): void
     {
-        // 1. Вземаме чистия път от URL
         $path = $path ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        // 2. ВАЖНО ЗА CPANEL: Премахваме "/public" от началото, ако съществува
+        // 2. Премахваме "/public" (за cPanel)
         if (strpos($path, '/public') === 0) {
             $path = substr($path, 7);
         }
+
+        // --- НОВО: Премахване на езиковия префикс ---
+        // Взимаме списъка с поддържани езици от HelperService
+        $supportedLangs = array_keys(\App\Services\HelperService::AVAILABLE_LANGUAGES);
+        $langsPattern = implode('|', $supportedLangs);
+
+        // Регулярен израз, който маха /en, /de и т.н. само ако са в началото
+        $path = preg_replace("#^/($langsPattern)(\b|/|$)#", '/', $path);
+        // --------------------------------------------
 
         // 3. Нормализираме наклонените черти
         $path = rtrim($path, '/');
@@ -43,7 +51,7 @@ class Router
             // Поддържаме {param}, {param*} и директни (\d+)
             $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\*\}/', '(.+)', $routePath);
             $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([^/]+)', $pattern);
-            
+
             // Ако вече имаш (\d+) в маршрута, това ще го остави както е
             $pattern = "#^" . $pattern . "$#";
 
@@ -56,7 +64,7 @@ class Router
                 if (class_exists($controllerClass)) {
                     $controller = new $controllerClass();
                     $params = array_map('urldecode', $matches);
-                    
+
                     if (method_exists($controller, $methodName)) {
                         call_user_func_array([$controller, $methodName], $params);
                         return;

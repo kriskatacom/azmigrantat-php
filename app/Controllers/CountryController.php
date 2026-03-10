@@ -22,8 +22,8 @@ class CountryController extends BaseController
         $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
 
         if (!$country || !$country['is_active']) {
-            header("HTTP/1.0 404 Not Found");
-            exit('Държавата не е намерена или е деактивирана.');
+            header("Location: /");
+            exit;
         }
 
         $elementModel = new CountryElement();

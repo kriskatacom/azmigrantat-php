@@ -20,11 +20,13 @@ if ($link_key === 'slug' && !empty($item['final_url'])) {
 
 $is_external_link = preg_match('/^(http|https|\/\/)/i', $url);
 $target = $is_external_link ? 'target="_blank" rel="noopener noreferrer"' : '';
+
+$final_url = $is_external_link ? $url : HelperService::url($url);
 ?>
 
 <?php if ($style === 'grid'): ?>
     <div class="relative group overflow-hidden rounded-xl shadow-md aspect-4/2.5 bg-gray-200">
-        <a href="<?= $url ?>" <?= $target ?> class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
+        <a href="<?= $final_url ?>" <?= $target ?> class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
 
         <img src="<?= $image ?>"
              class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -46,7 +48,7 @@ $target = $is_external_link ? 'target="_blank" rel="noopener noreferrer"' : '';
 
 <?php else: ?>
     <div class="relative flex flex-row bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 h-45">
-        <a href="<?= $url ?>" <?= $target ?> class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
+        <a href="<?= $final_url ?>" <?= $target ?> class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
 
         <div class="w-5/12 xl:w-4/12 relative overflow-hidden bg-gray-100 shrink-0">
             <img src="<?= $image ?>"

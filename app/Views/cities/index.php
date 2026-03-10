@@ -24,9 +24,8 @@ use App\Core\View; ?>
 <main>
     <?php View::component('load-more-grid', 'partials', [
         'items'     => $cities,
-        'card_name' => 'item-card',
         'style'     => 'list',
-        'base_url'  => 'cities/',
+        'base_url'  => $country['slug'] . '/cities/',
         'limit'     => 9
     ]); ?>
 </main>

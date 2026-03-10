@@ -4,6 +4,41 @@ namespace App\Services;
 
 class HelperService
 {
+    public const AVAILABLE_LANGUAGES = [
+        'bg' => ['name' => 'Български', 'flag' => '🇧🇬'],
+        'en' => ['name' => 'English', 'flag' => '🇺🇸'],
+        'de' => ['name' => 'Deutsch', 'flag' => '🇩🇪'],
+        'fr' => ['name' => 'Français', 'flag' => '🇫🇷'],
+        'it' => ['name' => 'Italiano', 'flag' => '🇮🇹'],
+        'es' => ['name' => 'Español', 'flag' => '🇪🇸'],
+        'nl' => ['name' => 'Nederlands', 'flag' => '🇳🇱'],
+        'gr' => ['name' => 'Ελληνικά', 'flag' => '🇬🇷'],
+        'tr' => ['name' => 'Türkçe', 'flag' => '🇹🇷'],
+        'ro' => ['name' => 'Română', 'flag' => '🇷🇴'],
+        'ru' => ['name' => 'Русский', 'flag' => '🇷🇺'],
+        'pl' => ['name' => 'Polski', 'flag' => '🇵🇱'],
+        'pt' => ['name' => 'Português', 'flag' => '🇵🇹'],
+        'hu' => ['name' => 'Magyar', 'flag' => '🇭🇺'],
+        'cz' => ['name' => 'Čeština', 'flag' => '🇨🇿'],
+        'sk' => ['name' => 'Slovenčina', 'flag' => '🇸🇰'],
+        'at' => ['name' => 'Österreich', 'flag' => '🇦🇹'],
+        'be' => ['name' => 'België', 'flag' => '🇧🇪'],
+        'dk' => ['name' => 'Dansk', 'flag' => '🇩🇰'],
+        'fi' => ['name' => 'Suomi', 'flag' => '🇫🇮'],
+        'se' => ['name' => 'Svenska', 'flag' => '🇸🇪'],
+        'no' => ['name' => 'Norsk', 'flag' => '🇳🇴'],
+        'ie' => ['name' => 'Gaeilge', 'flag' => '🇮🇪'],
+        'ch' => ['name' => 'Schweiz', 'flag' => '🇨🇭'],
+        'ua' => ['name' => 'Українська', 'flag' => '🇺🇦'],
+        'hr' => ['name' => 'Hrvatski', 'flag' => '🇭🇷'],
+        'rs' => ['name' => 'Српски', 'flag' => '🇷🇸'],
+        'si' => ['name' => 'Slovenščina', 'flag' => '🇸🇮'],
+        'lt' => ['name' => 'Lietuvių', 'flag' => '🇱🇹'],
+        'lv' => ['name' => 'Latviešu', 'flag' => '🇱🇻'],
+        'ee' => ['name' => 'Eesti', 'flag' => '🇪🇪'],
+        'cy' => ['name' => 'Кύπρος', 'flag' => '🇨🇾'],
+    ];
+
     public static function icon(string $name, string $class = "w-6 h-6"): void
     {
         $filePath = BASE_PATH . "/app/Icons/{$name}.php";
@@ -13,15 +48,29 @@ class HelperService
             include $filePath;
             echo '</span>';
         } else {
-            echo "";
+            if (strpos($name, 'fa-') === 0) {
+                echo '<i class="fa-solid ' . htmlspecialchars($name) . ' ' . htmlspecialchars($class) . '"></i>';
+            }
         }
     }
 
     public static function navLinkClasses(string $path): string
     {
         $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        if (strpos($currentUri, '/public') === 0) {
+            $currentUri = substr($currentUri, 7);
+        }
+
+        $supportedCodes = implode('|', array_keys(self::AVAILABLE_LANGUAGES));
+        $cleanCurrentUri = preg_replace("#^/($supportedCodes)\b#", '', $currentUri) ?: '/';
+        $cleanCurrentUri = rtrim($cleanCurrentUri, '/') ?: '/';
+
+        $cleanPath = rtrim($path, '/') ?: '/';
+
         $base = "whitespace-nowrap md:text-lg transition-colors duration-200 px-5 py-2 rounded-full text-primary-light";
-        if ($currentUri === $path) {
+
+        if ($cleanCurrentUri === $cleanPath) {
             return "{$base} bg-primary-dark";
         }
         return "{$base} hover:bg-primary-dark";
@@ -48,25 +97,36 @@ class HelperService
         return $key;
     }
 
+    public static function langUrl($path = null, $targetLang = null): string
+    {
+        if ($path === null) {
+            $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        }
+
+        $supportedCodes = implode('|', array_keys(self::AVAILABLE_LANGUAGES));
+        $cleanPath = preg_replace('/^\/(' . $supportedCodes . ')\b/', '', $path);
+        $cleanPath = rtrim($cleanPath, '/') ?: '/';
+
+        if ($targetLang === 'bg') {
+            return $cleanPath;
+        }
+
+        return '/' . $targetLang . ($cleanPath === '/' ? '' : $cleanPath);
+    }
+
     public static function initLanguage(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        if (isset($_GET['lang'])) {
-            $requestedLang = $_GET['lang'];
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $parts = explode('/', trim($uri, '/'));
+        $firstPart = $parts[0] ?? '';
 
-            if (in_array($requestedLang, ['bg', 'en'])) {
-                $_SESSION['lang'] = $requestedLang;
-            }
-
-            $cleanUrl = strtok($_SERVER['REQUEST_URI'], '?');
-            header("Location: " . $cleanUrl);
-            exit;
-        }
-
-        if (!isset($_SESSION['lang'])) {
+        if (array_key_exists($firstPart, self::AVAILABLE_LANGUAGES)) {
+            $_SESSION['lang'] = $firstPart;
+        } else {
             $_SESSION['lang'] = 'bg';
         }
     }
@@ -76,11 +136,11 @@ class HelperService
         $lang = $_SESSION['lang'] ?? 'bg';
         $path = ltrim($path, '/');
 
-        if ($lang === 'en') {
-            return "/en/{$path}";
+        if ($lang === 'bg') {
+            return "/{$path}";
         }
 
-        return "/{$path}";
+        return "/{$lang}/{$path}";
     }
 
     public static function getLangFromUrl(): string
@@ -88,8 +148,8 @@ class HelperService
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $parts = explode('/', trim($uri, '/'));
 
-        if (isset($parts[0]) && in_array($parts[0], ['bg', 'en'])) {
-            return $parts[0];
+        if (isset($parts[0]) && $parts[0] === 'en') {
+            return 'en';
         }
 
         return 'bg';

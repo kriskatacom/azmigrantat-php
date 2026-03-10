@@ -1,23 +1,11 @@
 <?php
 
+use App\Core\View;
 use App\Models\User;
 use App\Services\HelperService;
 
 $isHome = HelperService::isHome();
-$navClasses = $isHome
-    ? "absolute top-0 left-0 w-full z-50 bg-transparent"
-    : "bg-primary-darken";
-
-$currentLang = $_SESSION['lang'] ?? 'bg';
-$targetLang = ($currentLang === 'bg') ? 'en' : 'bg';
-
-$currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-if ($currentLang === 'bg') {
-    $targetUrl = '/en' . (rtrim($currentPath, '/') ?: '/');
-} else {
-    $targetUrl = preg_replace('/^\/en/', '', $currentPath) ?: '/';
-}
+$navClasses = $isHome ? "absolute top-0 left-0 w-full z-50 bg-transparent" : "bg-primary-darken";
 ?>
 
 <nav class="<?= $navClasses ?> px-6 py-4 flex flex-col gap-4 transition-colors duration-500">
@@ -69,17 +57,7 @@ if ($currentLang === 'bg') {
                 <?php HelperService::icon('menu-icon', 'text-white w-8 h-8 group-hover:rotate-90 transition-transform duration-300'); ?>
             </button>
 
-            <a href="<?= $targetUrl ?>" class="hover:text-primary-light transition flex items-center gap-1 group">
-                <div class="relative">
-                    <?php HelperService::icon('globe-icon', 'text-white w-8 h-8 group-hover:animate-spin-slow'); ?>
-                    <span class="absolute -top-1 -right-1 flex h-4 w-4">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-light opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-4 w-4 bg-primary-light text-[8px] items-center justify-center text-black font-bold uppercase">
-                            <?= $targetLang ?>
-                        </span>
-                    </span>
-                </div>
-            </a>
+            <?php View::loadPartial('partials/languages-modal') ?>
         </div>
     </div>
 

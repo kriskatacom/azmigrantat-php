@@ -5,14 +5,13 @@ use App\Services\HelperService;
 
 $limit = $limit ?? 8;
 $card_path = $card_path ?? 'partials';
-$card_name = $card_name ?? 'entity-card'; // Променихме го на по-универсално
+$card_name = $card_name ?? 'item-card';
 $style = $style ?? 'grid';
 $base_url = $base_url ?? '';
 $link_key = $link_key ?? 'slug';
 
 $show_search = $show_search ?? true;
 
-// Генерираме уникални ID-та за всеки инстанс на компонента
 $containerId = 'grid-' . uniqid();
 $btnId = 'btn-' . uniqid();
 $searchId = 'search-' . uniqid();
@@ -46,7 +45,6 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
             <?php
             $rawLink = trim($item['link'] ?? $item['slug'] ?? '');
             $isExternal = preg_match('/^(http|https|\/\/)/i', $rawLink);
-
             $finalUrl = $isExternal ? $rawLink : rtrim($base_url, '/') . '/' . ltrim($rawLink, '/');
             $searchLabel = htmlspecialchars(mb_strtolower(($item['name'] ?? '') . ' ' . $rawLink));
             ?>
@@ -74,47 +72,57 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
 </section>
 
 <script>
-(function() {
-    const container = document.getElementById('<?= $containerId ?>');
-    const btn = document.getElementById('<?= $btnId ?>');
-    const searchInput = document.getElementById('<?= $searchId ?>');
-    const limit = <?= (int)$limit ?>;
+    (function() {
+        const container = document.getElementById('<?= $containerId ?>');
+        const btn = document.getElementById('<?= $btnId ?>');
+        const searchInput = document.getElementById('<?= $searchId ?>');
+        const limit = <?= (int)$limit ?>;
 
-    if (btn) {
-        btn.addEventListener('click', function() {
-            const hiddenItems = container.querySelectorAll('.grid-item.hidden');
-            
-            for (let i = 0; i < limit && i < hiddenItems.length; i++) {
-                hiddenItems[i].classList.remove('hidden');
-                hiddenItems[i].style.opacity = '0';
-                hiddenItems[i].animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: 'forwards' });
-            }
+        if (btn) {
+            btn.addEventListener('click', function() {
+                const hiddenItems = container.querySelectorAll('.grid-item.hidden');
 
-            if (container.querySelectorAll('.grid-item.hidden').length === 0) {
-                btn.parentElement.style.display = 'none';
-            }
-        });
-    }
+                for (let i = 0; i < limit && i < hiddenItems.length; i++) {
+                    hiddenItems[i].classList.remove('hidden');
+                    hiddenItems[i].style.opacity = '0';
+                    hiddenItems[i].animate([{
+                        opacity: 0
+                    }, {
+                        opacity: 1
+                    }], {
+                        duration: 300,
+                        fill: 'forwards'
+                    });
+                }
 
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase().trim();
-            const allItems = container.querySelectorAll('.grid-item');
-            const btnContainer = document.getElementById('btn-container-<?= $btnId ?>');
+                if (container.querySelectorAll('.grid-item.hidden').length === 0) {
+                    btn.parentElement.style.display = 'none';
+                }
+            });
+        }
 
-            if (term.length > 0) {
-                if (btnContainer) btnContainer.style.display = 'none';
-                allItems.forEach(item => {
-                    const label = item.getAttribute('data-label');
-                    item.classList.toggle('hidden', !label.includes(term));
-                });
-            } else {
-                allItems.forEach((item, index) => {
-                    item.classList.toggle('hidden', index >= limit);
-                });
-                if (btnContainer && allItems.length > limit) btnContainer.style.display = 'flex';
-            }
-        });
-    }
-})();
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase().trim();
+                const allItems = container.querySelectorAll('.grid-item');
+                const btnContainer = document.getElementById('btn-container-<?= $btnId ?>');
+
+                if (term.length > 0) {
+                    if (btnContainer) {
+                        btnContainer.classList.add('opacity-0', 'pointer-events-none');
+                        setTimeout(() => btnContainer.style.display = 'none', 300);
+                    }
+                    allItems.forEach(item => {
+                        const label = item.getAttribute('data-label');
+                        item.classList.toggle('hidden', !label.includes(term));
+                    });
+                } else {
+                    allItems.forEach((item, index) => {
+                        item.classList.toggle('hidden', index >= limit);
+                    });
+                    if (btnContainer && allItems.length > limit) btnContainer.style.display = 'flex';
+                }
+            });
+        }
+    })();
 </script>
