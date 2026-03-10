@@ -99,6 +99,40 @@ class CategoryController extends BaseController
 
         $data = $this->resolveDisplayItems($category, $city['id']);
 
+        $offers = [];
+        if ($category) {
+            $companiesInCategory = $this->companyModel->all([
+                'where' => [
+                    'category_id' => $category['id'],
+                    'city_id'     => $city['id'],
+                    'is_active'   => 1
+                ]
+            ]);
+
+            $companiesMap = [];
+            foreach ($companiesInCategory as $comp) {
+                $companiesMap[$comp['id']] = $comp;
+            }
+
+            $companyIds = array_keys($companiesMap);
+
+            if (!empty($companyIds)) {
+                $rawOffers = $this->offerModel->all([
+                    'where_in' => ['company_id' => $companyIds],
+                    'where'    => ['status' => 'active']
+                ]);
+
+                foreach ($rawOffers as $offer) {
+                    $companyId = $offer['company_id'];
+                    if (isset($companiesMap[$companyId])) {
+                        $offer['company_slug'] = $companiesMap[$companyId]['slug'];
+                        $offer['company_name'] = $companiesMap[$companyId]['name'];
+                        $offers[] = $offer;
+                    }
+                }
+            }
+        }
+
         View::render('categories/show', [
             'title'        => ($category ? $category['name'] : 'Категории') . ' - ' . $city['name'],
             'country'      => $country,
@@ -109,6 +143,9 @@ class CategoryController extends BaseController
             'base_url'     => "/{$countrySlug}/cities/{$citySlug}/" . ($categoriesPath ? trim($categoriesPath, '/') . '/' : ''),
             'categoryPath' => $categoryPathArr,
             'breadcrumbs'  => $breadcrumbs,
+            'items'    => $data['items'],
+            'showType' => $data['type'],
+            'offers'   => $offers,
         ]);
     }
 

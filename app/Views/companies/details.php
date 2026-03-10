@@ -42,7 +42,7 @@ $user = User::auth();
         <div class="group flex flex-col">
             <h3 class="text-center font-semibold my-2 md:my-5 text-white text-xl md:text-2xl">Реклами</h3>
 
-            <div class="relative h-64 md:h-80 rounded-xl shadow-md overflow-hidden mb-4">
+            <div class="relative h-100 md:h-80 rounded-xl shadow-md overflow-hidden mb-4">
                 <?php if (!empty($ads)): ?>
                     <div class="swiper adsSwiper h-full w-full">
                         <div class="swiper-wrapper">

@@ -5,6 +5,46 @@ use App\Services\HelperService;
 
 ?>
 
+<?php if (!empty($offers)): ?>
+    <div class="md:container md:mx-auto py-3 overflow-hidden">
+        <h2 class="text-2xl font-bold uppercase mb-3 border-l-4 border-primary pl-4">
+            Промоции и обяви в <?= htmlspecialchars($category['name']) ?>
+        </h2>
+
+        <div class="swiper categoryOffersSwiper overflow-visible">
+            <div class="swiper-wrapper flex ease-linear">
+                <?php foreach ($offers as $offer): ?>
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-primary-dark rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 transition shadow-lg flex flex-col h-full mx-1">
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="<?= HelperService::getImage($offer['image_url']) ?>"
+                                    class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
+                                    NEW
+                                </div>
+                            </div>
+
+                            <div class="p-5 flex flex-col grow">
+                                <h3 class="text-white font-bold text-lg mb-1 line-clamp-1"><?= htmlspecialchars($offer['name']) ?></h3>
+                                <p class="text-primary-light text-xs mb-3 uppercase tracking-tighter">
+                                    От: <?= htmlspecialchars($offer['company_name']) ?>
+                                </p>
+
+                                <div class="mt-auto">
+                                    <a href="<?= $base_url . $offer['company_slug'] ?>"
+                                        class="inline-block w-full text-center bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg transition text-sm">
+                                        Виж детайли
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
 <section>
     <div class="aspect-video max-h-100 w-full">
         <?php if (!empty($category)): ?>
@@ -53,3 +93,53 @@ use App\Services\HelperService;
         </div>
     <?php endif; ?>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        new Swiper('.categoryOffersSwiper', {
+            loop: true,
+            spaceBetween: 20,
+            grabCursor: true,
+            freeMode: true, // Позволява свободно плъзгане
+            speed: 5000, // Скорост на преминаване (в милисекунди)
+            autoplay: {
+                delay: 0,
+                disableOnInteraction: false,
+            },
+            // Настройки за брой слайдове спрямо екрана
+            breakpoints: {
+                320: {
+                    slidesPerView: 1.2
+                },
+                640: {
+                    slidesPerView: 2.2
+                },
+                1024: {
+                    slidesPerView: 3.5
+                },
+                1280: {
+                    slidesPerView: 4
+                }
+            },
+            // Важно за плавния ефект
+            allowTouchMove: true,
+        });
+    });
+</script>
+
+<style>
+    .categoryOffersSwiper .swiper-wrapper {
+        transition-timing-function: linear !important;
+    }
+
+    /* Спира слайдъра при посочване с мишката (опционално) */
+    .categoryOffersSwiper:hover .swiper-wrapper {
+        /* animation-play-state: paused; -- това не работи директно със swiper, 
+           но за истински marquee ефект се ползва JS stop */
+    }
+
+    .categoryOffersSwiper .swiper-slide {
+        height: auto;
+        /* Гарантира еднаква височина на картите */
+    }
+</style>

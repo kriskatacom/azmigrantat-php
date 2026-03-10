@@ -6,7 +6,7 @@ $driver = $driver ?? [];
 
 <?php if ($type === 'drivers' && !empty($driver)): ?>
     <!-- Шофьори -->
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-primary-dark border border-gray-200 rounded-xl shadow-sm overflow-hidden">
         <div class="p-5 flex items-start gap-5">
             <div class="relative w-24 h-24 rounded-full overflow-hidden border-2 border-primary/20 shadow-sm shrink-0">
                 <img alt="<?= htmlspecialchars($driver['username'] ?? $driver['name']) ?>"
@@ -16,7 +16,7 @@ $driver = $driver ?? [];
 
             <div class="flex-1 space-y-2">
                 <div class="flex justify-between items-start">
-                    <div class="text-xl font-bold text-gray-800"><?= htmlspecialchars($driver['name']) ?></div>
+                    <div class="text-white text-xl font-bold"><?= htmlspecialchars($driver['name']) ?></div>
                     <?php if (!empty($driver['verified'])): ?>
                         <span class="text-blue-500" title="Потвърден шофьор">
                             <i class="fas fa-check-circle text-sm"></i>
@@ -24,7 +24,7 @@ $driver = $driver ?? [];
                     <?php endif; ?>
                 </div>
 
-                <div class="flex items-center gap-2 text-gray-600">
+                <div class="flex items-center gap-2 text-white">
                     <div>
                         <i class="fa-solid fa-user"></i>
                         <?= $driver['age'] ?> г.
@@ -35,7 +35,7 @@ $driver = $driver ?? [];
                     </div>
                 </div>
 
-                <div class="text-gray-600 text-sm line-clamp-3">
+                <div class="text-white text-sm line-clamp-3">
                     <?php if (!empty($driver['description'])): ?>
                         <p class="mt-1 italic text-gray-500 line-clamp-3">
                             <?= $driver['description'] ?>
@@ -83,7 +83,7 @@ $driver = $driver ?? [];
                             <?php endif; ?>
                         </div>
 
-                        <div class="text-gray-600 text-sm line-clamp-3">
+                        <div class="text-white text-sm line-clamp-3">
                             <?php if ($details): ?>
                                 <p class="mt-1 italic text-gray-500">
                                     <?= $details ?>
