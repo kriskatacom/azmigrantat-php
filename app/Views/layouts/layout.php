@@ -38,8 +38,9 @@ if ($currentUri == '/' || $currentUri == '/home') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
 
     <script type="module" src="/assets/js/main.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1/dist/fancybox/fancybox.umd.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -67,8 +68,11 @@ if ($currentUri == '/' || $currentUri == '/home') {
         <div class="container mx-auto py-6 text-center">
             <p>&copy; <?= date('Y') ?> <strong>Аз Мигрантът</strong>. Всички права запазени.</p>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="/assets/js/min/alpinejs-intersect.min.js" defer></script>
+    <script src="/assets/js/min/alpine.cdn.min.js" defer></script>
 </body>
 
 </html>

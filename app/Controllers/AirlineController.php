@@ -4,16 +4,35 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\Airline;
+use App\Models\Banner;
 use App\Models\Country;
 use App\Models\Category;
 
 class AirlineController extends BaseController
 {
     private Airline $airlineModel;
+    private Banner $bannerModel;
 
     public function __construct()
     {
         $this->airlineModel = new Airline();
+        $this->bannerModel = new Banner();
+    }
+
+    public function all()
+    {
+        $banner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airlines');
+        $airTicketsBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets');
+        $airlinesBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airlines');
+        $airlines = $this->airlineModel->all();
+
+        $this->render('travel/air-tickets/airlines/index', [
+            'title' => 'Европейски авиокомпании – информация и връзки към официални сайтове',
+            'banner' => $banner ?? $airlinesBanner,
+            'airTicketsBanner' => $airTicketsBanner,
+            'airlinesBanner' => $airlinesBanner,
+            'airlines' => $airlines
+        ]);
     }
 
     public function index()

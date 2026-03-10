@@ -4,7 +4,8 @@ use App\Core\View;
 
 $breadcrumbs = [
     ['label' => 'Пътуване', 'href' => '/travel'],
-    ['label' => $banner['name']]
+    ['label' => $airTicketsBanner['name'], 'href' => '/travel/air-tickets'],
+    ['label' => $banner['name']],
 ];
 ?>
 
@@ -25,16 +26,10 @@ $breadcrumbs = [
 
 <main>
     <?php View::component('load-more-grid', 'partials', [
-        'items'     => $banners,
+        'items'     => $airlines,
         'card_name' => 'item-card',
         'show_search' => false,
+        'base_url' => '/travel/air-tickets/airlines',
+        'link_key' => 'website_url'
     ]); ?>
-
-    <?php if (!empty($airports)): ?>
-        <?php View::component('map', 'travel/air-tickets/components', [
-            'items'  => $airports,
-            'height' => '500px',
-            'zoom'   => 4
-        ]); ?>
-    <?php endif; ?>
 </main>

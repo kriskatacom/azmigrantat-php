@@ -221,4 +221,6 @@ $router->get('/travel/air-tickets', [TravelController::class, 'airTickets']);
 $router->get('/travel/air-tickets/airports', [AirportController::class, 'showCountries']);
 $router->get('/travel/air-tickets/airports/{countrySlug}', [AirportController::class, 'showByCountry']);
 
+$router->get('/travel/air-tickets/airlines', [AirlineController::class, 'all']);
+
 return $router;

@@ -3,17 +3,17 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\Airline;
+use App\Models\Airport;
 use App\Models\Banner;
 
 class TravelController extends BaseController
 {
-    private Airline $airlineModel;
+    private Airport $airportModel;
     private Banner $bannerModel;
 
     public function __construct()
     {
-        $this->airlineModel = new Airline();
+        $this->airportModel = new Airport();
         $this->bannerModel = new Banner();
     }
 
@@ -21,7 +21,7 @@ class TravelController extends BaseController
     {
         $banner = $this->bannerModel->where('link', '/travel/air-tickets')[0];
         $banners = $this->bannerModel->where('group_key', 'AIR_TICKETS_ELEMENTS', 'sort_order ASC');
-        $airlines = $this->airlineModel->all();
+        $airports = $this->airportModel->all();
 
         $items = [];
         foreach ($banners as $b) {
@@ -39,7 +39,7 @@ class TravelController extends BaseController
             'title' => 'Европейски летища – информация и връзки към официални сайтове',
             'banners' => $items,
             'banner' => $banner,
-            'airlines' => $airlines
+            'airports' => $airports
         ]);
     }
 }
