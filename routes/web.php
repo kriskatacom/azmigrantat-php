@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\Router;
+use App\Controllers\TranslationController;
 use App\Controllers\TrainController;
 use App\Controllers\HomeController;
 use App\Controllers\CityController;
@@ -184,6 +185,14 @@ $router->get('/admin/categories/edit/(\d+)', [CategoryController::class, 'edit']
 $router->post('/admin/categories/update/(\d+)', [CategoryController::class, 'update']);
 $router->post('/admin/categories/delete/(\d+)', [CategoryController::class, 'delete']);
 $router->post('/admin/categories/update-order', [CategoryController::class, 'updateOrder']);
+
+// Преводи (Translations)
+$router->get('/admin/translations', [TranslationController::class, 'index']);
+$router->get('/admin/translations/create', [TranslationController::class, 'create']);
+$router->post('/admin/translations/store', [TranslationController::class, 'store']);
+$router->get('/admin/translations/edit/(\d+)', [TranslationController::class, 'edit']);
+$router->post('/admin/translations/update/(\d+)', [TranslationController::class, 'update']);
+$router->post('/admin/translations/delete/(\d+)', [TranslationController::class, 'delete']);
 
 // --- Шофьори (Drivers)
 $router->get('/admin/users/edit/{id}', [DriverController::class, 'account']);

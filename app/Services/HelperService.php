@@ -2,8 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Translation;
+
 class HelperService
 {
+    private static ?array $translations = null;
+
     public const AVAILABLE_LANGUAGES = [
         'bg' => ['name' => 'Български', 'flag' => '🇧🇬'],
         'en' => ['name' => 'English', 'flag' => '🇺🇸'],
@@ -78,23 +82,21 @@ class HelperService
 
     public static function isHome(): bool
     {
-        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $path = rtrim($path, '/');
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $uri = trim($uri, '/');
 
-        return $path === '' || $path === '/en';
+        return $uri === '' || array_key_exists($uri, self::AVAILABLE_LANGUAGES);
     }
 
     public static function trans(string $key): string
     {
-        $lang = $_SESSION['lang'] ?? 'bg';
-        $path = dirname(__DIR__, 2) . "/app/Languages/{$lang}.php";
-
-        if (file_exists($path)) {
-            $translations = include $path;
-            return $translations[$key] ?? $key;
+        if (self::$translations === null) {
+            $lang = $_SESSION['lang'] ?? 'bg';
+            $model = new Translation();
+            self::$translations = $model->getAllByLanguage($lang);
         }
 
-        return $key;
+        return self::$translations[$key] ?? $key;
     }
 
     public static function langUrl($path = null, $targetLang = null): string
@@ -147,9 +149,10 @@ class HelperService
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $parts = explode('/', trim($uri, '/'));
+        $firstPart = $parts[0] ?? '';
 
-        if (isset($parts[0]) && $parts[0] === 'en') {
-            return 'en';
+        if (array_key_exists($firstPart, self::AVAILABLE_LANGUAGES)) {
+            return $firstPart;
         }
 
         return 'bg';

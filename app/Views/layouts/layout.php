@@ -9,7 +9,7 @@ if ($currentUri == '/' || $currentUri == '/home') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="<?= $_SESSION['lang'] ?? 'bg' ?>">
 
 <head>
     <meta charset="UTF-8">

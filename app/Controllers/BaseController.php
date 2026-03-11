@@ -87,21 +87,19 @@ abstract class BaseController
         exit;
     }
 
-    protected function paginate($model, $perPage = 10)
+    protected function paginate($model, $options = [], $perPage = 15)
     {
         $page = max(1, (int)($_GET['page'] ?? 1));
-        $limit = (int)($_GET['per_page'] ?? $perPage);
-        $offset = ($page - 1) * $limit;
+        $offset = ($page - 1) * $perPage;
 
-        $total = $model->count();
+        $total = $model->count($options);
 
         return [
-            'limit'      => $limit,
+            'limit'      => $perPage,
             'offset'     => $offset,
             'pagination' => [
                 'current'  => $page,
-                'total'    => ceil($total / $limit),
-                'per_page' => $limit,
+                'total'    => ceil($total / $perPage),
                 'total_records' => $total
             ]
         ];
