@@ -1,5 +1,11 @@
+<?php
+
+use App\Services\HelperService;
+?>
 <div class="px-4 md:mt-2 flex flex-wrap gap-2 text-sm justify-center items-center">
-    <a href="/" class="text-primary-light md:text-lg hover:underline">Начало</a>
+    <a href="/" class="text-primary-light md:text-lg hover:underline">
+        <?= HelperService::trans('home') ?>
+    </a>
     
     <?php foreach ($items as $index => $item): ?>
         <?php if (empty($item['label'])) continue; ?>

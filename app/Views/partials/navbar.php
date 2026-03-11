@@ -13,7 +13,7 @@ $navClasses = $isHome ? "absolute top-0 left-0 w-full z-50 bg-transparent" : "bg
         <div class="flex items-center">
             <div class="text-3xl font-bold flex">
                 <a href="<?= HelperService::url('/') ?>" title="<?= HelperService::trans('nav_home') ?>">
-                    <img src="/assets/images/azmigrantat-website-logo.webp" alt="Лого">
+                    <img src="/assets/images/azmigrantat-website-logo.webp" alt="<?= HelperService::trans('logo_alt') ?>">
                 </a>
             </div>
         </div>
@@ -30,19 +30,19 @@ $navClasses = $isHome ? "absolute top-0 left-0 w-full z-50 bg-transparent" : "bg
 
                         <?php if ($user['role'] === 'admin'): ?>
                             <a href="/admin/dashboard" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition border-b border-white/5 mb-1">
-                                Админ панел
+                                <?= HelperService::trans('admin_panel') ?>
                             </a>
                         <?php endif; ?>
 
                         <?php if ($user['role'] === 'driver'): ?>
                             <a href="/travel/shared-travel/drivers/<?= $user['username'] ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition border-b border-white/5 mb-1">
-                                Шофьорски профил
+                                <?= HelperService::trans('driver_profile') ?>
                             </a>
                         <?php endif; ?>
 
                         <form action="/auth/logout" method="POST" class="w-full">
                             <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition">
-                                Изход от профила
+                                <?= HelperService::trans('logout') ?>
                             </button>
                         </form>
                     </div>

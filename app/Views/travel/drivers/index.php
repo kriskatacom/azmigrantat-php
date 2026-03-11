@@ -4,7 +4,7 @@ use App\Core\View;
 use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => 'Пътуване', 'href' => '/travel'],
+    ['label' => HelperService::trans('home'), 'href' => '/travel'],
     ['label' => 'Споделено пътуване', 'href' => '/travel/shared-travel'],
     ['label' => 'Шофьори'],
 ];
@@ -40,7 +40,7 @@ $limit = 2;
         <?php if (count($activeDrivers) > $limit): ?>
             <div class="flex justify-center mt-5">
                 <button onclick="loadMore('driver')" id="btn-load-driver" class="bg-white border border-gray-200 text-gray-800 font-semibold px-10 py-3 rounded-lg shadow-sm hover:bg-gray-50 transition-all cursor-pointer">
-                    <?= HelperService::trans('load_more') ?? 'Зареждане на още' ?>
+                    <?= HelperService::trans('show_more') ?>
                 </button>
             </div>
         <?php endif; ?>

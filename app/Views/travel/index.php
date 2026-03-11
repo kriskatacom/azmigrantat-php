@@ -1,11 +1,13 @@
 <?php
 
 use App\Core\View;
+use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => 'Пътуване']
+    ['label' => HelperService::trans('travel')]
 ];
 ?>
+
 <section>
     <div class="aspect-video max-h-100 w-full">
         <img src="<?= !empty($banner['image_url']) ? $banner['image_url'] : '/assets/img/default-banner.jpg' ?>" class="w-full h-full object-cover transition-opacity duration-500" alt="<?= htmlspecialchars($banner['name'] ?? 'Banner Image') ?>">

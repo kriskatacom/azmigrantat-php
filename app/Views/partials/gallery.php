@@ -1,4 +1,5 @@
 <?php
+
 use App\Services\HelperService;
 
 $imagesList = [];
@@ -21,11 +22,11 @@ if (!empty($buttonClassesParam)) {
     <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden flex flex-col">
         <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl font-bold">
             <?php HelperService::icon($icon ?? 'image', 'w-5 h-5 md:w-8 md:h-8 text-primary-dark'); ?>
-            <?= htmlspecialchars($title ?? 'Галерия') ?>
+            <?= htmlspecialchars($title ?? HelperService::trans('gallery')) ?>
         </div>
         <div class="p-2 md:p-5 flex-1">
             <template x-if="images.length === 0">
-                <div class="text-gray-500 text-center py-10">Няма налични снимки.</div>
+                <div class="text-gray-500 text-center py-10"><?= HelperService::trans('no_photos_available') ?></div>
             </template>
             <template x-if="images.length > 0">
                 <div class="swiper rounded-lg relative w-full h-full" x-ref="previewSwiper">
@@ -48,7 +49,7 @@ if (!empty($buttonClassesParam)) {
             <div>
                 <button @click="openGallery()" class="<?= $buttonClasses ?>">
                     <?php HelperService::icon('image', 'w-5 h-5'); ?>
-                    <?= $title ?? 'Виж галерията' ?>
+                    <?= $title ?? HelperService::trans('view_gallery') ?>
                     <span class="opacity-70" x-text="'(' + images.length + ')'"></span>
                 </button>
                 <div class="hidden">
@@ -66,7 +67,7 @@ if (!empty($buttonClassesParam)) {
                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <div class="text-white text-center">
                          <?php HelperService::icon('image', 'w-8 h-8 mx-auto mb-2'); ?>
-                         <span class="font-bold tracking-widest text-sm">Виж всички снимки</span>
+                         <span class="font-bold tracking-widest text-sm"><?= HelperService::trans('view_all_photos') ?></span>
                     </div>
                 </div>
                 <div class="hidden">
@@ -103,7 +104,6 @@ if (!empty($buttonClassesParam)) {
                 },
 
                 openGallery() {
-                    // Ръчно отваряне на Fancybox за първия елемент от тази галерия
                     Fancybox.show(
                         this.images.map(img => ({ src: img, type: "image" }))
                     );

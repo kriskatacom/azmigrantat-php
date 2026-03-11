@@ -1,6 +1,8 @@
 <?php
 
-use App\Core\View; ?>
+use App\Core\View;
+use App\Services\HelperService;
+?>
 
 <section>
     <div class="aspect-video max-h-100 w-full">
@@ -9,12 +11,12 @@ use App\Core\View; ?>
     <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
         <div class="container mx-auto px-4">
             <h1 class="text-xl md:text-2xl xl:text-3xl font-bold uppercase tracking-wide">
-                Забележителности в <?= htmlspecialchars($country['name']) ?>
+                <?= HelperService::trans('landmarks_in') ?> <?= htmlspecialchars($country['name']) ?>
             </h1>
             <?php View::component('breadcrumbs', 'partials', [
                 'items' => [
                     ['label' => $country['name'], 'href' => '/' . $country['slug']],
-                    ['label' => 'Забележителности', 'href' => '/']
+                    ['label' => HelperService::trans('landmarks'), 'href' => '/']
                 ]
             ]); ?>
         </div>

@@ -29,7 +29,7 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
             <div class="relative">
                 <input type="text"
                     id="<?= $searchId ?>"
-                    placeholder="<?= HelperService::trans('search_placeholder') ?? 'Търсене...' ?>"
+                    placeholder="<?= HelperService::trans('search_placeholder') ?>"
                     class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                 <div class="absolute left-3 top-2.5 text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,7 +65,7 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
     <?php if (count($items) > $limit): ?>
         <div id="btn-container-<?= $btnId ?>" class="flex justify-center mt-5 md:mt-10">
             <button id="<?= $btnId ?>" class="bg-white border border-gray-200 text-gray-800 font-semibold px-10 py-3 rounded-lg shadow-sm hover:bg-gray-50 transition-all cursor-pointer">
-                <?= HelperService::trans('load_more') ?? 'Зареждане на още' ?>
+                <?= HelperService::trans('show_more') ?>
             </button>
         </div>
     <?php endif; ?>

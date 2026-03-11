@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Models\User;
+use App\Services\HelperService;
 
 class AuthController extends BaseController
 {
@@ -18,7 +19,7 @@ class AuthController extends BaseController
     {
         $this->allowOnlyGuests();
         View::render('auth/login', [
-            'title' => 'Вход в профила - Аз мигрантът'
+            'title' => HelperService::trans('login') . ' - ' . HelperService::trans('i_the_migrant')
         ]);
     }
 
@@ -26,7 +27,7 @@ class AuthController extends BaseController
     {
         $this->allowOnlyGuests();
         View::render('auth/register', [
-            'title' => 'Създаване на профил - Аз мигрантът'
+            'title' => HelperService::trans('register') . ' - ' . HelperService::trans('i_the_migrant')
         ]);
     }
 
@@ -41,7 +42,7 @@ class AuthController extends BaseController
         if ($user) {
             $this->redirectByUserRole($user);
         } else {
-            $_SESSION['error'] = "Невалиден имейл или парола!";
+            $_SESSION['error'] = HelperService::trans('invalid_credentials') . "!";
             header('Location: /auth/login');
             exit;
         }
@@ -59,13 +60,13 @@ class AuthController extends BaseController
         $_SESSION['old'] = ['name' => $name, 'email' => $email];
 
         if (empty($name) || empty($email) || empty($password)) {
-            $_SESSION['error'] = "Всички полета са задължителни!";
+            $_SESSION['error'] = HelperService::trans('all_fields_are_required') . "!";
             header('Location: /auth/register');
             exit;
         }
 
         if ($password !== $passwordConfirm) {
-            $_SESSION['error'] = "Паролите не съвпадат!";
+            $_SESSION['error'] = HelperService::trans('incorrect_passwords') . '!';
             header('Location: /auth/register');
             exit;
         }
@@ -77,7 +78,7 @@ class AuthController extends BaseController
             unset($_SESSION['old']);
             $this->redirectByUserRole($user);
         } else {
-            $_SESSION['error'] = "Възникна грешка при регистрацията.";
+            $_SESSION['error'] = HelperService::trans('something_went_wrong') . ".";
             header('Location: /auth/register');
             exit;
         }

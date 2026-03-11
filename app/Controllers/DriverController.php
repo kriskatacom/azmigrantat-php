@@ -8,6 +8,7 @@ use App\Core\View;
 use App\Models\Banner;
 use App\Models\Country;
 use App\Models\User;
+use App\Services\HelperService;
 
 class DriverController extends BaseController
 {
@@ -44,7 +45,7 @@ class DriverController extends BaseController
                 'from' => $fromSlug,
                 'to' => $toSlug
             ],
-            'title' => 'Търсене на шофьори'
+            'title' => HelperService::trans('drivers_search')
         ]);
     }
 
@@ -65,7 +66,7 @@ class DriverController extends BaseController
             'driver' => $driver,
             'fromCity' => $fromCity,
             'toCity' => $toCity,
-            'title' => "Пътувай с {$driver['name']}"
+            'title' => HelperService::trans('travel_with') . " {$driver['name']}"
         ]);
     }
 

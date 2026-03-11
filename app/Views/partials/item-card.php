@@ -41,7 +41,7 @@ $final_url = $is_external_link ? $url : HelperService::url($url);
             </h3>
 
             <span class="inline-block border-2 border-white text-white font-semibold px-6 py-2 rounded-lg group-hover:bg-white group-hover:text-black transition-colors duration-300 pointer-events-auto">
-                <?= HelperService::trans('information') ?? 'Информация' ?>
+                <?= HelperService::trans('information') ?>
             </span>
         </div>
     </div>
@@ -64,7 +64,7 @@ $final_url = $is_external_link ? $url : HelperService::url($url);
                 </h3>
                 
                 <div class="text-gray-500 text-sm line-clamp-2 mb-4 leading-relaxed min-h-10">
-                    <?= !empty($excerpt) ? strip_tags($excerpt) : 'Няма налично описание за този обект.' ?>
+                    <?= !empty($excerpt) ? strip_tags($excerpt) : HelperService::trans('no_description_available') ?>
                 </div>
             </div>
 
@@ -74,7 +74,7 @@ $final_url = $is_external_link ? $url : HelperService::url($url);
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
-                    <?= HelperService::trans('view_more') ?? 'Вижте повече' ?>
+                    <?= HelperService::trans('view_more') ?>
                 </span>
             </div>
         </div>

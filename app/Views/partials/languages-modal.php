@@ -48,7 +48,7 @@ use App\Services\HelperService;
                             <div class="p-2 bg-primary-light/10 rounded-lg">
                                 <i class="fa-solid fa-language text-primary-light text-xl"></i>
                             </div>
-                            <h3 class="text-xl font-bold text-white tracking-tight">Изберете език</h3>
+                            <h3 class="text-xl font-bold text-white tracking-tight"><?= HelperService::trans('select_language') ?></h3>
                         </div>
                         <button @click="langModal = false" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
                             <i class="fa-solid fa-xmark"></i>
@@ -59,7 +59,7 @@ use App\Services\HelperService;
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
                         <input x-model="search"
                             type="text"
-                            placeholder="Търсене на език..."
+                            placeholder="<?= HelperService::trans('languages_search') ?>"
                             class="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-3 pl-11 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-light/50 transition-all">
                     </div>
                 </div>
@@ -86,7 +86,7 @@ use App\Services\HelperService;
                 <div class="p-4 bg-slate-900/80 border-t border-white/5 text-center">
                     <p class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">
                         <i class="fa-solid fa-circle-info mr-1 text-primary-light/50"></i>
-                        Сайтът се превежда автоматично
+                        <?= HelperService::trans('auto_translate_notice') ?>
                     </p>
                 </div>
             </div>

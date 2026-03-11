@@ -2,9 +2,10 @@
 
 use App\Core\View;
 use App\Models\User;
+use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => 'Пътуване', 'href' => '/travel'],
+    ['label' => HelperService::trans('home'), 'href' => '/travel'],
     ['label' => 'Споделено пътуване', 'href' => '/travel/shared-travel'],
     ['label' => 'Шофьори', 'href' => '/travel/shared-travel/drivers'],
     ['label' => $driver['name']]
@@ -71,7 +72,7 @@ $user = User::auth();
         <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto mt-2 md:mt-5">
             <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-3 text-xs md:text-lg lg:text-xl font-semibold text-gray-800">
                 <i class="fas fa-address-book text-primary-dark text-lg md:text-2xl"></i>
-                Информация за контакти
+                <?= HelperService::trans('contact_info') ?>
             </div>
 
             <?php if ($hasContacts): ?>
@@ -127,7 +128,7 @@ $user = User::auth();
 
                 </div>
             <?php else: ?>
-                <div class="p-2 md:p-5 text-xs md:text-base text-gray-500 italic text-center">Няма добавена информация за контакти.</div>
+                <div class="p-2 md:p-5 text-xs md:text-base text-gray-500 italic text-center"><?= HelperService::trans('contact_info_empty') ?></div>
             <?php endif; ?>
         </div>
     </div>

@@ -1,16 +1,10 @@
 <?php
 
-/**
- * Динамични променливи (от $data):
- * @var string $title
- * @var string $content
- * @var string $confirmText
- * @var string $onConfirm (JS функция или израз)
- * @var string $id (Уникално ID за модала)
- */
+use App\Services\HelperService;
+
 $id = $id ?? 'modal-' . uniqid();
-$confirmText = $confirmText ?? 'Потвърди';
-$cancelText = $cancelText ?? 'Отказ';
+$confirmText = $confirmText ?? HelperService::trans('confirm');
+$cancelText = $cancelText ?? HelperService::trans('cancel');
 ?>
 
 <div

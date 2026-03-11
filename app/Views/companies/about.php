@@ -14,7 +14,7 @@ use App\Services\HelperService;
 <div x-data="{ tab: 'description' }" class="container mx-auto px-4 md:px-10 py-10">
 
     <h2 class="text-3xl md:text-4xl font-bold text-center text-primary-dark mb-8">
-        Научете повече за нас
+        <?= HelperService::trans('learn_more_about_us') ?>
     </h2>
 
     <!-- Бутони -->
@@ -23,14 +23,14 @@ use App\Services\HelperService;
             @click="tab = 'description'"
             class="btn-primary max-sm:w-full"
             :class="tab === 'description' ? 'text-primary-dark bg-primary-light' : 'text-white bg-primary-darken'">
-            Описание
+            <?= HelperService::trans('description') ?>
         </button>
 
         <button
             @click="tab = 'services'"
             class="btn-primary max-sm:w-full"
             :class="tab === 'services' ? 'text-primary-dark bg-primary-light' : 'text-white bg-primary-darken'">
-            Услуги
+            <?= HelperService::trans('services') ?>
         </button>
 
         <?php View::component('gallery', 'partials', [
@@ -57,7 +57,7 @@ use App\Services\HelperService;
                     </div>
                 <?php else: ?>
                     <p class="text-gray-500 text-center">
-                        Описание на компанията не е налично.
+                        <?= HelperService::trans('company_description_empty') ?>
                     </p>
                 <?php endif; ?>
             </div>
@@ -77,7 +77,7 @@ use App\Services\HelperService;
                     </div>
                 <?php else: ?>
                     <p class="text-gray-500 text-center">
-                        Няма добавени услуги.
+                        <?= HelperService::trans('no_services_added') ?>
                     </p>
                 <?php endif; ?>
             </div>

@@ -29,7 +29,7 @@ class HomeController
         $countries = $this->countryModel->getAllSorted();
 
         View::render('index/home/index', [
-            'title' => 'Начало',
+            'title' => HelperService::trans('home'),
             'countries' => $countries
         ]);
     }
@@ -53,7 +53,7 @@ class HomeController
         }
 
         View::render('travel/index', [
-            'title'   => 'Пътуване',
+            'title'   => HelperService::trans('home'),
             'banner'  => $mainBanner,
             'banners' => $items
         ]);
@@ -65,7 +65,7 @@ class HomeController
 
         $breadcrumbs = [
             [
-                'label' => HelperService::trans('travel') ?? 'Пътуване',
+                'label' => HelperService::trans('travel') ?? HelperService::trans('home'),
                 'href'  => '/travel'
             ],
             [

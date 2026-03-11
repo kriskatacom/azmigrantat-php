@@ -31,7 +31,7 @@ $user = User::auth();
 
         <div class="flex flex-col sm:flex-row sm:justify-center items-center gap-2 md:gap-5 w-full">
             <a href="<?= $_SERVER['REQUEST_URI'] ?>/about" class="btn-primary">
-                Научете повече за нас
+                <?= HelperService::trans('learn_more_about_us') ?>
             </a>
         </div>
     </div>
@@ -40,7 +40,7 @@ $user = User::auth();
 <div class="container mx-auto px-2 md:px-5">
     <div class="grid md:grid-cols-2 gap-2 md:gap-5">
         <div class="group flex flex-col">
-            <h3 class="text-center font-semibold my-2 md:my-5 text-white text-xl md:text-2xl">Реклами</h3>
+            <h3 class="text-center font-semibold my-2 md:my-5 text-white text-xl md:text-2xl"><?= HelperService::trans('ads') ?></h3>
 
             <div class="relative h-100 md:h-80 rounded-xl shadow-md overflow-hidden mb-4">
                 <?php if (!empty($ads)): ?>
@@ -61,7 +61,7 @@ $user = User::auth();
                     <div class="absolute inset-0 bg-black/40 flex items-center justify-center p-6 text-center">
                         <?php if (!empty($user['id'])): ?>
                             <span class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">
-                                Вашите реклами се показват тук
+                                <?= HelperService::trans('ads_showcase') ?>
                             </span>
                         <?php else: ?>
                             <div class="space-y-5">
@@ -75,13 +75,13 @@ $user = User::auth();
 
             <?php if (!empty($user['id']) && $user['id'] === $company['user_id']): ?>
                 <div class="text-white text-sm md:text-base leading-relaxed mb-4 grow italic">
-                    Използвайте това пространство за вашите корпоративни банери, имиджови кампании или съобщения за кариерно развитие и свободни работни позиции в структурата на вашата организация.
+                    <?= HelperService::trans('ads_corporate_space') ?>
                 </div>
                 <a href="/admin/ads" class="flex justify-center btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Управление на реклами
+                    <?= HelperService::trans('ads_management') ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -108,7 +108,7 @@ $user = User::auth();
                     <div class="absolute inset-0 bg-black/40 flex items-center justify-center p-6 text-center">
                         <?php if (!empty($user['id'])): ?>
                             <span class="text-white text-2xl md:text-3xl font-black uppercase drop-shadow-md">
-                                Вашите обяви се показват тук
+                                <?= HelperService::trans('ad_display_here') ?>
                             </span>
                         <?php else: ?>
                             <div class="space-y-5">
@@ -122,13 +122,13 @@ $user = User::auth();
 
             <?php if (!empty($user['id']) && $user['id'] === $company['user_id']): ?>
                 <div class="text-white text-sm md:text-base leading-relaxed mb-4 grow italic">
-                    Тук можете да публикувате специфични търговски оферти, нови продукти, сезонни намаления или детайлна информация за услугите, които предлагате на вашите крайни клиенти и партньори.
+                    <?= HelperService::trans('ad_publish_info') ?>
                 </div>
                 <a href="/admin/companies/edit/<?= $company['id'] ?>" class="flex justify-center btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Редактирай обявата
+                    <?= HelperService::trans('edit_offer') ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -149,7 +149,7 @@ $user = User::auth();
                             shadowScale: 0.94,
                         },
                         autoplay: {
-                            delay: 3500, // Малка разлика в забавянето, за да не се въртят абсолютно едновременно
+                            delay: 3500,
                             disableOnInteraction: false,
                         },
                         pagination: {
@@ -216,7 +216,7 @@ $user = User::auth();
     <div class="w-fit my-2 md:my-5">
         <?php View::component("directions-button", "partials", [
             'mapsLink' => $company['your_location'],
-            'label' => 'Как да стигнете ?',
+            'label' => HelperService::trans('how_to_get_there') . ' ?',
             'variant' => 'primary'
         ]); ?>
     </div>

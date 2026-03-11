@@ -1,37 +1,32 @@
 <?php
 
+use App\Services\HelperService;
+
 $getCleanDestination = function($input) {
-    // 1. Специфично за Embed/Iframe линкове (Търсим !2d и !3d координати)
-    // Важно: в Google Maps Embed !2d е Longitude, а !3d е Latitude
     if (preg_match('/!2d([-0-9.]+)!3d([-0-9.]+)/', $input, $matches)) {
-        return $matches[2] . ',' . $matches[1]; // Връщаме във формат Lat,Lng
+        return $matches[2] . ',' . $matches[1];
     }
 
-    // 2. Алтернативен Embed формат (понякога се среща в pb= параметъра)
     if (preg_match('/pb=.*!1m.*!1m.*!3d([-0-9.]+)!2m.*!4d([-0-9.]+)/', $input, $matches)) {
         return $matches[1] . ',' . $matches[2];
     }
 
-    // 3. Стандартни точни координати на обекта от браузър линк (!3d...!4d)
     if (preg_match('/!3d([-0-9.]+)!4d([-0-9.]+)/', $input, $matches)) {
         return $matches[1] . ',' . $matches[2];
     }
 
-    // 4. Координати след символа @ (център на екрана)
     if (preg_match('/@([-0-9.]+),([-0-9.]+)/', $input, $matches)) {
         return $matches[1] . ',' . $matches[2];
     }
 
-    // 5. Резервен вариант (директни координати или целия линк)
     return trim($input);
 };
 
-$label = $label ?? 'Упътване';
+$label = $label ?? HelperService::trans('guide');
 $variant = $variant ?? 'primary';
 
 $cleanDestination = $getCleanDestination($mapsLink);
 
-// Генерираме официален линк за навигация (Direction API)
 $directionsUrl = "https://www.google.com/maps/dir/?api=1&destination=" . urlencode($cleanDestination);
 
 $baseClasses = "inline-flex items-center justify-center cursor-pointer px-5 py-2 border border-transparent text-base font-medium rounded-md shadow-sm transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2";
@@ -72,6 +67,6 @@ $currentClass = $variants[$variant] ?? $variants['primary'];
             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
         </svg>
 
-        <span x-text="isLoading ? 'Намиране на маршрут...' : '<?= htmlspecialchars($label) ?>'"></span>
+        <span x-text="isLoading ? '<?= HelperService::trans('finding_route') ?>' : '<?= htmlspecialchars($label) ?>'"></span>
     </button>
 </div>

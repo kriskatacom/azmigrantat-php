@@ -1,9 +1,10 @@
 <?php
 
 use App\Core\View;
+use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => 'Пътуване', 'href' => '/travel'],
+    ['label' => HelperService::trans('travel'), 'href' => '/travel'],
     ['label' => $trainsBanner['name'], 'href' => '/travel/trains'],
     ['label' => $countriesBanner['name'], 'href' => '/travel/trains/countries'],
     ['label' => $country['name'], 'href' => '/travel/trains/countries/' . $country['slug']],

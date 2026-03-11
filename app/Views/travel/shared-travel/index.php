@@ -32,7 +32,7 @@ $limit = 2;
         <?php if (count($posts) > $limit): ?>
             <div class="flex justify-center mt-5">
                 <button onclick="loadMore('post')" id="btn-load-post" class="bg-white border border-gray-200 text-gray-800 font-semibold px-10 py-3 rounded-lg shadow-sm hover:bg-gray-50 transition-all cursor-pointer">
-                    <?= HelperService::trans('load_more') ?? 'Зареждане на още' ?>
+                    <?= HelperService::trans('show_more') ?>
                 </button>
             </div>
         <?php endif; ?>
@@ -50,7 +50,7 @@ $limit = 2;
         <?php if (count($activeDrivers) > $limit): ?>
             <div class="flex justify-center mt-5">
                 <button onclick="loadMore('driver')" id="btn-load-driver" class="bg-white border border-gray-200 text-gray-800 font-semibold px-10 py-3 rounded-lg shadow-sm hover:bg-gray-50 transition-all cursor-pointer">
-                    <?= HelperService::trans('load_more') ?? 'Зареждане на още' ?>
+                    <?= HelperService::trans('show_more') ?>
                 </button>
             </div>
         <?php endif; ?>

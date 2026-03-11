@@ -25,11 +25,11 @@ $breadcrumbs = [
 
         <div x-data="{ isOpen: false }" x-cloak class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto">
             <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl">
-                <?php HelperService::icon('bank', 'w-5 h-5 md:w-10 md:h-10'); ?> За забележителността
+                <?php HelperService::icon('bank', 'w-5 h-5 md:w-10 md:h-10'); ?> <?= HelperService::trans('about_landmark') ?>
             </div>
             <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base">
                 <button @click="$dispatch('open-modal-show-description')" class="flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto">
-                    Повече информация
+                    <?= HelperService::trans('more_info') ?>
                 </button>
                 <div class="text-gray-700 leading-relaxed text-xs md:text-base line-clamp-3 sm:line-clamp-8 md:line-clamp-6 lg:line-clamp-8 xl:line-clamp-12 2xl:line-clamp-none">
                     <?= $landmark['content'] ?>
@@ -45,14 +45,14 @@ $breadcrumbs = [
 
         <?php View::component('gallery', 'partials', [
             'images' => $landmark['additional_images'],
-            'title'  => 'Галерия',
+            'title'  => HelperService::trans('gallery'),
             'icon'   => 'images'
         ]); ?>
 
         <div x-data="{ isOpen: false }" x-cloak class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto">
             <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl">
                 <?php HelperService::icon('clock', 'w-5 h-5 md:w-10 md:h-10'); ?>
-                Работно време
+                <?= HelperService::trans('work_time') ?>
             </div>
 
             <div class="p-2 md:p-5 space-y-3 md:space-y-5 flex-1 flex flex-col justify-between">
@@ -61,7 +61,7 @@ $breadcrumbs = [
                 </div>
 
                 <button @click="$dispatch('open-modal-show-working-time')" class="flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto">
-                    Показване
+                    <?= HelperService::trans('show_info') ?>
                 </button>
 
                 <?php View::component("modal", "partials", [
@@ -74,7 +74,7 @@ $breadcrumbs = [
 
         <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto">
             <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl">
-                <?php HelperService::icon('location', 'w-5 h-5 md:w-10 md:h-10'); ?> Информация за контакти
+                <?php HelperService::icon('location', 'w-5 h-5 md:w-10 md:h-10'); ?> <?= HelperService::trans('contact_info') ?>
             </div>
             <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base">
                 <?php if (!empty($landmark['address'])): ?>
@@ -111,7 +111,7 @@ $breadcrumbs = [
     <div class="w-fit my-2 md:my-5">
         <?php View::component("directions-button", "partials", [
             'mapsLink' => $landmark['your_location'],
-            'label' => 'Как да стигнете ?',
+            'label' => HelperService::trans('how_to_get_there') . ' ?',
             'variant' => 'primary'
         ]); ?>
     </div>

@@ -1,9 +1,10 @@
 <?php
 
 use App\Core\View;
+use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => 'Пътуване', 'href' => '/travel'],
+    ['label' => HelperService::trans('travel'), 'href' => '/travel'],
     ['label' => $banner['name']]
 ];
 ?>
@@ -29,7 +30,6 @@ $breadcrumbs = [
         'card_name' => 'item-card',
         'show_search' => false,
     ]); ?>
-
     <?php if (!empty($airports)): ?>
         <?php View::component('map', 'travel/autobuses/components', [
             'items'  => $airports,

@@ -5,7 +5,7 @@ use App\Services\HelperService;
 
 $breadcrumbs = [
     ['label' => $country['name'], 'href' => '/' . $country['slug']],
-    ['label' => 'Посолства', 'href' => '/' . $country['slug'] . '/embassies'],
+    ['label' => HelperService::trans('embassies'), 'href' => '/' . $country['slug'] . '/embassies'],
     ['label' => $embassy['name'], 'href' => '']
 ];
 ?>
@@ -16,7 +16,7 @@ $breadcrumbs = [
 <div class="flex items-center justify-center gap-5 p-5">
     <img src="<?= HelperService::getImage($embassy['logo']) ?>" class="h-20">
     <h1 class="text-xl md:text-2xl lg:text-3xl font-semibold text-primary-dark text-center">
-        Посолството на <?= $embassy['name'] ?>
+        <?= HelperService::trans('embassy_of') ?> <?= $embassy['name'] ?>
     </h1>
     <img src="<?= HelperService::getImage($embassy['right_heading_image']) ?>" class="h-20">
 </div>
@@ -30,7 +30,7 @@ $breadcrumbs = [
 
         <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto">
             <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl">
-                <?php HelperService::icon('bank', 'w-5 h-5 md:w-10 md:h-10'); ?> За посолството
+                <?php HelperService::icon('bank', 'w-5 h-5 md:w-10 md:h-10'); ?> <?= HelperService::trans('about_embassy') ?>
             </div>
             <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base">
                 <a href="<?= $embassy['website_link'] ?>" target="__blank" title="Уебсайт на <?= $embassy['heading'] ?>" class="block text-xs md:text-base w-full md:w-fit px-2 md:px-5 bg-primary-darken hover:bg-primary-dark text-white py-2 rounded md:rounded-lg mb-2 md:mb-5 text-center">Повече информация</a>
@@ -42,7 +42,7 @@ $breadcrumbs = [
 
         <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto">
             <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl">
-                <?php HelperService::icon('location', 'w-5 h-5 md:w-10 md:h-10 md:w-10 md:h-10'); ?> Информация за контакти
+                <?php HelperService::icon('location', 'w-5 h-5 md:w-10 md:h-10 md:w-10 md:h-10'); ?> <?= HelperService::trans('contact_info') ?>
             </div>
             <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base">
                 <?php if (!empty($embassy['address'])): ?>
@@ -79,7 +79,7 @@ $breadcrumbs = [
             <div class="border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-50 md:h-80 xl:h-auto">
                 <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl font-bold bg-gray-50">
                     <?php HelperService::icon('clock', 'w-5 h-5 md:w-6 md:h-6'); ?>
-                    Работно време
+                    <?= HelperService::trans('work_time') ?>
                 </div>
 
                 <div class="p-2 md:p-5 space-y-3 md:space-y-5 flex-1 flex flex-col justify-between">
@@ -88,12 +88,12 @@ $breadcrumbs = [
                     </div>
 
                     <button @click="$dispatch('open-modal-show-working-time')" class="flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto">
-                        Показване
+                        <?= HelperService::trans('show_info') ?>
                     </button>
 
                     <?php View::component("modal", "partials", [
                         'id' => 'show-working-time',
-                        'title' => 'Работно време на посолството',
+                        'title' => HelperService::trans('embassy_work_time'),
                         'content' => $embassy['working_time'],
                     ]); ?>
                 </div>
@@ -102,7 +102,7 @@ $breadcrumbs = [
 
         <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm h-50 md:h-80 xl:h-auto">
             <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl">
-                <?php HelperService::icon('telephone', 'w-5 h-5 md:w-10 md:h-10'); ?> Спешни случаи
+                <?php HelperService::icon('telephone', 'w-5 h-5 md:w-10 md:h-10'); ?> <?= HelperService::trans('emergency_cases') ?>
             </div>
             <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base">
                 <div class="flex items-center gap-3">
@@ -116,7 +116,7 @@ $breadcrumbs = [
     <div class="w-fit my-2 md:my-5">
         <?php View::component("directions-button", "partials", [
             'mapsLink' => $embassy['your_location'],
-            'label' => 'Как да стигнете ?',
+            'label' => HelperService::trans('how_to_get_there') . ' ?',
             'variant' => 'primary'
         ]); ?>
     </div>

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\CompanyOffer;
 use App\Models\Company;
 use App\Models\User;
+use App\Services\HelperService;
 
 class CompanyOfferController extends BaseController
 {
@@ -31,8 +32,8 @@ class CompanyOfferController extends BaseController
         );
 
         $this->render('admin/offers/index', [
-            'title'      => 'Обяви на компании',
-            'offers'        => $offers,
+            'title'      => HelperService::trans('company_ads'),
+            'offers'     => $offers,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
         ]);
@@ -43,7 +44,7 @@ class CompanyOfferController extends BaseController
         $this->checkAccess(['admin', 'entrepreneur']);
 
         $this->render('admin/offers/form', [
-            'title'     => 'Нова обява',
+            'title'     => HelperService::trans('new_offer'),
             'companies' => $this->companyModel->getAllWithRelations(),
             'users'     => $this->userModel->all(),
             'nextOrder' => $this->offerModel->getNextSortOrder(),

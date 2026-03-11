@@ -1,6 +1,8 @@
 <?php
 
 use App\Core\View;
+use App\Services\HelperService;
+
 ?>
 
 <section class="relative h-125 md:h-150 flex items-center justify-center overflow-hidden">
@@ -17,7 +19,7 @@ use App\Core\View;
             <?= $country['excerpt'] ?>
         </div>
         <a href="#elements-grid" class="inline-block px-8 py-3 bg-white text-gray-900 rounded-lg font-bold hover:bg-gray-100 transition-colors">
-            Научете повече
+            <?= HelperService::trans('learn_more') ?>
         </a>
     </div>
 </section>

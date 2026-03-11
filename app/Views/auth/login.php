@@ -13,17 +13,17 @@ use App\Services\HelperService; ?>
 
         <div class="mb-12 md:mb-0 md:w-1/2 text-left">
             <h1 class="text-primary-light text-5xl md:text-6xl font-black mb-4 tracking-tight uppercase">
-                Аз мигрантът
+                <?= HelperService::trans('i_the_migrant') ?>
             </h1>
             <p class="text-gray-400 text-lg max-w-md leading-relaxed">
-                Добре дошли! Влезте в профила си, за да управлявате обяви, услуги и съдържание.
+                <?= HelperService::trans('login_back_message') ?>
             </p>
         </div>
 
         <div class="w-full max-w-md">
             <div class="bg-transparent backdrop-blur-xs border border-white/10 p-10 rounded-2xl shadow-2xl">
                 <h2 class="text-white text-2xl font-bold mb-8 text-center uppercase tracking-wide">
-                    Вход в профила
+                    <?= HelperService::trans('login') ?>
                 </h2>
 
                 <form action="/auth/login" method="POST" class="space-y-6">
@@ -39,14 +39,14 @@ use App\Services\HelperService; ?>
                     <?php endif; ?>
                     
                     <div>
-                        <label class="block text-gray-400 text-sm font-medium mb-2 pl-1">Email</label>
+                        <label class="block text-gray-400 text-sm font-medium mb-2 pl-1"><?= HelperService::trans('email') ?></label>
                         <input type="email" name="email" required
                             placeholder="ivan@example.com"
                             class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-primary-light/50 transition-all placeholder:text-gray-600">
                     </div>
 
                     <div>
-                        <label class="block text-gray-400 text-sm font-medium mb-2 pl-1">Парола</label>
+                        <label class="block text-gray-400 text-sm font-medium mb-2 pl-1"><?= HelperService::trans('password') ?></label>
                         <input type="password" name="password" required
                             placeholder="••••••"
                             class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-primary-light/50 transition-all placeholder:text-gray-600">
@@ -60,9 +60,9 @@ use App\Services\HelperService; ?>
 
                         <div class="text-center">
                             <p class="text-gray-500 text-sm">
-                                Нямате профил? 
+                                <?= HelperService::trans('dont_account') ?>?
                                 <a href="/auth/register" class="text-primary-light hover:text-white transition-colors font-semibold underline underline-offset-4 decoration-primary-light/30">
-                                    Регистрирайте се тук
+                                    <?= HelperService::trans('register_here') ?>
                                 </a>
                             </p>
                         </div>
