@@ -114,5 +114,8 @@ $userRole = $currentUser['role'] ?? 'user';
         <?php View::component('alert', 'admin/components'); ?>
     </main>
 
+    <script src="/assets/js/min/alpinejs-intersect.min.js" defer></script>
+    <script src="/assets/js/min/alpine.cdn.min.js" defer></script>
+
 </body>
 </html>

@@ -258,4 +258,27 @@ abstract class BaseController
 
         exit;
     }
+
+    protected function getMappedTranslations(string $entity, int $id): array
+    {
+        $translationModel = new \App\Models\Translation();
+
+        $rawTranslations = $translationModel->all([
+            'where' => ['translation_key' => "{$entity}_{$id}_%"],
+            'like'  => true
+        ]);
+
+        $mapped = [];
+        foreach ($rawTranslations as $tr) {
+            $lang = $tr['lang_code'];
+            $key = $tr['translation_key'];
+
+            $parts = explode('_', $key);
+            $fieldName = end($parts);
+
+            $mapped[$lang][$fieldName] = $tr['translation_value'];
+        }
+
+        return $mapped;
+    }
 }

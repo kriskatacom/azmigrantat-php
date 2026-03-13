@@ -10,6 +10,7 @@ use App\Models\City;
 use App\Models\Company;
 use App\Models\CompanyAd;
 use App\Models\CompanyOffer;
+use App\Services\HelperService;
 
 class CategoryController extends BaseController
 {
@@ -309,16 +310,20 @@ class CategoryController extends BaseController
     public function edit(int $id)
     {
         $this->checkAccess('admin');
+
         $category = $this->categoryModel->find($id);
         if (!$category) {
             $this->flash('error', 'Записът не е намерен.');
             $this->redirect($this->baseRoute);
         }
 
+        $category['translations'] = $this->getMappedTranslations('category', $id);
+
         $this->render('admin/categories/form', [
             'title'      => 'Редактиране: ' . $category['name'],
             'categories' => $this->categoryModel->getTree(),
             'category'   => $category,
+            'languages'  => HelperService::AVAILABLE_LANGUAGES,
             'layout'     => 'admin'
         ]);
     }

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\Translation;
 use App\Core\View;
+use App\Core\Response;
 
 class TranslationController extends BaseController
 {
@@ -118,6 +119,46 @@ class TranslationController extends BaseController
         $this->translationModel->addFullTranslation($key, $translations);
 
         $this->redirect('/admin/translations?incomplete=1');
+    }
+
+    public function confirmTranslations($entity, $id)
+    {
+        $this->checkAccess('admin');
+
+        $json = file_get_contents('php://input');
+        $input = json_decode($json, true);
+
+        if (!$input) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'Невалидни данни']);
+            exit;
+        }
+
+        $firstLangData = current($input) ?: [];
+        $fields = array_keys($firstLangData);
+
+        try {
+            foreach ($fields as $field) {
+                $key = "{$entity}_{$id}_{$field}";
+
+                $fieldTranslations = [];
+                foreach ($input as $langCode => $values) {
+                    if (isset($values[$field])) {
+                        $fieldTranslations[$langCode] = $values[$field];
+                    }
+                }
+                
+                $this->translationModel->addFullTranslation($key, $fieldTranslations);
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true]);
+            exit;
+        } catch (\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            exit;
+        }
     }
 
     public function delete(int $id)

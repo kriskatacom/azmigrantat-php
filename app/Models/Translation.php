@@ -47,11 +47,7 @@ class Translation extends Model
         }
 
         foreach ($translations as $langCode => $value) {
-            $finalValue = trim($value);
-
-            if (empty($finalValue) && !empty($sourceText)) {
-                $finalValue = TranslateService::google($sourceText, $langCode);
-            }
+            $finalValue = trim($value ?? '');
 
             $sql = "INSERT INTO {$this->table} (translation_key, lang_code, translation_value) 
                 VALUES (:key, :lang, :val)
@@ -63,6 +59,32 @@ class Translation extends Model
                 'val'        => $finalValue,
                 'val_update' => $finalValue
             ]);
+        }
+
+        return true;
+    }
+
+    /**
+     * Масов запис на преводи за конкретен обект (entity)
+     */
+    public function updateEntityTranslations(string $entity, int $id, array $data): bool
+    {
+        if (empty($data)) return false;
+
+        $firstLangData = current($data) ?: [];
+        $fields = array_keys($firstLangData);
+
+        foreach ($fields as $field) {
+            $key = "{$entity}_{$id}_{$field}";
+            $fieldTranslations = [];
+
+            foreach ($data as $langCode => $values) {
+                if (isset($values[$field])) {
+                    $fieldTranslations[$langCode] = $values[$field];
+                }
+            }
+
+            $this->addFullTranslation($key, $fieldTranslations);
         }
 
         return true;
@@ -81,7 +103,14 @@ class Translation extends Model
                     $whereClauses[] = "{$column} IS NULL";
                 } else {
                     $paramKey = "where_" . str_replace(['.', '-'], '_', $column);
-                    $whereClauses[] = "{$column} = :{$paramKey}";
+
+                    // Проверка за LIKE оператор
+                    if (isset($options['like']) && $options['like'] === true) {
+                        $whereClauses[] = "{$column} LIKE :{$paramKey}";
+                    } else {
+                        $whereClauses[] = "{$column} = :{$paramKey}";
+                    }
+
                     $params[$paramKey] = $value;
                 }
             }
@@ -108,27 +137,13 @@ class Translation extends Model
         }
 
         $stmt = $this->db->prepare($sql);
-
         $stmt->execute($params);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function count(array $options = []): int
     {
         $totalLangsCount = count(\App\Services\HelperService::AVAILABLE_LANGUAGES);
-
-        if (!empty($options['incomplete'])) {
-            $sql = "SELECT COUNT(*) FROM (
-                    SELECT translation_key 
-                    FROM {$this->table} 
-                    GROUP BY translation_key 
-                    HAVING COUNT(CASE WHEN translation_value != '' AND translation_value IS NOT NULL THEN 1 END) < :total_langs
-                ) as temp";
-            $params = ['total_langs' => $totalLangsCount];
-        } else {
-            $sql = "SELECT COUNT(DISTINCT translation_key) FROM {$this->table}";
-            $params = [];
-        }
 
         $sql = "SELECT COUNT(DISTINCT translation_key) FROM {$this->table}";
         $params = [];

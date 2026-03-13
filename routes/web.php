@@ -194,6 +194,8 @@ $router->get('/admin/translations/edit/(\d+)', [TranslationController::class, 'e
 $router->post('/admin/translations/update/(\d+)', [TranslationController::class, 'update']);
 $router->post('/admin/translations/delete/(\d+)', [TranslationController::class, 'delete']);
 
+$router->post('/admin/translations/confirm/{entity}/{id}', [TranslationController::class, 'confirmTranslations']);
+
 // --- Шофьори (Drivers)
 $router->get('/admin/users/edit/{id}', [DriverController::class, 'account']);
 $router->post('/admin/users/update/{id}', [DriverController::class, 'updateAccount']);
