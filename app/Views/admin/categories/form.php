@@ -2,27 +2,46 @@
 
 use App\Core\View;
 
-$isEdit = isset($category);
-$action = $isEdit ? "/admin/categories/update/{$category['id']}" : "/admin/categories/store";
+$item = $category ?? [];
+$entityName = 'category';
+$baseRoute = '/admin/categories';
+$isEdit = isset($item['id']);
 
-$fields = [
+$translatableFields = [
     'name'    => ['label' => 'Име на категорията', 'type' => 'text'],
     'heading' => ['label' => 'Заглавие на страницата', 'type' => 'text'],
     'excerpt' => ['label' => 'Кратко описание', 'type' => 'editor'],
     'content' => ['label' => 'Подробно съдържание', 'type' => 'editor']
 ];
+
+$action = $isEdit ? "{$baseRoute}/update/{$item['id']}" : "{$baseRoute}/store";
+
+$categoryData = [
+    'id' => (int)($item['id'] ?? 0),
+    'entity' => $entityName,
+    'fields' => array_keys($translatableFields),
+    'translations' => $item['translations'] ?? (object)[]
+];
 ?>
 
-<div x-data="translatableForm({
-    id: <?= (int)($category['id'] ?? 0) ?>,
-    entity: 'category',
-    fields: ['name', 'heading', 'excerpt', 'content'],
-    translations: <?= htmlspecialchars(json_encode($category['translations'] ?? []), ENT_QUOTES, 'UTF-8') ?>
-})">
+<script>
+    window.categoryFormData = <?= json_encode($categoryData, JSON_UNESCAPED_UNICODE) ?>;
+</script>
+
+<div
+    x-data="translatableForm(window.categoryFormData)"
+    x-init="init()"
+    @keydown.window.ctrl.arrow-left="<?php if (isset($prevId) && $prevId): ?> window.location.href = '<?= $baseRoute ?>/edit/<?= $prevId ?>?live=1' <?php endif; ?>"
+    @keydown.window.ctrl.arrow-right="<?php if (isset($nextId) && $nextId): ?> window.location.href = '<?= $baseRoute ?>/edit/<?= $nextId ?>?live=1' <?php endif; ?>">
+
     <?php if ($isEdit): ?>
         <?php View::component('translation-modal', 'admin/components', [
-            'languages' => $languages,
-            'fields'    => $fields,
+            'languages'     => $languages,
+            'fields'        => $translatableFields,
+            'nextId'        => $nextId ?? null,
+            'saveEndpoint'  => '/admin/translations/confirm',
+            'redirectBase'  => "{$baseRoute}/edit",
+            'entityType'    => $entityName
         ]); ?>
     <?php endif; ?>
 
@@ -36,14 +55,44 @@ $fields = [
             ]); ?>
         </div>
 
-        <?php if ($isEdit): ?>
-            <button type="button"
-                @click="openTranslation()"
-                class="btn-primary flex items-center gap-2 bg-primary-blue hover:bg-primary-blue/90 border-none shadow-lg py-2 px-4 rounded-xl text-white font-bold transition-all cursor-pointer">
-                <i class="fa-solid fa-language text-lg"></i>
-                Превод на езици
-            </button>
-        <?php endif; ?>
+        <div class="flex items-center gap-3">
+            <?php if ($isEdit): ?>
+                <div class="flex items-center bg-white shadow-sm border border-slate-200 rounded-xl p-1">
+                    <a href="<?= (isset($prevId) && $prevId) ? $baseRoute . '/edit/' . $prevId : '#' ?>"
+                        class="flex items-center justify-center w-9 h-9 rounded-lg transition-all <?= (isset($prevId) && $prevId) ? 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600' : 'text-slate-200 cursor-not-allowed' ?>">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                    <div class="w-px h-4 bg-slate-200 mx-1"></div>
+                    <a href="<?= (isset($nextId) && $nextId) ? $baseRoute . '/edit/' . $nextId : '#' ?>"
+                        class="flex items-center justify-center w-9 h-9 rounded-lg transition-all <?= (isset($nextId) && $nextId) ? 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600' : 'text-slate-200 cursor-not-allowed' ?>">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+
+                <button type="button"
+                    @click="openTranslation();"
+                    class="flex items-center gap-2 bg-white border border-slate-200 hover:border-indigo-600 text-slate-600 hover:text-indigo-600 py-2.5 px-5 rounded-xl font-bold shadow-sm transition-all active:scale-95">
+                    <i class="fa-solid fa-language"></i>
+                    <span>Преводи</span>
+                </button>
+
+                <button type="button"
+                    @click="
+                        const url = new URL(window.location); 
+                        url.searchParams.set('live', '1'); 
+                        window.history.pushState({}, '', url); 
+                        openTranslation(); 
+                        $nextTick(() => { 
+                            // Изчакваме модала да се инициализира и пускаме магията
+                            if (!loading) magicTranslate(); 
+                        });
+                    "
+                    class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 px-6 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all active:scale-95 ring-offset-2 focus:ring-2 focus:ring-indigo-500">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>AI Авто-превод</span>
+                </button>
+            <?php endif; ?>
+        </div>
     </div>
 
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">

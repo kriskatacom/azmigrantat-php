@@ -167,4 +167,24 @@ abstract class Model
         $text = str_replace([' ', '/', '\\'], '-', $text);
         return preg_replace('/[^a-z0-9\-]/', '', $text);
     }
+    
+    public function getNextId(int $currentId): ?int
+    {
+        $sql = "SELECT id FROM {$this->table} WHERE id > :id ORDER BY id ASC LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['id' => $currentId]);
+        $result = $stmt->fetch();
+
+        return $result ? (int)$result['id'] : null;
+    }
+
+    public function getPrevId(int $currentId): ?int
+    {
+        $sql = "SELECT id FROM {$this->table} WHERE id < :id ORDER BY id DESC LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['id' => $currentId]);
+        $result = $stmt->fetch();
+
+        return $result ? (int)$result['id'] : null;
+    }
 }

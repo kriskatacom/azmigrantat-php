@@ -319,10 +319,15 @@ class CategoryController extends BaseController
 
         $category['translations'] = $this->getMappedTranslations('category', $id);
 
+        $nextId = $this->categoryModel->getNextId($id);
+        $prevId = $this->categoryModel->getPrevId($id);
+
         $this->render('admin/categories/form', [
             'title'      => 'Редактиране: ' . $category['name'],
             'categories' => $this->categoryModel->getTree(),
             'category'   => $category,
+            'nextId'   => $nextId,
+            'prevId'   => $prevId,
             'languages'  => HelperService::AVAILABLE_LANGUAGES,
             'layout'     => 'admin'
         ]);
