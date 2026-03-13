@@ -1,5 +1,12 @@
 <?php
 
+$paddingClass = $padding ?? ($banner['padding'] ?? 'p-6 md:p-16');
+$titleSize    = $title_size ?? ($banner['title_size'] ?? 'text-4xl md:text-6xl xl:text-7xl');
+$titleWeight  = $title_weight ?? ($banner['title_weight'] ?? 'font-black');
+
+$defaultBtnClass = 'bg-white text-gray-900 px-10 py-4 rounded-xl shadow-2xl hover:bg-primary-dark hover:text-white';
+$btnClass = $button_class ?? ($banner['button_class'] ?? $defaultBtnClass);
+
 $places = [
     'top_left'      => 'justify-start items-start text-left',
     'top_center'    => 'justify-start items-center text-center',
@@ -27,11 +34,11 @@ $name   = $banner['name'] ?? '';
         <div class="absolute inset-0 bg-black/40 backdrop-brightness-90"></div>
     <?php endif; ?>
 
-    <div class="absolute inset-0 flex flex-col p-6 md:p-16 z-10 <?= $alignmentClass ?>">
+    <div class="absolute inset-0 flex flex-col z-10 <?= $paddingClass ?> <?= $alignmentClass ?>">
         <div class="max-w-4xl w-full text-white drop-shadow-2xl">
             
             <?php if (($banner['show_name'] ?? 1) == 1 && !empty($name)): ?>
-                <h1 class="text-4xl md:text-6xl xl:text-7xl font-black uppercase tracking-tighter mb-4 animate-fade-in-up">
+                <h1 class="<?= $titleSize ?> <?= $titleWeight ?> uppercase tracking-tighter mb-4 animate-fade-in-up">
                     <?= htmlspecialchars($name) ?>
                 </h1>
             <?php endif; ?>
@@ -45,7 +52,7 @@ $name   = $banner['name'] ?? '';
             <?php if (($banner['show_button'] ?? 0) == 1 && !empty($banner['href'])): ?>
                 <div class="mt-2">
                     <a href="<?= htmlspecialchars($banner['href']) ?>"
-                       class="inline-block bg-white text-gray-900 font-bold px-10 py-4 rounded-xl shadow-2xl hover:bg-primary-dark hover:text-white transition-all transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-sm">
+                       class="inline-block <?= $btnClass ?> font-bold transition-all transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-sm">
                         <?= htmlspecialchars($banner['button_text'] ?: 'Научи повече') ?>
                     </a>
                 </div>

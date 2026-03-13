@@ -42,6 +42,8 @@ if ($currentUri == '/' || $currentUri == '/home') {
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             if (typeof Fancybox !== "undefined") {

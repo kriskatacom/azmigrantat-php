@@ -28,9 +28,12 @@ class HomeController
     {
         $countries = $this->countryModel->getAllSorted();
 
+        $homeBanners = $this->bannerModel->where('group_key', 'HOME_ELEMENTS', 'sort_order ASC');
+
         View::render('index/home/index', [
             'title' => HelperService::trans('home'),
-            'countries' => $countries
+            'countries' => $countries,
+            'banners' => $homeBanners,
         ]);
     }
 

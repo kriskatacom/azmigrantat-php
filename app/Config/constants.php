@@ -9,3 +9,13 @@ define('BANNER_GROUPS', [
     'TAXIS_ELEMENTS' => 'Елементи за Таксита',
     'CRUISES_ELEMENTS' => 'Елементи за Круиз компании',
 ]);
+
+define('TYPEWRITER_ITEMS', [
+    "credits",
+    "travel",
+    "jobs",
+    "ads",
+    "music",
+    "insurance",
+    "translation"
+]);
