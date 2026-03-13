@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Banner;
 use App\Core\View;
+use App\Services\HelperService;
 
 class BannerController extends BaseController
 {
@@ -67,18 +68,25 @@ class BannerController extends BaseController
     public function edit($id)
     {
         $this->checkAccess('admin');
-        
-        $banner = $this->bannerModel->find((int)$id);
-        if (!$banner) exit('Банерът не е намерен');
 
-        $groups = $this->bannerModel->getUniqueGroups();
+        $banner = $this->bannerModel->find($id);
+        if (!$banner) {
+            $this->flash('error', 'Записът не е намерен.');
+            $this->redirect('/admin/banners');
+        }
 
-        return View::render('admin/banners/form', [
-            'title'     => 'Редактиране на банер',
-            'banner'    => $banner,
-            'positions' => $this->getPositions(),
-            'groups'  => $groups,
-            'layout'    => 'admin'
+        $banner['translations'] = $this->getMappedTranslations('banner', $id);
+
+        $nextId = $this->bannerModel->getNextId($id);
+        $prevId = $this->bannerModel->getPrevId($id);
+
+        View::render('admin/banners/form', [
+            'title'        => 'Редактиране на ' . $banner['name'],
+            'banner'      => $banner,
+            'nextId'       => $nextId,
+            'prevId'       => $prevId,
+            'languages'    => HelperService::AVAILABLE_LANGUAGES,
+            'layout'       => 'admin'
         ]);
     }
 

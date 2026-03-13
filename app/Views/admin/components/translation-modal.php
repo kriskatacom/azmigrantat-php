@@ -374,24 +374,40 @@ $nextId = $nextId ?? "";
             }
         }));
 
-        // 2. Main Form Logic (Остава същия)
         Alpine.data('translatableForm', (config) => ({
             id: config.id,
             entity: config.entity,
+            // Подсигуряваме, че fields винаги е масив, дори ако config е празен
+            fieldKeys: config.fields || [],
             storedTranslations: config.translations || {},
+
             init() {
                 if (new URLSearchParams(window.location.search).get('live') === '1') {
                     setTimeout(() => this.openTranslation(), 500);
                 }
             },
+
             openTranslation() {
                 const bgData = {};
-                config.fields.forEach(field => {
-                    const key = typeof field === 'object' ? field.key : field;
-                    const el = document.querySelector(`[name="${key}"]`) || document.querySelector(`[name="fields[${key}]"]`);
-                    const editor = el?.parentNode.querySelector('.ql-editor');
-                    bgData[key] = (editor && editor.innerHTML !== '<p><br></p>') ? editor.innerHTML : (el ? el.value : '');
+
+                // Използваме защитения fieldKeys
+                this.fieldKeys.forEach(key => {
+                    // Търсим елемента по name атрибут
+                    const el = document.querySelector(`[name="${key}"]`);
+
+                    if (el) {
+                        // Търсим Quill редактор в същия контейнер
+                        const parent = el.closest('.space-y-2, .space-y-6, .mt-4') || el.parentElement;
+                        const editor = parent ? parent.querySelector('.ql-editor') : null;
+
+                        if (editor) {
+                            bgData[key] = (editor.innerHTML !== '<p><br></p>') ? editor.innerHTML : '';
+                        } else {
+                            bgData[key] = el.value;
+                        }
+                    }
                 });
+
                 this.$dispatch('open-modal-translation', {
                     id: this.id,
                     name: this.entity,

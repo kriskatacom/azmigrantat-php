@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Models\Country;
 use App\Models\CountryElement;
+use App\Services\HelperService;
 
 class CountryController extends BaseController
 {
@@ -78,11 +79,25 @@ class CountryController extends BaseController
     public function edit($id)
     {
         $this->checkAccess('admin');
+
         $country = $this->countryModel->find($id);
+        if (!$country) {
+            $this->flash('error', 'Записът не е намерен.');
+            $this->redirect('/admin/countries');
+        }
+
+        $country['translations'] = $this->getMappedTranslations('country', $id);
+
+        $nextId = $this->countryModel->getNextId($id);
+        $prevId = $this->countryModel->getPrevId($id);
+
         View::render('admin/countries/form', [
-            'title' => 'Редактиране на ' . $country['name'],
-            'country' => $country,
-            'layout' => 'admin'
+            'title'        => 'Редактиране на ' . $country['name'],
+            'country'      => $country,
+            'nextId'       => $nextId,
+            'prevId'       => $prevId,
+            'languages'    => HelperService::AVAILABLE_LANGUAGES,
+            'layout'       => 'admin'
         ]);
     }
 

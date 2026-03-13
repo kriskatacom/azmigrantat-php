@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Core\View;
 use App\Models\CountryElement;
+use App\Services\HelperService;
 
 class CityController extends BaseController
 {
@@ -96,21 +97,29 @@ class CityController extends BaseController
         $this->handleStore($this->cityModel, '/admin/cities', ['image_url'], 'cities');
     }
 
-    public function edit(int $id)
+    public function edit($id)
     {
         $this->checkAccess('admin');
-        $city = $this->cityModel->find($id);
 
+        $city = $this->cityModel->find($id);
         if (!$city) {
-            header('Location: /admin/cities');
-            exit;
+            $this->flash('error', 'Записът не е намерен.');
+            $this->redirect('/admin/cities');
         }
 
+        $city['translations'] = $this->getMappedTranslations('city', $id);
+
+        $nextId = $this->cityModel->getNextId($id);
+        $prevId = $this->cityModel->getPrevId($id);
+
         View::render('admin/cities/form', [
-            'title' => 'Редактиране на ' . $city['name'],
-            'city' => $city,
+            'title'        => 'Редактиране на ' . $city['name'],
+            'city'      => $city,
             'countries' => $this->countryModel->all(['order' => 'name ASC']),
-            'layout' => 'admin'
+            'nextId'       => $nextId,
+            'prevId'       => $prevId,
+            'languages'    => HelperService::AVAILABLE_LANGUAGES,
+            'layout'       => 'admin'
         ]);
     }
 

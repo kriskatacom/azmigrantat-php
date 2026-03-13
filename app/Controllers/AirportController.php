@@ -3,9 +3,11 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Core\View;
 use App\Models\Airport;
 use App\Models\Banner;
 use App\Models\Country;
+use App\Services\HelperService;
 
 class AirportController extends BaseController
 {
@@ -90,14 +92,26 @@ class AirportController extends BaseController
     public function edit($id)
     {
         $this->checkAccess('admin');
-        $airport = $this->airportModel->find((int)$id);
-        if (!$airport) $this->redirect('/admin/airports');
 
-        $this->render('admin/airports/form', [
-            'airport'   => $airport,
+        $airport = $this->airportModel->find($id);
+        if (!$airport) {
+            $this->flash('error', 'Записът не е намерен.');
+            $this->redirect('/admin/airport');
+        }
+
+        $airport['translations'] = $this->getMappedTranslations('airport', $id);
+
+        $nextId = $this->airportModel->getNextId($id);
+        $prevId = $this->airportModel->getPrevId($id);
+
+        View::render('admin/airports/form', [
+            'title'        => 'Редактиране на ' . $airport['name'],
+            'airport'      => $airport,
             'countries' => $this->countryModel->all(['order' => 'name ASC']),
-            'title'     => 'Редакция: ' . $airport['name'],
-            'layout'    => 'admin'
+            'nextId'       => $nextId,
+            'prevId'       => $prevId,
+            'languages'    => HelperService::AVAILABLE_LANGUAGES,
+            'layout'       => 'admin'
         ]);
     }
 

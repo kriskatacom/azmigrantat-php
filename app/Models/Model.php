@@ -108,6 +108,19 @@ abstract class Model
         return $stmt->fetchAll();
     }
 
+    public function findByColumn(string $column, $value): ?array
+    {
+        $column = preg_replace('/[^A-Za-z0-9_]/', '', $column);
+
+        $sql = "SELECT * FROM {$this->table} WHERE {$column} = :val LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['val' => $value]);
+
+        $result = $stmt->fetch();
+
+        return $result ?: null;
+    }
+
     public function count(): int
     {
         return (int)$this->db->query("SELECT COUNT(*) FROM {$this->table}")->fetchColumn();
@@ -167,7 +180,7 @@ abstract class Model
         $text = str_replace([' ', '/', '\\'], '-', $text);
         return preg_replace('/[^a-z0-9\-]/', '', $text);
     }
-    
+
     public function getNextId(int $currentId): ?int
     {
         $sql = "SELECT id FROM {$this->table} WHERE id > :id ORDER BY id ASC LIMIT 1";

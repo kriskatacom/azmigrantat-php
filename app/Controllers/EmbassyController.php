@@ -7,6 +7,7 @@ use App\Models\Embassy;
 use App\Models\Country;
 use App\Core\View;
 use App\Models\CountryElement;
+use App\Services\HelperService;
 
 class EmbassyController extends BaseController
 {
@@ -123,18 +124,26 @@ class EmbassyController extends BaseController
     public function edit($id)
     {
         $this->checkAccess('admin');
-        $embassy = $this->embassyModel->find((int)$id);
+
+        $embassy = $this->embassyModel->find($id);
         if (!$embassy) {
-            header('Location: /admin/embassies?error=notfound');
-            exit;
+            $this->flash('error', 'Записът не е намерен.');
+            $this->redirect('/admin/embassies');
         }
 
-        $countryModel = new Country();
-        return View::render('admin/embassies/form', [
-            'title' => 'Редактиране на посолство',
-            'layout' => 'admin',
-            'embassy'  => $embassy,
-            'countries' => $countryModel->all(['order' => 'name ASC'])
+        $embassy['translations'] = $this->getMappedTranslations('embassy', $id);
+
+        $nextId = $this->embassyModel->getNextId($id);
+        $prevId = $this->embassyModel->getPrevId($id);
+
+        View::render('admin/embassies/form', [
+            'title'        => 'Редактиране на ' . $embassy['name'],
+            'embassy'      => $embassy,
+            'countries' => $this->countryModel->all(['order' => 'name ASC']),
+            'nextId'       => $nextId,
+            'prevId'       => $prevId,
+            'languages'    => HelperService::AVAILABLE_LANGUAGES,
+            'layout'       => 'admin'
         ]);
     }
 

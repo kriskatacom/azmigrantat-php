@@ -7,6 +7,7 @@ use App\Models\Landmark;
 use App\Models\Country;
 use App\Core\View;
 use App\Models\CountryElement;
+use App\Services\HelperService;
 
 class LandmarkController extends BaseController
 {
@@ -125,19 +126,26 @@ class LandmarkController extends BaseController
     public function edit($id)
     {
         $this->checkAccess('admin');
-        $landmark = $this->landmarkModel->find((int)$id);
 
+        $landmark = $this->landmarkModel->find($id);
         if (!$landmark) {
-            header('Location: /admin/landmarks?error=notfound');
-            exit;
+            $this->flash('error', 'Записът не е намерен.');
+            $this->redirect('/admin/landmarks');
         }
 
-        $countryModel = new Country();
-        return View::render('admin/landmarks/form', [
-            'title' => 'Редактиране на забележителност',
-            'layout' => 'admin',
-            'landmark'  => $landmark,
-            'countries' => $countryModel->all(['order' => 'name ASC'])
+        $landmark['translations'] = $this->getMappedTranslations('landmark', $id);
+
+        $nextId = $this->landmarkModel->getNextId($id);
+        $prevId = $this->landmarkModel->getPrevId($id);
+
+        View::render('admin/landmarks/form', [
+            'title'        => 'Редактиране на ' . $landmark['name'],
+            'landmark'      => $landmark,
+            'countries' => $this->countryModel->all(['order' => 'name ASC']),
+            'nextId'       => $nextId,
+            'prevId'       => $prevId,
+            'languages'    => HelperService::AVAILABLE_LANGUAGES,
+            'layout'       => 'admin'
         ]);
     }
 
