@@ -78,7 +78,7 @@ $driver = $driver ?? [];
                             class="object-cover w-full h-full">
                     </div>
 
-                    <div class="flex-1 space-y-2">
+                    <div class="flex-1 space-y-3">
                         <div class="flex justify-between items-start">
                             <div class="text-white text-xl font-bold"><?= htmlspecialchars($driver['name']) ?></div>
                             <?php if (!empty($driver['verified'])): ?>

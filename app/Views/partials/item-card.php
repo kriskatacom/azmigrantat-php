@@ -4,9 +4,16 @@ use App\Services\HelperService;
 
 $style    = $style ?? 'grid';
 $link_key = $link_key ?? 'slug';
+$show_excerpt  = $show_excerpt ?? false;
 
-$name    = HelperService::getTranslation($item, 'name') ?: 'Обект';
-$excerpt = HelperService::getTranslation($item, 'excerpt') ?: HelperService::getTranslation($item, 'description');
+$entity_type = $item['entity_type'] ?? 'category';
+
+$name    = HelperService::getTranslation($item, 'name', $entity_type) ?: 'Обект';
+
+$excerpt = '';
+if ($show_excerpt) {
+    $excerpt = HelperService::getTranslation($item, 'excerpt', $entity_type) ?: ($item['excerpt'] ?? '');
+}
 
 $image   = !empty($item['image_url']) ? $item['image_url'] : '/assets/images/no-image.jpg';
 $raw_path = $item[$link_key] ?? '';
@@ -25,24 +32,34 @@ $final_url = $is_external_link ? $url : HelperService::url($url);
 ?>
 
 <?php if ($style === 'grid'): ?>
+
     <div class="relative group overflow-hidden rounded-xl shadow-md aspect-4/2.5 bg-gray-200">
         <a href="<?= $final_url ?>" <?= $target ?> class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
 
         <img src="<?= $image ?>"
-            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             alt="<?= htmlspecialchars($name) ?>"
             loading="lazy">
 
-        <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent pointer-events-none"></div>
+        <div class="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90 group-hover:opacity-100 group-hover:via-black/60 transition-all duration-500 pointer-events-none"></div>
 
-        <div class="absolute bottom-0 left-0 p-6 w-full z-20 pointer-events-none">
-            <h3 class="text-white text-xl md:text-2xl font-bold mb-4 drop-shadow-lg truncate">
+        <div class="absolute bottom-0 left-0 p-5 w-full z-20 pointer-events-none duration-300">
+
+            <h3 class="text-white text-xl md:text-2xl font-bold drop-shadow-lg truncate mb-3">
                 <?= htmlspecialchars($name) ?>
             </h3>
 
-            <span class="inline-block border-2 border-white text-white font-semibold px-6 py-2 rounded-lg group-hover:bg-white group-hover:text-black transition-colors duration-300 pointer-events-auto">
+            <?php if (!empty($excerpt)): ?>
+                <div class="mb-5">
+                    <p class="text-white/80 line-clamp-2 drop-shadow-md">
+                        <?= strip_tags($excerpt) ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <button class="inline-block border-2 border-white text-white font-semibold px-6 py-2 rounded-lg group-hover:bg-white group-hover:text-black transition-colors duration-300 pointer-events-auto">
                 <?= HelperService::trans('information') ?>
-            </span>
+            </button>
         </div>
     </div>
 

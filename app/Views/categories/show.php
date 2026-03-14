@@ -44,16 +44,14 @@ use App\Services\HelperService;
 
 <section>
     <div class="aspect-video max-h-100 w-full overflow-hidden">
-        <?php 
-            // Подготвяме имената чрез хелпъра
-            $countryName = HelperService::getTranslation($country, 'name', 'country');
-            $cityName    = HelperService::getTranslation($city, 'name', 'city');
-            $catName     = !empty($category) ? HelperService::getTranslation($category, 'name', 'category') : '';
-            
-            // Определяме основното заглавие за alt и h1
-            $mainTitle = !empty($category) 
-                ? "{$catName} " . HelperService::trans('in') . " {$cityName} - {$countryName}"
-                : HelperService::trans('info_guide_of') . " {$cityName} - {$countryName}";
+        <?php
+        $countryName = HelperService::getTranslation($country, 'name', 'country');
+        $cityName    = HelperService::getTranslation($city, 'name', 'city');
+        $catName     = !empty($category) ? HelperService::getTranslation($category, 'name', 'category') : '';
+
+        $mainTitle = !empty($category)
+            ? "{$catName} " . HelperService::trans('in') . " {$cityName} - {$countryName}"
+            : HelperService::trans('info_guide_of') . " {$cityName} - {$countryName}";
         ?>
 
         <?php if (!empty($category)): ?>
@@ -79,7 +77,8 @@ use App\Services\HelperService;
             'items'     => $items,
             'card_name' => 'item-card',
             'base_url'  => $base_url,
-            'limit'     => 8
+            'limit'     => 8,
+            'show_excerpt' => true,
         ]); ?>
     <?php else: ?>
         <div class="flex flex-col items-center justify-center py-20 text-center">

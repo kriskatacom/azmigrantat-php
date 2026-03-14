@@ -21,26 +21,28 @@ $limit = 2;
     <?= View::component('show-banner', 'partials', ['banner' => $banner]) ?>
     <?= View::component('city-search', 'travel/shared-travel/components', ['citiesJson' => $citiesJson]) ?>
 
-    <section class="mt-5 md:mt-10 max-w-5xl mx-auto px-5 md:px-0">
+    <section class="mt-5 md:mt-10 w-full overflow-hidden group">
         <h2 class="text-center text-xl md:text-2xl lg:text-3xl font-semibold mb-5">
             <?= HelperService::trans('travel_posts_title') ?>
         </h2>
-        <div id="posts-container" class="grid md:grid-cols-2 gap-5">
-            <?php $i = 0;
-            foreach ($posts as $driver): ?>
-                <div class="grid-item-post <?= $i >= $limit ? 'hidden' : '' ?>">
-                    <?= View::component('driver-card', 'travel/drivers/components', ['driver' => $driver, 'type' => 'posts']) ?>
-                </div>
-            <?php $i++;
-            endforeach; ?>
-        </div>
-        <?php if (count($posts) > $limit): ?>
-            <div class="flex justify-center mt-5">
-                <button onclick="loadMore('post')" id="btn-load-post" class="bg-white border border-gray-200 text-gray-800 font-semibold px-10 py-3 rounded-lg shadow-sm hover:bg-gray-50 transition-all cursor-pointer">
-                    <?= HelperService::trans('show_more') ?>
-                </button>
+
+        <div class="marquee-viewport relative w-full overflow-hidden">
+            <div class="marquee-content flex animate-marquee group-hover:pause">
+
+                <?php foreach ($posts as $driver): ?>
+                    <div class="card-wrapper shrink-0 px-2 w-screen md:w-[50vw] lg:w-[33.333vw] xl:w-[25vw]">
+                        <?= View::component('driver-card', 'travel/drivers/components', ['driver' => $driver, 'type' => 'posts']) ?>
+                    </div>
+                <?php endforeach; ?>
+
+                <?php foreach ($posts as $driver): ?>
+                    <div class="card-wrapper shrink-0 px-2 w-screen md:w-[50vw] lg:w-[33.333vw] xl:w-[25vw]">
+                        <?= View::component('driver-card', 'travel/drivers/components', ['driver' => $driver, 'type' => 'posts']) ?>
+                    </div>
+                <?php endforeach; ?>
+
             </div>
-        <?php endif; ?>
+        </div>
     </section>
 
     <section class="mt-10 max-w-5xl mx-auto px-5 md:px-0">
@@ -90,3 +92,68 @@ $limit = 2;
         }
     }
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const swiper = new Swiper('.postsSwiper', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            centeredSlides: true,
+
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+
+            breakpoints: {
+                640: {
+                    slidesPerView: 2,
+                    centeredSlides: false,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                    centeredSlides: false,
+                }
+            },
+
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+    });
+</script>
+
+<style>
+    @keyframes marquee {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    .animate-marquee {
+        display: flex;
+        width: max-content;
+        animation: marquee 30s linear infinite;
+    }
+
+    .group:hover .animate-marquee {
+        animation-play-state: paused;
+    }
+
+    .marquee-viewport::before {
+        left: 0;
+        background: linear-gradient(to right, white, transparent);
+    }
+
+    .marquee-viewport::after {
+        right: 0;
+        background: linear-gradient(to left, white, transparent);
+    }
+</style>

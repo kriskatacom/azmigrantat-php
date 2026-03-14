@@ -3,50 +3,48 @@
 use App\Core\View;
 use App\Services\HelperService;
 
-// Подготвяме преведените данни
-$landmarkName = HelperService::getTranslation($landmark, 'name');
-$landmarkHeading = HelperService::getTranslation($landmark, 'heading');
-$landmarkContent = HelperService::getTranslation($landmark, 'content');
-$landmarkWorkingTime = HelperService::getTranslation($landmark, 'working_time');
-$landmarkAddress = HelperService::getTranslation($landmark, 'address');
-$countryName = HelperService::getTranslation($country, 'name');
+$landmarkName    = HelperService::getTranslation($landmark, 'name', 'landmark');
+$landmarkHeading = HelperService::getTranslation($landmark, 'heading', 'landmark') ?: $landmarkName;
+$landmarkContent = HelperService::getTranslation($landmark, 'content', 'landmark');
+$landmarkWorking = HelperService::getTranslation($landmark, 'working_time', 'landmark');
+$landmarkAddress = HelperService::getTranslation($landmark, 'address', 'landmark');
 
 $breadcrumbs = [
-    ['label' => $countryName, 'href' => '/' . $country['slug']],
+    ['label' => HelperService::getTranslation($country, 'name', 'country'), 'href' => '/' . $country['slug']],
     ['label' => HelperService::trans('landmarks'), 'href' => '/' . $country['slug'] . '/landmarks'],
     ['label' => $landmarkName, 'href' => '']
 ];
 ?>
 <div class="aspect-video max-h-100 w-full">
-    <img src="<?= HelperService::getImage($landmark['image_url']) ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($landmarkName) ?>">
+    <img src="<?= HelperService::getImage($landmark['image_url']) ?>" class="w-full h-full object-cover">
 </div>
 
 <div class="text-white bg-primary-dark py-3 md:py-5">
     <h1 class="text-xl md:text-2xl lg:text-3xl font-semibold text-center">
-        <?= htmlspecialchars($landmarkName) ?>
+        <?= $landmarkName ?>
     </h1>
     <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
 </div>
 
 <div class="container mx-auto px-2 md:px-5 mt-2 md:mt-5">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-5">
+    <div class="grid grid-cols-2 gap-2 md:gap-5">
 
-        <div x-data="{ isOpen: false }" x-cloak class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto flex flex-col">
-            <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl font-bold">
+        <div x-data="{ isOpen: false }" x-cloak class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto">
+            <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl">
                 <?php HelperService::icon('bank', 'w-5 h-5 md:w-10 md:h-10'); ?> <?= HelperService::trans('about_landmark') ?>
             </div>
-            <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base flex-1 flex flex-col">
-                <div class="text-gray-700 leading-relaxed line-clamp-6 md:line-clamp-12">
-                    <?= $landmarkContent ?>
-                </div>
-                <button @click="$dispatch('open-modal-show-description')" class="flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-4">
+            <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base">
+                <button @click="$dispatch('open-modal-show-description')" class="flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto">
                     <?= HelperService::trans('more_info') ?>
                 </button>
+                <div class="text-gray-700 leading-relaxed text-xs md:text-base line-clamp-3 sm:line-clamp-8 md:line-clamp-6 lg:line-clamp-8 xl:line-clamp-12 2xl:line-clamp-none">
+                    <?= $landmarkContent ?>
+                </div>
             </div>
 
             <?php View::component("modal", "partials", [
                 'id' => 'show-description',
-                'title' => $landmarkHeading ?: $landmarkName,
+                'title' => $landmarkHeading,
                 'content' => $landmarkContent,
             ]); ?>
         </div>
@@ -57,81 +55,66 @@ $breadcrumbs = [
             'icon'   => 'images'
         ]); ?>
 
-        <div x-data="{ isOpen: false }" x-cloak class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto flex flex-col">
-            <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl font-bold">
+        <div x-data="{ isOpen: false }" x-cloak class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto">
+            <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl">
                 <?php HelperService::icon('clock', 'w-5 h-5 md:w-10 md:h-10'); ?>
                 <?= HelperService::trans('work_time') ?>
             </div>
 
             <div class="p-2 md:p-5 space-y-3 md:space-y-5 flex-1 flex flex-col justify-between">
-                <div class="text-gray-700 leading-relaxed text-xs md:text-base">
-                    <?= $landmarkWorkingTime ?>
+                <div class="text-gray-700 leading-relaxed text-xs md:text-base line-clamp-5">
+                    <?= $landmarkWorking ?>
                 </div>
 
-                <?php if (!empty($landmarkWorkingTime)): ?>
-                    <button @click="$dispatch('open-modal-show-working-time')" class="flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto">
-                        <?= HelperService::trans('show_info') ?>
-                    </button>
+                <button @click="$dispatch('open-modal-show-working-time')" class="flex items-center justify-center gap-2 text-xs md:text-sm bg-primary-dark text-white px-4 py-2 rounded-lg hover:bg-black transition-all w-full md:w-fit mt-auto">
+                    <?= HelperService::trans('show_info') ?>
+                </button>
 
-                    <?php View::component("modal", "partials", [
-                        'id' => 'show-working-time',
-                        'title' => HelperService::trans('work_time'),
-                        'content' => $landmarkWorkingTime,
-                    ]); ?>
-                <?php endif; ?>
+                <?php View::component("modal", "partials", [
+                    'id' => 'show-working-time',
+                    'title' => HelperService::trans('work_time'),
+                    'content' => $landmarkWorking,
+                ]); ?>
             </div>
         </div>
 
         <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto">
-            <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl font-bold">
+            <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-2 text-xs md:text-lg lg:text-xl">
                 <?php HelperService::icon('location', 'w-5 h-5 md:w-10 md:h-10'); ?> <?= HelperService::trans('contact_info') ?>
             </div>
             <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base">
                 <?php if (!empty($landmarkAddress)): ?>
                     <div class="flex items-center gap-3">
-                        <?php HelperService::icon('address', 'w-5 h-5 md:w-8 md:h-8'); ?>
-                        <span class="break-all"><?= htmlspecialchars($landmarkAddress) ?></span>
+                        <?php HelperService::icon('address', 'w-5 h-5 md:w-10 md:h-10'); ?>
+                        <span class="break-all"><?= $landmarkAddress ?></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if (!empty($landmark['phone'])): ?>
                     <div class="flex items-center gap-3">
-                        <?php HelperService::icon('phone', 'w-5 h-5 md:w-8 md:h-8'); ?>
-                        <a class="break-all hover:text-indigo-600" href="tel:<?= $landmark['phone'] ?>"><?= $landmark['phone'] ?></a>
+                        <?php HelperService::icon('phone', 'w-5 h-5 md:w-10 md:h-10'); ?>
+                        <a class="break-all" href="tel:<?= $landmark['phone'] ?>"><?= $landmark['phone'] ?></a>
                     </div>
                 <?php endif; ?>
 
                 <?php if (!empty($landmark['email'])): ?>
                     <div class="flex items-center gap-3">
-                        <?php HelperService::icon('mail', 'w-5 h-5 md:w-8 md:h-8'); ?>
-                        <a class="break-all hover:text-indigo-600" href="mailto:<?= $landmark['email'] ?>"><?= $landmark['email'] ?></a>
+                        <?php HelperService::icon('mail', 'w-5 h-5 md:w-10 md:h-10'); ?>
+                        <a class="break-all" href="mailto:<?= $landmark['email'] ?>"><?= $landmark['email'] ?></a>
                     </div>
                 <?php endif; ?>
 
-                <?php if (!empty($landmark['website_link'])):
-                    $rawUrl = $landmark['website_link'];
-                    $cleanUrl = HelperService::formatUrl($rawUrl);
-                    $isExternal = HelperService::isExternalLink($rawUrl);
-                ?>
+                <?php if (!empty($landmark['website_link'])): ?>
                     <div class="flex items-center gap-3">
-                        <?php HelperService::icon('globe-icon', 'w-5 h-5 md:w-8 md:h-8'); ?>
-                        <a class="break-all hover:text-indigo-600 font-semibold transition-colors"
-                            href="<?= $cleanUrl ?>"
-                            <?= $isExternal ? 'target="_blank" rel="noopener noreferrer"' : '' ?>
-                            title="<?= $isExternal ? HelperService::trans('external_link') : '' ?>">
-                            <?= htmlspecialchars($rawUrl) ?>
-
-                            <?php if ($isExternal): ?>
-                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1 opacity-70"></i>
-                            <?php endif; ?>
-                        </a>
+                        <?php HelperService::icon('globe-icon', 'w-5 h-5 md:w-10 md:h-10'); ?>
+                        <a class="break-all" href="<?= $landmark['website_link'] ?>" target="_blank"><?= $landmark['website_link'] ?></a>
                     </div>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 
-    <div class="w-fit my-4 md:my-8">
+    <div class="w-fit my-2 md:my-5">
         <?php View::component("directions-button", "partials", [
             'mapsLink' => $landmark['your_location'],
             'label' => HelperService::trans('how_to_get_there') . ' ?',
@@ -139,10 +122,10 @@ $breadcrumbs = [
         ]); ?>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm h-75 md:h-125 mb-10">
+    <div class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm h-100">
         <iframe
             src="<?= $landmark['google_map'] ?>"
-            class="w-full h-full"
+            class="w-full h-full cursor-pointer"
             style="border:0;"
             allowfullscreen=""
             loading="lazy">

@@ -35,11 +35,8 @@ class CategoryController extends BaseController
 
     // Public Routes
 
-    // Public Routes
-
     public function categoriesShow($countrySlug, $citySlug, $categoriesPath = null)
     {
-        // 1. Намиране на държава и град
         $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
         if (!$country || !$country['is_active']) return $this->abort404('Държавата не е намерена.');
         $country['entity_type'] = 'country';
@@ -53,7 +50,6 @@ class CategoryController extends BaseController
         $categoryPathArr = $categoriesPath ? explode('/', trim($categoriesPath, '/')) : [];
         $lastSlug = !empty($categoryPathArr) ? end($categoryPathArr) : null;
 
-        // 2. Логика за "About" страница на компания
         if ($lastSlug === 'about') {
             $companySlug = $categoryPathArr[count($categoryPathArr) - 2] ?? null;
             if ($companySlug) {
@@ -69,7 +65,6 @@ class CategoryController extends BaseController
             }
         }
 
-        // 3. Логика за Детайли на компания (ако последният slug е компания)
         if ($lastSlug) {
             $company = $this->companyModel->all([
                 'where' => ['slug' => $lastSlug, 'city_id' => $city['id'], 'is_active' => 1]
@@ -81,7 +76,6 @@ class CategoryController extends BaseController
             }
         }
 
-        // 4. Логика за Категория
         $category = null;
         if ($lastSlug) {
             $category = $this->categoryModel->all(['where' => ['slug' => $lastSlug, 'is_active' => 1]])[0] ?? null;
@@ -89,7 +83,6 @@ class CategoryController extends BaseController
             $category['entity_type'] = 'category';
         }
 
-        // 5. Генериране на Breadcrumbs с преводи
         $breadcrumbs = [
             ['label' => HelperService::getTranslation($country, 'name', 'country'), 'href' => '/' . $country['slug']],
             ['label' => HelperService::trans('cities'), 'href' => '/' . $country['slug'] . '/cities'],
@@ -113,13 +106,11 @@ class CategoryController extends BaseController
             ];
         }
 
-        // 6. Подготовка на айтемите (подкатегории или компании)
         $displayData = $this->resolveDisplayItems($category, $city['id']);
         foreach ($displayData['items'] as &$item) {
             $item['entity_type'] = ($displayData['type'] === 'categories') ? 'category' : 'company';
         }
 
-        // 7. Подготовка на оферти
         $offers = $this->getOffersForCategory($category, $city['id']);
 
         View::render('categories/show', [
@@ -173,7 +164,6 @@ class CategoryController extends BaseController
             $offer['entity_type'] = 'offer';
         }
 
-        // Breadcrumbs за детайли
         $breadcrumbs = [
             ['label' => HelperService::getTranslation($country, 'name', 'country'), 'href' => '/' . $country['slug']],
             ['label' => HelperService::trans('cities'), 'href' => '/' . $country['slug'] . '/cities'],

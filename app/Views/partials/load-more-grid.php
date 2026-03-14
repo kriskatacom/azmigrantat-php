@@ -11,6 +11,7 @@ $base_url = $base_url ?? '';
 $link_key = $link_key ?? 'slug';
 
 $show_search = $show_search ?? true;
+$show_excerpt  = $show_excerpt ?? false;
 
 $containerId = 'grid-' . uniqid();
 $btnId = 'btn-' . uniqid();
@@ -55,7 +56,8 @@ $gridCols = ($style === 'list') ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-col
                     'item'        => array_merge($item, ['final_url' => $finalUrl]),
                     'is_external' => $isExternal,
                     'style'       => $style,
-                    'link_key'    => $link_key
+                    'link_key'    => $link_key,
+                    'show_excerpt' => $show_excerpt ?? false,
                 ]);
                 ?>
             </div>
