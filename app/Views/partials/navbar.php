@@ -8,7 +8,7 @@ $isHome = HelperService::isHome();
 $navClasses = $isHome ? "absolute top-0 left-0 w-full z-50 bg-transparent" : "bg-primary-darken";
 ?>
 
-<nav class="<?= $navClasses ?> px-6 py-4 flex flex-col gap-4 transition-colors duration-500">
+<nav x-data="{ sidebarOpen: false }" @keydown.escape="sidebarOpen = false" class="<?= $navClasses ?> px-6 py-4 flex flex-col gap-4 transition-colors duration-500">
     <div class="container mx-auto flex justify-between items-center w-full">
         <div class="flex items-center">
             <div class="text-3xl font-bold flex">
@@ -27,7 +27,6 @@ $navClasses = $isHome ? "absolute top-0 left-0 w-full z-50 bg-transparent" : "bg
                     </button>
 
                     <div class="absolute right-0 mt-2 w-48 bg-[#0a1622] border border-white/10 rounded-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-
                         <?php if ($user['role'] === 'admin'): ?>
                             <a href="/admin/dashboard" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition border-b border-white/5 mb-1">
                                 <?= HelperService::trans('admin_panel') ?>
@@ -53,9 +52,11 @@ $navClasses = $isHome ? "absolute top-0 left-0 w-full z-50 bg-transparent" : "bg
                 </a>
             <?php endif; ?>
 
-            <button class="hover:text-primary-light transition group">
+            <button @click="sidebarOpen = true" class="hover:text-primary-light transition group">
                 <?php HelperService::icon('menu-icon', 'text-white w-8 h-8 group-hover:rotate-90 transition-transform duration-300'); ?>
             </button>
+
+            <?php View::loadPartial('partials/right-sidebar') ?>
 
             <?php View::loadPartial('partials/languages-modal') ?>
         </div>
@@ -63,15 +64,7 @@ $navClasses = $isHome ? "absolute top-0 left-0 w-full z-50 bg-transparent" : "bg
 
     <div class="container mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar">
         <?php
-        $links = [
-            '/' => 'home',
-            '/travel' => 'travel',
-            '/services' => 'services',
-            '/jobs' => 'jobs',
-            '/ads' => 'ads',
-            '/music' => 'music'
-        ];
-
+        $links = ['/' => 'home', '/travel' => 'travel', '/services' => 'services', '/jobs' => 'jobs', '/ads' => 'ads', '/music' => 'music'];
         foreach ($links as $path => $langKey): ?>
             <a href="<?= HelperService::url($path) ?>" class="<?= HelperService::navLinkClasses($path) ?>">
                 <?= HelperService::trans($langKey) ?>

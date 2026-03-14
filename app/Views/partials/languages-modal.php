@@ -23,6 +23,8 @@ use App\Services\HelperService;
     <template x-teleport="body">
         <div x-show="langModal"
             x-cloak
+            /* ЗАКЛЮЧВАНЕ НА СКРОЛА ПРИ ОТВОРЕН МОДАЛ */
+            x-effect="langModal ? document.body.classList.add('overflow-hidden') : document.body.classList.remove('overflow-hidden')"
             class="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6"
             @keydown.escape.window="langModal = false">
 
@@ -32,6 +34,8 @@ use App\Services\HelperService;
                 x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100"
                 x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
                 @click="langModal = false"></div>
 
             <div class="relative bg-[#1e293b] border border-white/10 w-full max-w-2xl rounded-4xl shadow-2xl overflow-hidden flex flex-col"
@@ -40,6 +44,8 @@ use App\Services\HelperService;
                 x-transition:enter-start="opacity-0 scale-95 translate-y-4"
                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                 x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                x-transition:leave-end="opacity-0 scale-95 translate-y-4"
                 @click.stop>
 
                 <div class="p-6 space-y-4 bg-linear-to-b from-white/5 to-transparent">
@@ -68,9 +74,17 @@ use App\Services\HelperService;
                     <?php foreach (HelperService::AVAILABLE_LANGUAGES as $code => $data): ?>
                         <a href="<?= HelperService::langUrl(null, $code) ?>"
                             x-show="'<?= addslashes(mb_strtolower($data['name'])) ?>'.includes(search.toLowerCase()) || '<?= $code ?>'.includes(search.toLowerCase())"
+                            /* ПЛАВНО ЗАТВАРЯНЕ ПРЕДИ ПРЕНАСОЧВАНЕ */
+                            @click.prevent="
+                                langModal = false;
+                                document.body.classList.remove('overflow-hidden');
+                                setTimeout(() => { 
+                                    window.location.href = '<?= HelperService::langUrl(null, $code) ?>' 
+                                }, 300)
+                            "
                             class="flex items-center gap-3 p-3.5 rounded-2xl transition-all group border border-transparent 
                            <?= ($_SESSION['lang'] ?? 'bg') === $code
-                                ? 'bg-primary-light font-bold shadow-lg shadow-primary-light/20'
+                                ? 'bg-primary-light font-bold shadow-lg shadow-primary-light/20 text-black'
                                 : 'hover:bg-white/5 text-gray-300 hover:text-white hover:border-white/10' ?>">
 
                             <span class="text-2xl drop-shadow-sm group-hover:scale-110 transition-transform"><?= $data['flag'] ?></span>
