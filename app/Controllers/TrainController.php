@@ -7,6 +7,7 @@ use App\Models\Banner;
 use App\Models\Train;
 use App\Models\Country;
 use App\Models\City;
+use App\Services\HelperService;
 
 class TrainController extends BaseController
 {
@@ -28,10 +29,17 @@ class TrainController extends BaseController
     {
         $banner = $this->bannerModel->findByColumn('link', '/travel/trains/countries');
         $trainsBanner = $this->bannerModel->findByColumn('link', '/travel/trains');
-        $countries = $this->countryModel->all();
+        $countries = $this->countryModel->all(['order' => 'name ASC']);
+
+        if ($banner) $banner['entity_type'] = 'banner';
+        if ($trainsBanner) $trainsBanner['entity_type'] = 'banner';
+
+        foreach ($countries as &$country) {
+            $country['entity_type'] = 'country';
+        }
 
         $this->render('travel/trains/countries/index', [
-            'title' => 'Жележопътни гари и превози в Европа – Информация по държави',
+            'title' => HelperService::trans('trains_europe_title') ?? 'Жележопътни гари и превози в Европа',
             'banner' => $banner,
             'trainsBanner' => $trainsBanner,
             'countries' => $countries
@@ -41,20 +49,35 @@ class TrainController extends BaseController
     public function showCitiesByCountry($countrySlug)
     {
         $country = $this->countryModel->findByColumn('slug', $countrySlug);
+        if (!$country) return $this->abort(404);
 
-        if (!$country) {
-            header("Location: /404");
-            exit;
-        }
+        $country['entity_type'] = 'country';
 
         $countriesBanner = $this->bannerModel->findByColumn('link', '/travel/trains/countries');
-        $banner = $this->bannerModel->findByColumn('link', '/travel/trains/countries/' . $countrySlug) ?? $country;
         $trainsBanner = $this->bannerModel->findByColumn('link', '/travel/trains');
 
+        // Търсим специфичен банер или ползваме държавата
+        $banner = $this->bannerModel->findByColumn('link', '/travel/trains/countries/' . $countrySlug) ?? $country;
+
+        // Определяме типа на банера
+        if (isset($banner['group_key'])) {
+            $banner['entity_type'] = 'banner';
+        } else {
+            $banner['entity_type'] = 'country';
+        }
+
+        if ($countriesBanner) $countriesBanner['entity_type'] = 'banner';
+        if ($trainsBanner) $trainsBanner['entity_type'] = 'banner';
+
         $cities = $this->cityModel->where('country_id', $country['id']);
+        foreach ($cities as &$city) {
+            $city['entity_type'] = 'city';
+        }
+
+        $translatedCountryName = HelperService::getTranslation($country, 'name');
 
         $this->render('travel/trains/countries/show-by-country/index', [
-            'title' => "Жележопътни гари и превози в {$country['name']} – Адреси и информация",
+            'title' => HelperService::trans('train_stations_in') . " {$translatedCountryName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'trainsBanner' => $trainsBanner,
@@ -68,19 +91,34 @@ class TrainController extends BaseController
         $country = $this->countryModel->findByColumn('slug', $countrySlug);
         $city = $this->cityModel->findByColumn('slug', $citySlug);
 
-        if (!$country || !$city) {
-            header("Location: /404");
-            exit;
-        }
+        if (!$country || !$city) return $this->abort(404);
+
+        $country['entity_type'] = 'country';
+        $city['entity_type'] = 'city';
 
         $countriesBanner = $this->bannerModel->findByColumn('link', '/travel/trains/countries');
-        $banner = $this->bannerModel->findByColumn('link', '/travel/trains/countries/' . $countrySlug) ?? $city;
         $trainsBanner = $this->bannerModel->findByColumn('link', '/travel/trains');
 
+        $banner = $this->bannerModel->findByColumn('link', '/travel/trains/countries/' . $countrySlug) ?? $city;
+
+        if (isset($banner['group_key'])) {
+            $banner['entity_type'] = 'banner';
+        } else {
+            $banner['entity_type'] = 'city';
+        }
+
+        if ($countriesBanner) $countriesBanner['entity_type'] = 'banner';
+        if ($trainsBanner) $trainsBanner['entity_type'] = 'banner';
+
         $trains = $this->trainModel->where('city_id', $city['id']);
+        foreach ($trains as &$train) {
+            $train['entity_type'] = 'train';
+        }
+
+        $translatedCityName = HelperService::getTranslation($city, 'name');
 
         $this->render('travel/trains/countries/show-by-country/show-by-city/index', [
-            'title' => "Жележопътни гари в {$city['name']}, {$country['name']} – Локации и линии",
+            'title' => HelperService::trans('train_stations_in') . " {$translatedCityName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'trainsBanner' => $trainsBanner,

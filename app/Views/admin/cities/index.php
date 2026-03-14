@@ -1,5 +1,8 @@
 <?php
+
 use App\Core\View;
+use App\Services\HelperService;
+
 ?>
 
 <div class="mb-5">
@@ -20,12 +23,15 @@ use App\Core\View;
         ['label' => 'Ред'],
         ['label' => 'Град'],
         ['label' => 'Държава'],
-        ['label' => 'SEO статус'],
+        ['label' => 'Преводи'],
         ['label' => 'Действия', 'align' => 'right']
     ];
 
     ob_start();
     foreach ($cities as $city): ?>
+        <?php $total_languages = count(HelperService::AVAILABLE_LANGUAGES) - 1;
+        $count = $city['translations_count'] ?? 0; ?>
+
         <tr class="hover:bg-gray-50 transition" data-id="<?= $city['id'] ?>">
             <td class="px-5 py-4 w-10">
                 <?php View::component('drag-handle', 'admin/components'); ?>
@@ -55,18 +61,26 @@ use App\Core\View;
             </td>
 
             <td class="px-5 py-4">
-                <div class="flex flex-col gap-1 max-w-50">
-                    <span class="text-gray-500 truncate flex items-center gap-1" title="<?= htmlspecialchars($city['slug']) ?>">
-                        <span class="opacity-50 text-indigo-500">🔗</span> <?= htmlspecialchars($city['slug']) ?>
-                    </span>
-                    <?php if(!empty($city['heading'])): ?>
-                        <span class="text-emerald-600 font-medium flex items-center gap-1">
-                            <span class="bg-emerald-100 px-1 rounded">H1</span> 
-                            <?= htmlspecialchars($city['heading']) ?>
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <div class="flex -space-x-2 overflow-hidden">
+                            <?php if ($count > 0): ?>
+                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-white bg-indigo-100 text-indigo-700 text-xs font-bold z-10">
+                                    +<?= $count ?>
+                                </span>
+                            <?php endif; ?>
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-white bg-gray-100 text-gray-400 text-xs">
+                                <?= $total_languages ?>
+                            </span>
+                        </div>
+                        <span class="text-sm font-medium <?= $count == $total_languages ? 'text-emerald-600' : 'text-gray-500' ?>">
+                            <?= $count ?> / <?= $total_languages ?> езика
                         </span>
-                    <?php else: ?>
-                        <span class="text-amber-500 italic">Липсва H1 заглавие</span>
-                    <?php endif; ?>
+                    </div>
+                    
+                    <div class="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-indigo-500 rounded-full" style="width: <?= ($count / $total_languages) * 100 ?>%"></div>
+                    </div>
                 </div>
             </td>
 
@@ -85,7 +99,7 @@ use App\Core\View;
         'slot' => ob_get_clean(),
         'attributes' => 'id="cities-table"'
     ]);
-    
+
     View::component('sortable-script', 'admin/components', [
         'tableId' => '#cities-table',
         'url'     => '/admin/cities/update-order'

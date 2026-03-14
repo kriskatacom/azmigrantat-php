@@ -184,4 +184,57 @@ class HelperService
 
         return $text;
     }
+
+    public static function getTranslation(array $item, string $field, string $entity = null): string
+    {
+        $lang = $_SESSION['lang'] ?? 'bg';
+
+        if ($lang === 'bg') {
+            return $item[$field] ?? '';
+        }
+
+        if (!isset($item['id'])) {
+            return $item[$field] ?? '';
+        }
+
+        $entityType = $entity ?? $item['entity_type'] ?? 'country';
+
+        $key = "{$entityType}_{$item['id']}_{$field}";
+        $translatedValue = self::trans($key);
+
+        return ($translatedValue !== $key) ? $translatedValue : ($item[$field] ?? '');
+    }
+
+    public static function formatUrl(string $url): string
+    {
+        if (empty($url)) return '';
+
+        if (str_starts_with($url, '/') || str_starts_with($url, '#') || preg_match('/^https?:\/\//i', $url)) {
+            return $url;
+        }
+
+        if (str_starts_with($url, '//')) {
+            return $url;
+        }
+
+        return 'https://' . $url;
+    }
+
+    public static function isExternalLink(string $url): bool
+    {
+        if (empty($url) || str_starts_with($url, '/') || str_starts_with($url, '#')) {
+            return false;
+        }
+
+        $myHost = str_replace('www.', '', $_SERVER['HTTP_HOST'] ?? '');
+
+        $formattedUrl = self::formatUrl($url);
+        $linkHost = parse_url($formattedUrl, PHP_URL_HOST);
+
+        if (empty($linkHost)) return false;
+
+        $linkHost = str_replace('www.', '', $linkHost);
+
+        return $linkHost !== $myHost;
+    }
 }

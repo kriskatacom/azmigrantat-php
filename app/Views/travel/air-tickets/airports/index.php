@@ -3,20 +3,24 @@
 use App\Core\View;
 use App\Services\HelperService;
 
+$airTicketsName = isset($airTicketsBanner) ? HelperService::getTranslation($airTicketsBanner, 'name', 'banner') : HelperService::trans('air_tickets');
+$currentBannerName = isset($banner) ? HelperService::getTranslation($banner, 'name', 'banner') : '';
+
 $breadcrumbs = [
-    ['label' => HelperService::trans('home'), 'href' => '/travel'],
-    ['label' => $airTicketsBanner['name'], 'href' => '/travel/air-tickets'],
-    ['label' => $banner['name']],
+    ['label' => $airTicketsName, 'href' => '/travel/air-tickets'],
+    ['label' => $currentBannerName],
 ];
 ?>
 
 <section>
-    <?= View::component('show-banner', 'partials', ['banner' => $banner]) ?>
+    <?php if (isset($banner)): ?>
+        <?= View::component('show-banner', 'partials', ['banner' => $banner]) ?>
+    <?php endif; ?>
     
     <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
         <div class="container mx-auto px-4">
             <h1 class="text-xl md:text-2xl xl:text-3xl font-bold uppercase tracking-wide">
-                <?= $banner['name'] ?>
+                <?= htmlspecialchars($currentBannerName) ?>
             </h1>
             <?php View::component('breadcrumbs', 'partials', [
                 'items' => $breadcrumbs,
@@ -26,10 +30,17 @@ $breadcrumbs = [
 </section>
 
 <main>
-    <?php View::component('load-more-grid', 'partials', [
-        'items'     => $countries,
-        'card_name' => 'item-card',
+    <?php 
+    $translatedCountries = array_map(function($country) {
+        $country['name'] = HelperService::getTranslation($country, 'name', 'country');
+        return $country;
+    }, $countries);
+
+    View::component('load-more-grid', 'partials', [
+        'items'       => $translatedCountries,
+        'card_name'   => 'item-card',
         'show_search' => false,
-        'base_url' => '/travel/air-tickets/airports',
-    ]); ?>
+        'base_url'    => '/travel/air-tickets/airports',
+    ]); 
+    ?>
 </main>

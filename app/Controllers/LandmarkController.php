@@ -29,9 +29,9 @@ class LandmarkController extends BaseController
         $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
 
         if (!$country) {
-            header("HTTP/1.0 404 Not Found");
-            exit('Държавата не е намерена.');
+            $this->abort(404);
         }
+        $country['entity_type'] = 'country';
 
         $landmarkElement = $this->elementModel->all([
             'where' => [
@@ -41,6 +41,10 @@ class LandmarkController extends BaseController
             ]
         ])[0] ?? null;
 
+        if ($landmarkElement) {
+            $landmarkElement['entity_type'] = 'country_element';
+        }
+
         $landmarks = $this->landmarkModel->all([
             'where' => [
                 'country_id' => $country['id'],
@@ -49,21 +53,25 @@ class LandmarkController extends BaseController
             'order' => 'sort_order ASC'
         ]);
 
+        foreach ($landmarks as &$l) {
+            $l['entity_type'] = 'landmark';
+        }
+
+        $translatedCountryName = HelperService::getTranslation($country, 'name');
+
         View::render('landmarks/index', [
-            'title'          => 'Забележителности в ' . $country['name'],
-            'country'        => $country,
+            'title'           => HelperService::trans('landmarks_in') . ' ' . $translatedCountryName,
+            'country'         => $country,
             'landmarkElement' => $landmarkElement,
-            'landmarks'      => $landmarks
+            'landmarks'       => $landmarks
         ]);
     }
 
     public function show($countrySlug, $landmarkSlug)
     {
         $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
-
-        if (!$country) {
-            $this->abort(404);
-        }
+        if (!$country) $this->abort(404);
+        $country['entity_type'] = 'country';
 
         $landmark = $this->landmarkModel->all([
             'where' => [
@@ -72,14 +80,13 @@ class LandmarkController extends BaseController
             ]
         ])[0] ?? null;
 
-        if (!$landmark) {
-            $this->abort(404);
-        }
+        if (!$landmark) $this->abort(404);
+        $landmark['entity_type'] = 'landmark';
 
         View::render('landmarks/show', [
-            'title'   => $landmark['name'],
+            'title'    => HelperService::getTranslation($landmark, 'name'),
             'landmark' => $landmark,
-            'country' => $country
+            'country'  => $country
         ]);
     }
 

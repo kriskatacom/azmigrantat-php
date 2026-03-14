@@ -15,7 +15,7 @@ $breadcrumbs = [
     <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
         <div class="container mx-auto px-4">
             <h1 class="text-xl md:text-2xl xl:text-3xl font-bold uppercase tracking-wide">
-                Пътувай с "Аз мигрантът"!
+                <?= HelperService::trans('travel_with') ?> "<?= HelperService::trans('i_the_migrant') ?>"!
             </h1>
             <?php View::component('breadcrumbs', 'partials', [
                 'items' => $breadcrumbs,

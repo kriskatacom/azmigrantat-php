@@ -281,4 +281,11 @@ abstract class BaseController
 
         return $mapped;
     }
+
+    protected function abort404($message)
+    {
+        http_response_code(404);
+        echo $message;
+        exit;
+    }
 }

@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\City;
 use App\Models\Category;
 use App\Models\User;
+use App\Services\HelperService;
 
 class CompanyController extends BaseController
 {
@@ -67,22 +68,31 @@ class CompanyController extends BaseController
     public function edit($id)
     {
         $this->checkAccess('admin');
-        $company = $this->companyModel->find((int)$id);
+
+        $company = $this->companyModel->find($id);
         $users = $this->userModel->all();
 
         if (!$company) {
-            $this->flash('error', 'Компанията не е намерена.');
+            $this->flash('error', 'Записът не е намерен.');
             $this->redirect('/admin/companies');
         }
 
+        $company['translations'] = $this->getMappedTranslations('company', $id);
+
+        $nextId = $this->companyModel->getNextId($id);
+        $prevId = $this->companyModel->getPrevId($id);
+
         $this->render('admin/companies/form', [
-            'title'      => 'Редакция: ' . $company['name'],
-            'company'    => $company,
+            'title'        => 'Редактиране на ' . $company['name'],
+            'company'      => $company,
             'countries'  => (new Country())->all(['order' => 'name ASC']),
             'cities'     => (new City())->where('country_id', $company['country_id']),
             'categories' => $this->categoryModel->getTree(),
             'users' => $users,
-            'layout'     => 'admin'
+            'nextId'       => $nextId,
+            'prevId'       => $prevId,
+            'languages'    => HelperService::AVAILABLE_LANGUAGES,
+            'layout'       => 'admin'
         ]);
     }
 

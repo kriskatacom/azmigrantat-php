@@ -26,10 +26,17 @@ class AirportController extends BaseController
     {
         $banner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airports');
         $airTicketsBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets');
-        $countries = $this->countryModel->all();
+        $countries = $this->countryModel->all(['order' => 'name ASC']);
+
+        if ($banner) $banner['entity_type'] = 'banner';
+        if ($airTicketsBanner) $airTicketsBanner['entity_type'] = 'banner';
+
+        foreach ($countries as &$country) {
+            $country['entity_type'] = 'country';
+        }
 
         $this->render('travel/air-tickets/airports/index', [
-            'title' => 'Европейски летища – информация и връзки към официални сайтове',
+            'title' => HelperService::trans('airports_seo_title') ?? 'Европейски летища',
             'banner' => $banner,
             'airTicketsBanner' => $airTicketsBanner,
             'countries' => $countries
@@ -41,12 +48,26 @@ class AirportController extends BaseController
         $banner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airports/' . $countrySlug);
         $airTicketsBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets');
         $airportsBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airports');
+
         $country = $this->countryModel->findByColumn('slug', $countrySlug);
+        if (!$country) return $this->abort404('Държавата не е намерена.');
+
+        $country['entity_type'] = 'country';
+
         $airports = $this->airportModel->where('country_id', $country['id']);
+        foreach ($airports as &$airport) {
+            $airport['entity_type'] = 'airport';
+        }
+
+        if ($banner) $banner['entity_type'] = 'banner';
+        if ($airTicketsBanner) $airTicketsBanner['entity_type'] = 'banner';
+        if ($airportsBanner) $airportsBanner['entity_type'] = 'banner';
+
+        $displayBanner = $banner ?? $airportsBanner;
 
         $this->render('travel/air-tickets/airports/show-by-country/index', [
-            'title' => 'Европейски летища – информация и връзки към официални сайтове',
-            'banner' => $banner ?? $airportsBanner,
+            'title' => HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('airports'),
+            'banner' => $displayBanner,
             'airTicketsBanner' => $airTicketsBanner,
             'airportsBanner' => $airportsBanner,
             'country' => $country,

@@ -29,9 +29,9 @@ class EmbassyController extends BaseController
         $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
 
         if (!$country) {
-            header("HTTP/1.0 404 Not Found");
-            exit('Държавата не е намерена.');
+            $this->abort(404);
         }
+        $country['entity_type'] = 'country';
 
         $embassyElement = $this->elementModel->all([
             'where' => [
@@ -41,6 +41,10 @@ class EmbassyController extends BaseController
             ]
         ])[0] ?? null;
 
+        if ($embassyElement) {
+            $embassyElement['entity_type'] = 'country_element';
+        }
+
         $embassies = $this->embassyModel->all([
             'where' => [
                 'country_id' => $country['id'],
@@ -49,8 +53,14 @@ class EmbassyController extends BaseController
             'order' => 'sort_order ASC'
         ]);
 
+        foreach ($embassies as &$e) {
+            $e['entity_type'] = 'embassy';
+        }
+
+        $translatedCountryName = HelperService::getTranslation($country, 'name');
+
         View::render('embassies/index', [
-            'title'          => 'Посолства в ' . $country['name'],
+            'title'          => HelperService::trans('embassies_in') . ' ' . $translatedCountryName,
             'country'        => $country,
             'embassyElement' => $embassyElement,
             'embassies'      => $embassies
@@ -60,10 +70,8 @@ class EmbassyController extends BaseController
     public function show($countrySlug, $embassySlug)
     {
         $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
-
-        if (!$country) {
-            $this->abort(404);
-        }
+        if (!$country) $this->abort(404);
+        $country['entity_type'] = 'country';
 
         $embassy = $this->embassyModel->all([
             'where' => [
@@ -72,12 +80,11 @@ class EmbassyController extends BaseController
             ]
         ])[0] ?? null;
 
-        if (!$embassy) {
-            $this->abort(404);
-        }
+        if (!$embassy) $this->abort(404);
+        $embassy['entity_type'] = 'embassy';
 
         View::render('embassies/show', [
-            'title'   => $embassy['name'],
+            'title'   => HelperService::getTranslation($embassy, 'name'),
             'embassy' => $embassy,
             'country' => $country
         ]);
@@ -107,11 +114,10 @@ class EmbassyController extends BaseController
     public function create()
     {
         $this->checkAccess('admin');
-        $countryModel = new Country();
         return View::render('admin/embassies/form', [
-            'countries' => $countryModel->all(['order' => 'name ASC']),
-            'title' => 'Добавяне на посолство',
-            'layout' => 'admin'
+            'countries' => $this->countryModel->all(['order' => 'name ASC']),
+            'title'     => 'Добавяне на посолство',
+            'layout'    => 'admin'
         ]);
     }
 
@@ -125,7 +131,7 @@ class EmbassyController extends BaseController
     {
         $this->checkAccess('admin');
 
-        $embassy = $this->embassyModel->find($id);
+        $embassy = $this->embassyModel->find((int)$id);
         if (!$embassy) {
             $this->flash('error', 'Записът не е намерен.');
             $this->redirect('/admin/embassies');
@@ -137,13 +143,13 @@ class EmbassyController extends BaseController
         $prevId = $this->embassyModel->getPrevId($id);
 
         View::render('admin/embassies/form', [
-            'title'        => 'Редактиране на ' . $embassy['name'],
-            'embassy'      => $embassy,
+            'title'     => 'Редактиране на ' . $embassy['name'],
+            'embassy'   => $embassy,
             'countries' => $this->countryModel->all(['order' => 'name ASC']),
-            'nextId'       => $nextId,
-            'prevId'       => $prevId,
-            'languages'    => HelperService::AVAILABLE_LANGUAGES,
-            'layout'       => 'admin'
+            'nextId'    => $nextId,
+            'prevId'    => $prevId,
+            'languages' => HelperService::AVAILABLE_LANGUAGES,
+            'layout'    => 'admin'
         ]);
     }
 

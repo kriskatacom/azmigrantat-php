@@ -12,7 +12,7 @@ use App\Services\HelperService;
     <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
         <div class="container mx-auto px-4">
             <h1 class="text-xl md:text-2xl xl:text-3xl font-semibold tracking-wide">
-                <?= HelperService::trans('cities_in') ?> <?= htmlspecialchars($country['name']) ?>
+                <?= HelperService::trans('cities_in') ?> <?= HelperService::getTranslation($country, 'name') ?>
             </h1>
             <?php View::component('breadcrumbs', 'partials', [
                 'items' => [

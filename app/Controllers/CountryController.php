@@ -27,6 +27,8 @@ class CountryController extends BaseController
             exit;
         }
 
+        $country['entity_type'] = 'country';
+
         $elementModel = new CountryElement();
         $elements = $elementModel->all([
             'where' => [
@@ -36,10 +38,19 @@ class CountryController extends BaseController
             'order' => 'sort_order ASC'
         ]);
 
+        foreach ($elements as &$element) {
+            $element['entity_type'] = 'country_element';
+        }
+
+        $translatedHeading = HelperService::getTranslation($country, 'heading', 'country');
+        $translatedName = HelperService::getTranslation($country, 'name', 'country');
+
+        $pageTitle = !empty($translatedHeading) ? $translatedHeading : $translatedName;
+
         View::render('countries/show', [
             'country'  => $country,
             'elements' => $elements,
-            'title'    => $country['heading'] ?: $country['name']
+            'title'    => $pageTitle
         ]);
     }
 

@@ -106,10 +106,9 @@ $bannerData = [
         </div>
     </div>
 
-    <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-            <div class="lg:col-span-2 space-y-6">
+            <div class="lg:col-span-2 space-y-5">
                 <?php ob_start(); ?>
                 <?php View::component('image-upload', 'admin/components', [
                     'name' => 'image_url',
@@ -150,8 +149,7 @@ $bannerData = [
                 </div>
                 <?php View::component('card', 'admin/components', ['title' => 'Съдържание и Текстове', 'slot' => ob_get_clean()]); ?>
             </div>
-
-            <div class="space-y-6">
+            <div class="space-y-5">
                 <?php ob_start(); ?>
                 <div class="space-y-4">
                     <div>
@@ -182,7 +180,7 @@ $bannerData = [
                 </div>
                 <?php View::component('card', 'admin/components', ['title' => 'Позициониране', 'slot' => ob_get_clean()]); ?>
 
-                <div class="bg-[#1e293b] p-6 rounded-2xl shadow-sm text-white">
+                <div class="bg-[#1e293b] p-5 rounded-2xl shadow-sm text-white">
                     <h3 class="font-bold mb-4 flex items-center gap-2 text-blue-400">
                         <i class="fa-solid fa-eye text-xs"></i>
                         Показване на:
@@ -215,13 +213,13 @@ $bannerData = [
                     'label' => 'Активен банер',
                     'value' => $item['is_active'] ?? true
                 ]); ?>
+            </div>
 
-                <div class="pt-2">
-                    <?php View::component('submit-button', 'admin/components', [
-                        'text' => !$isEdit ? 'Създаване' : 'Запазване',
-                        'is_active' => $item['is_active'] ?? true
-                    ]); ?>
-                </div>
+            <div class="pt-5">
+                <?php View::component('submit-button', 'admin/components', [
+                    'text' => !$isEdit ? 'Създаване' : 'Запазване',
+                    'is_active' => $item['is_active'] ?? true
+                ]); ?>
             </div>
         </div>
     </form>

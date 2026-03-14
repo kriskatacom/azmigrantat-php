@@ -4,7 +4,7 @@ use App\Core\View;
 use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => HelperService::trans('home'), 'href' => '/travel'],
+    ['label' => HelperService::trans('travel'), 'href' => '/travel'],
     ['label' => $banner['name']]
 ];
 ?>

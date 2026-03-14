@@ -43,21 +43,30 @@ use App\Services\HelperService;
 <?php endif; ?>
 
 <section>
-    <div class="aspect-video max-h-100 w-full">
+    <div class="aspect-video max-h-100 w-full overflow-hidden">
+        <?php 
+            // Подготвяме имената чрез хелпъра
+            $countryName = HelperService::getTranslation($country, 'name', 'country');
+            $cityName    = HelperService::getTranslation($city, 'name', 'city');
+            $catName     = !empty($category) ? HelperService::getTranslation($category, 'name', 'category') : '';
+            
+            // Определяме основното заглавие за alt и h1
+            $mainTitle = !empty($category) 
+                ? "{$catName} " . HelperService::trans('in') . " {$cityName} - {$countryName}"
+                : HelperService::trans('info_guide_of') . " {$cityName} - {$countryName}";
+        ?>
+
         <?php if (!empty($category)): ?>
-            <img src="<?= $category['image_url'] ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($country['name']) ?>">
+            <img src="<?= $category['image_url'] ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($mainTitle) ?>">
         <?php else: ?>
-            <img src="<?= $city['image_url'] ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($country['name']) ?>">
+            <img src="<?= $city['image_url'] ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($mainTitle) ?>">
         <?php endif; ?>
     </div>
+
     <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
         <div class="container mx-auto px-4">
             <h1 class="text-xl md:text-2xl xl:text-3xl font-semibold tracking-wide">
-                <?php if (!empty($category)): ?>
-                    <?= htmlspecialchars($category['name']) ?> в <?= $city['name']; ?> - <?= $country['name'] ?>
-                <?php else: ?>
-                    <?= HelperService::trans('info_guide_of') ?> <?= htmlspecialchars($city['name']) ?> - <?= $country['name'] ?>
-                <?php endif; ?>
+                <?= htmlspecialchars($mainTitle) ?>
             </h1>
             <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
         </div>

@@ -7,6 +7,7 @@ use App\Models\Autobus;
 use App\Models\Banner;
 use App\Models\City;
 use App\Models\Country;
+use App\Services\HelperService;
 
 class AutobusController extends BaseController
 {
@@ -27,10 +28,17 @@ class AutobusController extends BaseController
     {
         $banner = $this->bannerModel->findByColumn('link', '/travel/autobuses/countries');
         $autobusesBanner = $this->bannerModel->findByColumn('link', '/travel/autobuses');
-        $countries = $this->countryModel->all();
+        $countries = $this->countryModel->all(['order' => 'name ASC']);
+
+        if ($banner) $banner['entity_type'] = 'banner';
+        if ($autobusesBanner) $autobusesBanner['entity_type'] = 'banner';
+
+        foreach ($countries as &$c) {
+            $c['entity_type'] = 'country';
+        }
 
         $this->render('travel/autobuses/countries/index', [
-            'title' => 'Автобусни гари и превози в Европа – Информация по държави',
+            'title' => HelperService::trans('bus_stations_europe_title') ?? 'Автобусни гари и превози в Европа',
             'banner' => $banner,
             'autobusesBanner' => $autobusesBanner,
             'countries' => $countries
@@ -40,19 +48,33 @@ class AutobusController extends BaseController
     public function showCitiesByCountry($countrySlug)
     {
         $country = $this->countryModel->findByColumn('slug', $countrySlug);
-        
-        if (!$country) {
-            header("Location: /404"); exit;
-        }
+        if (!$country) return $this->abort(404);
+
+        $country['entity_type'] = 'country';
 
         $countriesBanner = $this->bannerModel->findByColumn('link', '/travel/autobuses/countries');
-        $banner = $this->bannerModel->findByColumn('link', '/travel/autobuses/countries/' . $countrySlug) ?? $country;
         $autobusesBanner = $this->bannerModel->findByColumn('link', '/travel/autobuses');
-        
+
+        $banner = $this->bannerModel->findByColumn('link', '/travel/autobuses/countries/' . $countrySlug) ?? $country;
+
+        if (isset($banner['group_key'])) {
+            $banner['entity_type'] = 'banner';
+        } else {
+            $banner['entity_type'] = 'country';
+        }
+
+        if ($countriesBanner) $countriesBanner['entity_type'] = 'banner';
+        if ($autobusesBanner) $autobusesBanner['entity_type'] = 'banner';
+
         $cities = $this->cityModel->where('country_id', $country['id']);
+        foreach ($cities as &$city) {
+            $city['entity_type'] = 'city';
+        }
+
+        $translatedCountryName = HelperService::getTranslation($country, 'name');
 
         $this->render('travel/autobuses/countries/show-by-country/index', [
-            'title' => "Автобусни гари и превози в {$country['name']} – Адреси и информация",
+            'title' => HelperService::trans('bus_stations_in') . " {$translatedCountryName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'autobusesBanner' => $autobusesBanner,
@@ -66,18 +88,34 @@ class AutobusController extends BaseController
         $country = $this->countryModel->findByColumn('slug', $countrySlug);
         $city = $this->cityModel->findByColumn('slug', $citySlug);
 
-        if (!$country || !$city) {
-            header("Location: /404"); exit;
-        }
+        if (!$country || !$city) return $this->abort(404);
+
+        $country['entity_type'] = 'country';
+        $city['entity_type'] = 'city';
 
         $countriesBanner = $this->bannerModel->findByColumn('link', '/travel/autobuses/countries');
-        $banner = $this->bannerModel->findByColumn('link', '/travel/autobuses/countries/' . $countrySlug) ?? $city;
         $autobusesBanner = $this->bannerModel->findByColumn('link', '/travel/autobuses');
-        
+
+        $banner = $this->bannerModel->findByColumn('link', '/travel/autobuses/countries/' . $countrySlug . '/' . $citySlug) ?? $city;
+
+        if (isset($banner['group_key'])) {
+            $banner['entity_type'] = 'banner';
+        } else {
+            $banner['entity_type'] = 'city';
+        }
+
+        if ($countriesBanner) $countriesBanner['entity_type'] = 'banner';
+        if ($autobusesBanner) $autobusesBanner['entity_type'] = 'banner';
+
         $autobuses = $this->autobusModel->where('city_id', $city['id']);
+        foreach ($autobuses as &$a) {
+            $a['entity_type'] = 'autobus';
+        }
+
+        $translatedCityName = HelperService::getTranslation($city, 'name');
 
         $this->render('travel/autobuses/countries/show-by-country/show-by-city/index', [
-            'title' => "Автобусни гари в {$city['name']}, {$country['name']} – Локации и линии",
+            'title' => HelperService::trans('bus_stations_in') . " {$translatedCityName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'autobusesBanner' => $autobusesBanner,
@@ -86,6 +124,8 @@ class AutobusController extends BaseController
             'autobuses' => $autobuses
         ]);
     }
+
+    // Admin Methods
 
     public function index()
     {
@@ -105,36 +145,24 @@ class AutobusController extends BaseController
         ]);
     }
 
-    public function create()
-    {
-        $this->checkAccess('admin');
-        $countries = $this->countryModel->all();
-
-        View::render('admin/autobuses/form', [
-            'title'     => 'Нова автобусна компания',
-            'countries' => $countries,
-            'layout'    => 'admin'
-        ]);
-    }
-
     public function edit($id)
     {
         $this->checkAccess('admin');
-        $autobus = $this->autobusModel->find($id);
+        $autobus = $this->autobusModel->find((int)$id);
 
         if (!$autobus) {
-            header('Location: /admin/cities');
-            exit;
+            $this->flash('error', 'Записът не е намерен.');
+            $this->redirect('/admin/autobuses');
         }
 
-        $countries = $this->countryModel->all();
-        $cities = $this->cityModel->getByCountry($autobus['country_id']);
+        $autobus['translations'] = $this->getMappedTranslations('autobus', $id);
 
         View::render('admin/autobuses/form', [
-            'title'     => 'Редактиране на автобусна компания: ' . $autobus['name'],
-            'autobus'       => $autobus,
-            'countries' => $countries,
-            'cities'    => $cities,
+            'title'     => 'Редактиране: ' . $autobus['name'],
+            'autobus'   => $autobus,
+            'countries' => $this->countryModel->all(['order' => 'name ASC']),
+            'cities'    => $this->cityModel->getByCountry($autobus['country_id']),
+            'languages' => HelperService::AVAILABLE_LANGUAGES,
             'layout'    => 'admin'
         ]);
     }
@@ -142,7 +170,7 @@ class AutobusController extends BaseController
     public function store()
     {
         $this->checkAccess('admin');
-        $this->handleStore($this->autobusModel, '/admin/autobuses', ['image_url'], 'airlines');
+        $this->handleStore($this->autobusModel, '/admin/autobuses', ['image_url'], 'autobuses');
     }
 
     public function update($id)

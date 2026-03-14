@@ -35,54 +35,65 @@ class CategoryController extends BaseController
 
     // Public Routes
 
+    // Public Routes
+
     public function categoriesShow($countrySlug, $citySlug, $categoriesPath = null)
     {
+        // 1. Намиране на държава и град
         $country = $this->countryModel->where('slug', $countrySlug)[0] ?? null;
         if (!$country || !$country['is_active']) return $this->abort404('Държавата не е намерена.');
+        $country['entity_type'] = 'country';
 
         $city = $this->cityModel->all([
             'where' => ['slug' => $citySlug, 'country_id' => $country['id'], 'is_active' => 1]
         ])[0] ?? null;
         if (!$city) return $this->abort404('Градът не е намерен.');
+        $city['entity_type'] = 'city';
 
         $categoryPathArr = $categoriesPath ? explode('/', trim($categoriesPath, '/')) : [];
         $lastSlug = !empty($categoryPathArr) ? end($categoryPathArr) : null;
 
+        // 2. Логика за "About" страница на компания
         if ($lastSlug === 'about') {
             $companySlug = $categoryPathArr[count($categoryPathArr) - 2] ?? null;
-
             if ($companySlug) {
                 $company = $this->companyModel->all([
                     'where' => ['slug' => $companySlug, 'city_id' => $city['id'], 'is_active' => 1]
                 ])[0] ?? null;
 
                 if ($company) {
+                    $company['entity_type'] = 'company';
                     array_pop($categoryPathArr);
                     return $this->renderCompanyAbout($company, $country, $city, $categoryPathArr);
                 }
             }
         }
 
+        // 3. Логика за Детайли на компания (ако последният slug е компания)
         if ($lastSlug) {
             $company = $this->companyModel->all([
                 'where' => ['slug' => $lastSlug, 'city_id' => $city['id'], 'is_active' => 1]
             ])[0] ?? null;
 
             if ($company) {
+                $company['entity_type'] = 'company';
                 return $this->renderCompanyDetail($company, $country, $city, $categoryPathArr);
             }
         }
 
+        // 4. Логика за Категория
         $category = null;
         if ($lastSlug) {
             $category = $this->categoryModel->all(['where' => ['slug' => $lastSlug, 'is_active' => 1]])[0] ?? null;
             if (!$category) return $this->abort404('Страницата не е намерена.');
+            $category['entity_type'] = 'category';
         }
 
+        // 5. Генериране на Breadcrumbs с преводи
         $breadcrumbs = [
-            ['label' => $country['name'], 'href' => '/' . $country['slug']],
-            ['label' => 'Градове', 'href' => '/' . $country['slug'] . '/cities'],
-            ['label' => $city['name'], 'href' => '/' . $country['slug'] . '/cities/' . $city['slug']],
+            ['label' => HelperService::getTranslation($country, 'name', 'country'), 'href' => '/' . $country['slug']],
+            ['label' => HelperService::trans('cities'), 'href' => '/' . $country['slug'] . '/cities'],
+            ['label' => HelperService::getTranslation($city, 'name', 'city'), 'href' => '/' . $country['slug'] . '/cities/' . $city['slug']],
         ];
 
         $currentPath = '/' . $country['slug'] . '/cities/' . $city['slug'];
@@ -92,134 +103,138 @@ class CategoryController extends BaseController
             $runningPath .= '/' . $slug;
             $catInfo = $this->categoryModel->all(['where' => ['slug' => $slug]])[0] ?? null;
 
+            $label = $catInfo
+                ? HelperService::getTranslation($catInfo, 'name', 'category')
+                : mb_convert_case(str_replace('-', ' ', $slug), MB_CASE_TITLE, "UTF-8");
+
             $breadcrumbs[] = [
-                'label' => $catInfo ? $catInfo['name'] : mb_convert_case(str_replace('-', ' ', $slug), MB_CASE_TITLE, "UTF-8"),
-                'href'   => $currentPath . $runningPath
+                'label' => $label,
+                'href'  => $currentPath . $runningPath
             ];
         }
 
-        $data = $this->resolveDisplayItems($category, $city['id']);
-
-        $offers = [];
-        if ($category) {
-            $companiesInCategory = $this->companyModel->all([
-                'where' => [
-                    'category_id' => $category['id'],
-                    'city_id'     => $city['id'],
-                    'is_active'   => 1
-                ]
-            ]);
-
-            $companiesMap = [];
-            foreach ($companiesInCategory as $comp) {
-                $companiesMap[$comp['id']] = $comp;
-            }
-
-            $companyIds = array_keys($companiesMap);
-
-            if (!empty($companyIds)) {
-                $rawOffers = $this->offerModel->all([
-                    'where_in' => ['company_id' => $companyIds],
-                    'where'    => ['status' => 'active']
-                ]);
-
-                foreach ($rawOffers as $offer) {
-                    $companyId = $offer['company_id'];
-                    if (isset($companiesMap[$companyId])) {
-                        $offer['company_slug'] = $companiesMap[$companyId]['slug'];
-                        $offer['company_name'] = $companiesMap[$companyId]['name'];
-                        $offers[] = $offer;
-                    }
-                }
-            }
+        // 6. Подготовка на айтемите (подкатегории или компании)
+        $displayData = $this->resolveDisplayItems($category, $city['id']);
+        foreach ($displayData['items'] as &$item) {
+            $item['entity_type'] = ($displayData['type'] === 'categories') ? 'category' : 'company';
         }
 
+        // 7. Подготовка на оферти
+        $offers = $this->getOffersForCategory($category, $city['id']);
+
         View::render('categories/show', [
-            'title'        => ($category ? $category['name'] : 'Категории') . ' - ' . $city['name'],
+            'title'        => ($category ? HelperService::getTranslation($category, 'name', 'category') : HelperService::trans('categories')) . ' - ' . HelperService::getTranslation($city, 'name', 'city'),
             'country'      => $country,
             'city'         => $city,
             'category'     => $category,
-            'items'        => $data['items'],
-            'showType'     => $data['type'],
-            'base_url'     => "/{$countrySlug}/cities/{$citySlug}/" . ($categoriesPath ? trim($categoriesPath, '/') . '/' : ''),
-            'categoryPath' => $categoryPathArr,
+            'items'        => $displayData['items'],
+            'showType'     => $displayData['type'],
+            'offers'       => $offers,
             'breadcrumbs'  => $breadcrumbs,
-            'items'    => $data['items'],
-            'showType' => $data['type'],
-            'offers'   => $offers,
+            'base_url'     => "/{$countrySlug}/cities/{$citySlug}/" . ($categoriesPath ? trim($categoriesPath, '/') . '/' : ''),
+            'categoryPath' => $categoryPathArr
         ]);
     }
 
     private function renderCompanyAbout($company, $country, $city, $pathArray)
     {
+        $company['entity_type'] = 'company';
         View::render('companies/about', [
             'company' => $company,
             'country' => $country,
-            'city' => $city,
+            'city'    => $city,
             'categoryPath' => $pathArray
         ]);
     }
 
     private function renderCompanyDetail($company, $country, $city, $pathArray)
     {
+        $company['entity_type'] = 'company';
+
         $category = null;
         if (!empty($company['category_id'])) {
-            $category = $this->categoryModel->all(['where' => ['id' => $company['category_id']]])[0] ?? null;
+            $category = $this->categoryModel->find($company['category_id']);
+            if ($category) $category['entity_type'] = 'category';
         }
 
         $ads = $this->adModel->all([
-            'where' => [
-                'company_id' => $company['id'],
-                'status'     => 'active'
-            ],
+            'where' => ['company_id' => $company['id'], 'status' => 'active'],
             'order' => 'sort_order ASC'
         ]);
+        foreach ($ads as &$ad) {
+            $ad['entity_type'] = 'company_ad';
+        }
 
         $offers = $this->offerModel->all([
-            'where' => [
-                'company_id' => $company['id'],
-                'status'     => 'active'
-            ],
+            'where' => ['company_id' => $company['id'], 'status' => 'active'],
             'order' => 'sort_order ASC'
         ]);
+        foreach ($offers as &$offer) {
+            $offer['entity_type'] = 'offer';
+        }
 
+        // Breadcrumbs за детайли
         $breadcrumbs = [
-            ['label' => $country['name'], 'href' => '/' . $country['slug']],
-            ['label' => 'Градове', 'href' => '/' . $country['slug'] . '/cities'],
-            ['label' => $city['name'], 'href' => '/' . $country['slug'] . '/cities/' . $city['slug']],
+            ['label' => HelperService::getTranslation($country, 'name', 'country'), 'href' => '/' . $country['slug']],
+            ['label' => HelperService::trans('cities'), 'href' => '/' . $country['slug'] . '/cities'],
+            ['label' => HelperService::getTranslation($city, 'name', 'city'), 'href' => '/' . $country['slug'] . '/cities/' . $city['slug']],
         ];
 
         $currentPath = '/' . $country['slug'] . '/cities/' . $city['slug'];
         $runningPath = '';
-
-        if (!empty($pathArray)) {
-            foreach ($pathArray as $slug) {
-                if ($slug === $company['slug']) {
-                    continue;
-                }
-
-                $runningPath .= '/' . $slug;
-                $cat = $this->categoryModel->all(['where' => ['slug' => $slug]])[0] ?? null;
-
-                $breadcrumbs[] = [
-                    'label' => $cat ? $cat['name'] : mb_convert_case(str_replace('-', ' ', $slug), MB_CASE_TITLE, "UTF-8"),
-                    'href'  => $currentPath . $runningPath
-                ];
-            }
+        foreach ($pathArray as $slug) {
+            if ($slug === $company['slug']) continue;
+            $runningPath .= '/' . $slug;
+            $cat = $this->categoryModel->all(['where' => ['slug' => $slug]])[0] ?? null;
+            $breadcrumbs[] = [
+                'label' => $cat ? HelperService::getTranslation($cat, 'name', 'category') : $slug,
+                'href'  => $currentPath . $runningPath
+            ];
         }
-
-        $breadcrumbs[] = ['label' => '', 'href' => ''];
+        $breadcrumbs[] = ['label' => HelperService::getTranslation($company, 'name', 'company'), 'href' => ''];
 
         View::render('companies/details', [
-            'title'       => $company['name'] . ' - ' . $city['name'],
+            'title'       => HelperService::getTranslation($company, 'name', 'company') . ' - ' . HelperService::getTranslation($city, 'name', 'city'),
             'company'     => $company,
             'country'     => $country,
             'city'        => $city,
             'category'    => $category,
             'ads'         => $ads,
-            'offers'         => $offers,
+            'offers'      => $offers,
             'breadcrumbs' => $breadcrumbs
         ]);
+    }
+
+    private function getOffersForCategory($category, $cityId)
+    {
+        if (!$category) return [];
+
+        $companiesInCategory = $this->companyModel->all([
+            'where' => ['category_id' => $category['id'], 'city_id' => $cityId, 'is_active' => 1]
+        ]);
+
+        if (empty($companiesInCategory)) return [];
+
+        $companiesMap = [];
+        foreach ($companiesInCategory as $comp) {
+            $companiesMap[$comp['id']] = $comp;
+        }
+
+        $rawOffers = $this->offerModel->all([
+            'where_in' => ['company_id' => array_keys($companiesMap)],
+            'where'    => ['status' => 'active']
+        ]);
+
+        $offers = [];
+        foreach ($rawOffers as $offer) {
+            $offer['entity_type'] = 'offer';
+            $company = $companiesMap[$offer['company_id']];
+            $offer['company_slug'] = $company['slug'];
+            $offer['company_name'] = HelperService::getTranslation($company, 'name', 'company');
+            $offers[] = $offer;
+        }
+
+        return $offers;
     }
 
     private function resolveDisplayItems(?array $category, int $cityId): array
@@ -254,13 +269,6 @@ class CategoryController extends BaseController
                 'order' => 'sort_order ASC'
             ])
         ];
-    }
-
-    private function abort404($message)
-    {
-        http_response_code(404);
-        echo $message;
-        exit;
     }
 
     // --- Admin Routes ---

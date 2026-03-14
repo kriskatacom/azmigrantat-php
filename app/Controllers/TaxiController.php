@@ -7,6 +7,7 @@ use App\Models\Banner;
 use App\Models\Taxi;
 use App\Models\Country;
 use App\Models\City;
+use App\Services\HelperService;
 
 class TaxiController extends BaseController
 {
@@ -28,10 +29,17 @@ class TaxiController extends BaseController
     {
         $banner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries');
         $taxisBanner = $this->bannerModel->findByColumn('link', '/travel/taxis');
-        $countries = $this->countryModel->all();
+        $countries = $this->countryModel->all(['order' => 'name ASC']);
+
+        if ($banner) $banner['entity_type'] = 'banner';
+        if ($taxisBanner) $taxisBanner['entity_type'] = 'banner';
+        
+        foreach ($countries as &$country) {
+            $country['entity_type'] = 'country';
+        }
 
         $this->render('travel/taxis/countries/index', [
-            'title' => 'Таксиметрови компании в Европа – Информация по държави',
+            'title' => HelperService::trans('taxi_companies_europe_title') ?? 'Таксиметрови компании в Европа',
             'banner' => $banner,
             'taxisBanner' => $taxisBanner,
             'countries' => $countries
@@ -41,20 +49,32 @@ class TaxiController extends BaseController
     public function showCitiesByCountry($countrySlug)
     {
         $country = $this->countryModel->findByColumn('slug', $countrySlug);
+        if (!$country) return $this->abort(404);
 
-        if (!$country) {
-            header("Location: /404");
-            exit;
-        }
+        $country['entity_type'] = 'country';
 
         $countriesBanner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries');
-        $banner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries/' . $countrySlug) ?? $country;
         $taxisBanner = $this->bannerModel->findByColumn('link', '/travel/taxis');
+        $banner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries/' . $countrySlug) ?? $country;
+        
+        if (isset($banner['group_key'])) {
+            $banner['entity_type'] = 'banner';
+        } else {
+            $banner['entity_type'] = 'country';
+        }
+
+        if ($countriesBanner) $countriesBanner['entity_type'] = 'banner';
+        if ($taxisBanner) $taxisBanner['entity_type'] = 'banner';
 
         $cities = $this->cityModel->where('country_id', $country['id']);
+        foreach ($cities as &$city) {
+            $city['entity_type'] = 'city';
+        }
+
+        $translatedCountryName = HelperService::getTranslation($country, 'name');
 
         $this->render('travel/taxis/countries/show-by-country/index', [
-            'title' => "Таксиметрови компании в {$country['name']} – Адреси и информация",
+            'title' => HelperService::trans('taxi_companies_in') . " {$translatedCountryName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'taxisBanner' => $taxisBanner,
@@ -68,19 +88,33 @@ class TaxiController extends BaseController
         $country = $this->countryModel->findByColumn('slug', $countrySlug);
         $city = $this->cityModel->findByColumn('slug', $citySlug);
 
-        if (!$country || !$city) {
-            header("Location: /404");
-            exit;
-        }
+        if (!$country || !$city) return $this->abort(404);
+
+        $country['entity_type'] = 'country';
+        $city['entity_type'] = 'city';
 
         $countriesBanner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries');
-        $banner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries/' . $countrySlug) ?? $city;
         $taxisBanner = $this->bannerModel->findByColumn('link', '/travel/taxis');
+        $banner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries/' . $countrySlug) ?? $city;
+        
+        if (isset($banner['group_key'])) {
+            $banner['entity_type'] = 'banner';
+        } else {
+            $banner['entity_type'] = 'city';
+        }
+
+        if ($countriesBanner) $countriesBanner['entity_type'] = 'banner';
+        if ($taxisBanner) $taxisBanner['entity_type'] = 'banner';
 
         $taxis = $this->taxiModel->where('city_id', $city['id']);
+        foreach ($taxis as &$taxi) {
+            $taxi['entity_type'] = 'taxi';
+        }
+
+        $translatedCityName = HelperService::getTranslation($city, 'name');
 
         $this->render('travel/taxis/countries/show-by-country/show-by-city/index', [
-            'title' => "Таксиметрови компании в {$city['name']}, {$country['name']} – Локации и линии",
+            'title' => HelperService::trans('taxi_companies_in') . " {$translatedCityName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'taxisBanner' => $taxisBanner,
@@ -111,10 +145,9 @@ class TaxiController extends BaseController
     public function create()
     {
         $this->checkAccess('admin');
-        $countryModel = new Country();
         $this->render('admin/taxis/form', [
             'title' => 'Създаване на нова такси компания',
-            'countries' => $countryModel->all(['order' => 'name ASC']),
+            'countries' => $this->countryModel->all(['order' => 'name ASC']),
             'taxi' => null,
             'layout'     => 'admin'
         ]);
@@ -135,14 +168,14 @@ class TaxiController extends BaseController
             $this->redirect($this->baseRoute);
         }
 
-        $countryModel = new Country();
-        $cityModel = new City();
+        $taxi['translations'] = $this->getMappedTranslations('taxi', $id);
 
         $this->render('admin/taxis/form', [
-            'title' => 'Редактиране на такси компания: ' . $taxi['name'],
+            'title' => 'Редактиране: ' . $taxi['name'],
             'taxi' => $taxi,
-            'countries' => $countryModel->all(['order' => 'name ASC']),
-            'cities' => $cityModel->where('country_id', $taxi['country_id']),
+            'countries' => $this->countryModel->all(['order' => 'name ASC']),
+            'cities' => $this->cityModel->where('country_id', $taxi['country_id']),
+            'languages' => HelperService::AVAILABLE_LANGUAGES,
             'layout'     => 'admin'
         ]);
     }

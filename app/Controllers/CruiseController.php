@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Cruise;
 use App\Core\View;
 use App\Models\Banner;
+use App\Services\HelperService;
 
 class CruiseController extends BaseController
 {
@@ -22,10 +23,17 @@ class CruiseController extends BaseController
         $banner = $this->bannerModel->findByColumn('link', '/travel/cruises/cruise-companies');
         $cruisesBanner = $this->bannerModel->findByColumn('link', '/travel/cruises');
 
-        $cruises = $this->cruiseModel->all();
+        $cruises = $this->cruiseModel->all(['order' => 'sort_order ASC, name ASC']);
+
+        if ($banner) $banner['entity_type'] = 'banner';
+        if ($cruisesBanner) $cruisesBanner['entity_type'] = 'banner';
+
+        foreach ($cruises as &$cruise) {
+            $cruise['entity_type'] = 'cruise';
+        }
 
         $this->render('travel/cruises/cruise-companies/index', [
-            'title' => 'Кризни компании – информация и връзки към официални сайтове',
+            'title' => HelperService::trans('cruise_companies_title') ?? 'Круизни компании – информация и връзки към официални сайтове',
             'banner' => $banner,
             'cruisesBanner' => $cruisesBanner,
             'cruises' => $cruises,
@@ -70,12 +78,19 @@ class CruiseController extends BaseController
     {
         $this->checkAccess('admin');
         $cruise = $this->cruiseModel->find((int)$id);
-        if (!$cruise) exit('Круизът не е намерен');
+        
+        if (!$cruise) {
+            $this->flash('error', 'Круизната компания не е намерена.');
+            $this->redirect('/admin/cruises');
+        }
+
+        $cruise['translations'] = $this->getMappedTranslations('cruise', $id);
 
         return View::render('admin/cruises/form', [
-            'title'  => 'Редактиране: ' . $cruise['name'],
-            'cruise' => $cruise,
-            'layout' => 'admin'
+            'title'     => 'Редактиране: ' . $cruise['name'],
+            'cruise'    => $cruise,
+            'languages' => HelperService::AVAILABLE_LANGUAGES,
+            'layout'    => 'admin'
         ]);
     }
 

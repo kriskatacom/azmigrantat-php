@@ -7,6 +7,7 @@ use App\Models\Airline;
 use App\Models\Banner;
 use App\Models\Country;
 use App\Models\Category;
+use App\Services\HelperService; // Добавяме, ако ще ползваме преводи тук
 
 class AirlineController extends BaseController
 {
@@ -24,11 +25,25 @@ class AirlineController extends BaseController
         $banner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airlines');
         $airTicketsBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets');
         $airlinesBanner = $this->bannerModel->findByColumn('link', '/travel/air-tickets/airlines');
-        $airlines = $this->airlineModel->all();
+
+        $airlines = $this->airlineModel->all(['order' => 'sort_order ASC']);
+
+        // Маркираме банерите за превод
+        if ($banner) $banner['entity_type'] = 'banner';
+        if ($airTicketsBanner) $airTicketsBanner['entity_type'] = 'banner';
+        if ($airlinesBanner) $airlinesBanner['entity_type'] = 'banner';
+
+        // Маркираме авиолиниите за превод
+        foreach ($airlines as &$airline) {
+            $airline['entity_type'] = 'airline';
+        }
+
+        $displayBanner = $banner ?? $airlinesBanner;
 
         $this->render('travel/air-tickets/airlines/index', [
-            'title' => 'Европейски авиокомпании – информация и връзки към официални сайтове',
-            'banner' => $banner ?? $airlinesBanner,
+            // Локализираме заглавието на страницата
+            'title' => HelperService::trans('airlines_page_title') ?? 'Европейски авиокомпании – информация и връзки към официални сайтове',
+            'banner' => $displayBanner,
             'airTicketsBanner' => $airTicketsBanner,
             'airlinesBanner' => $airlinesBanner,
             'airlines' => $airlines
@@ -82,10 +97,14 @@ class AirlineController extends BaseController
             $this->redirect('/admin/airlines');
         }
 
+        // Зареждаме преводите за админ формата (за AI модала)
+        $airline['translations'] = $this->getMappedTranslations('airline', $id);
+
         $this->render('admin/airlines/form', [
             'title'      => 'Редакция: ' . $airline['name'],
             'airline'    => $airline,
             'categories' => (new Category())->all(['order' => 'name ASC']),
+            'languages'  => HelperService::AVAILABLE_LANGUAGES,
             'layout'     => 'admin'
         ]);
     }

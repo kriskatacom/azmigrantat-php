@@ -5,10 +5,10 @@ use App\Services\HelperService;
 $style    = $style ?? 'grid';
 $link_key = $link_key ?? 'slug';
 
-$name    = $item['name'] ?? 'Обект';
-$excerpt = $item['excerpt'] ?? $item['description'] ?? '';
-$image   = !empty($item['image_url']) ? $item['image_url'] : '/assets/images/no-image.jpg';
+$name    = HelperService::getTranslation($item, 'name') ?: 'Обект';
+$excerpt = HelperService::getTranslation($item, 'excerpt') ?: HelperService::getTranslation($item, 'description');
 
+$image   = !empty($item['image_url']) ? $item['image_url'] : '/assets/images/no-image.jpg';
 $raw_path = $item[$link_key] ?? '';
 
 if ($link_key === 'slug' && !empty($item['final_url'])) {
@@ -29,9 +29,9 @@ $final_url = $is_external_link ? $url : HelperService::url($url);
         <a href="<?= $final_url ?>" <?= $target ?> class="absolute inset-0 z-10" aria-label="<?= htmlspecialchars($name) ?>"></a>
 
         <img src="<?= $image ?>"
-             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-             alt="<?= htmlspecialchars($name) ?>"
-             loading="lazy">
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            alt="<?= htmlspecialchars($name) ?>"
+            loading="lazy">
 
         <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent pointer-events-none"></div>
 
@@ -52,9 +52,9 @@ $final_url = $is_external_link ? $url : HelperService::url($url);
 
         <div class="w-5/12 xl:w-4/12 relative overflow-hidden bg-gray-100 shrink-0">
             <img src="<?= $image ?>"
-                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                 alt="<?= htmlspecialchars($name) ?>"
-                 loading="lazy">
+                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                alt="<?= htmlspecialchars($name) ?>"
+                loading="lazy">
         </div>
 
         <div class="w-7/12 xl:w-8/12 p-5 flex flex-col justify-between overflow-hidden">
@@ -62,7 +62,7 @@ $final_url = $is_external_link ? $url : HelperService::url($url);
                 <h3 class="text-gray-900 text-xl font-bold mb-2 truncate">
                     <?= htmlspecialchars($name) ?>
                 </h3>
-                
+
                 <div class="text-gray-500 text-sm line-clamp-2 mb-4 leading-relaxed min-h-10">
                     <?= !empty($excerpt) ? strip_tags($excerpt) : HelperService::trans('no_description_available') ?>
                 </div>

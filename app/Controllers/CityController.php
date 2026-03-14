@@ -24,11 +24,10 @@ class CityController extends BaseController
 
     public function indexByCountry($countrySlug)
     {
-        $countryModel = new Country();
-        $cityModel = new City();
         $elementModel = new CountryElement();
 
-        $countryResults = $countryModel->where('slug', $countrySlug);
+        // 1. Взимаме държавата
+        $countryResults = $this->countryModel->where('slug', $countrySlug);
         $country = $countryResults[0] ?? null;
 
         if (!$country || (isset($country['is_active']) && !$country['is_active'])) {
@@ -36,16 +35,15 @@ class CityController extends BaseController
             exit('Държавата не е намерена.');
         }
 
-        $elementResults = $elementModel->all([
+        $cityElement = $elementModel->all([
             'where' => [
                 'country_id' => $country['id'],
                 'slug'       => 'cities',
                 'is_active'  => 1
             ]
-        ]);
-        $cityElement = $elementResults[0] ?? null;
+        ])[0] ?? null;
 
-        $cities = $cityModel->all([
+        $cities = $this->cityModel->all([
             'where' => [
                 'country_id' => $country['id'],
                 'is_active'  => 1
@@ -53,8 +51,12 @@ class CityController extends BaseController
             'order' => 'sort_order ASC'
         ]);
 
+        foreach ($cities as &$city) {
+            $city['entity_type'] = 'city';
+        }
+
         View::render('cities/index', [
-            'title'       => 'Градове в ' . $country['name'],
+            'title'       => 'Градове в ' . HelperService::getTranslation($country, 'name', 'country'),
             'country'     => $country,
             'cityElement' => $cityElement,
             'cities'      => $cities
