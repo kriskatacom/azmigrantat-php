@@ -21,28 +21,26 @@ $limit = 2;
     <?= View::component('show-banner', 'partials', ['banner' => $banner]) ?>
     <?= View::component('city-search', 'travel/shared-travel/components', ['citiesJson' => $citiesJson]) ?>
 
-    <section class="mt-5 md:mt-10 w-full overflow-hidden group">
+    <section class="max-w-5xl mx-auto mt-5 md:mt-10 w-full">
         <h2 class="text-center text-xl md:text-2xl lg:text-3xl font-semibold mb-5">
             <?= HelperService::trans('travel_posts_title') ?>
         </h2>
 
-        <div class="marquee-viewport relative w-full overflow-hidden">
-            <div class="marquee-content flex animate-marquee group-hover:pause">
-
-                <?php foreach ($posts as $driver): ?>
-                    <div class="card-wrapper shrink-0 px-2 w-screen md:w-[50vw] lg:w-[33.333vw] xl:w-[25vw]">
-                        <?= View::component('driver-card', 'travel/drivers/components', ['driver' => $driver, 'type' => 'posts']) ?>
-                    </div>
-                <?php endforeach; ?>
-
-                <?php foreach ($posts as $driver): ?>
-                    <div class="card-wrapper shrink-0 px-2 w-screen md:w-[50vw] lg:w-[33.333vw] xl:w-[25vw]">
-                        <?= View::component('driver-card', 'travel/drivers/components', ['driver' => $driver, 'type' => 'posts']) ?>
-                    </div>
-                <?php endforeach; ?>
-
+        <?php ob_start(); ?>
+        <?php foreach ($posts as $driver): ?>
+            <div class="card-wrapper shrink-0 px-2 w-[85vw] md:w-[45vw] lg:w-[30vw] xl:w-[22vw]">
+                <?= View::component('driver-card', 'travel/drivers/components', [
+                    'driver' => $driver,
+                    'type'   => 'posts'
+                ]) ?>
             </div>
-        </div>
+        <?php endforeach; ?>
+        <?php $travel_content = ob_get_clean();
+
+        View::component('ping-pong-slider', 'partials', [
+            'unique_id' => 'travel_drivers_slider',
+            'content'   => $travel_content
+        ]); ?>
     </section>
 
     <section class="mt-10 max-w-5xl mx-auto px-5 md:px-0">
@@ -92,68 +90,3 @@ $limit = 2;
         }
     }
 </script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const swiper = new Swiper('.postsSwiper', {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
-            centeredSlides: true,
-
-            autoplay: {
-                delay: 3000,
-                disableOnInteraction: false,
-            },
-
-            breakpoints: {
-                640: {
-                    slidesPerView: 2,
-                    centeredSlides: false,
-                },
-                1024: {
-                    slidesPerView: 3,
-                    spaceBetween: 30,
-                    centeredSlides: false,
-                }
-            },
-
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-        });
-    });
-</script>
-
-<style>
-    @keyframes marquee {
-        0% {
-            transform: translateX(0);
-        }
-
-        100% {
-            transform: translateX(-50%);
-        }
-    }
-
-    .animate-marquee {
-        display: flex;
-        width: max-content;
-        animation: marquee 30s linear infinite;
-    }
-
-    .group:hover .animate-marquee {
-        animation-play-state: paused;
-    }
-
-    .marquee-viewport::before {
-        left: 0;
-        background: linear-gradient(to right, white, transparent);
-    }
-
-    .marquee-viewport::after {
-        right: 0;
-        background: linear-gradient(to left, white, transparent);
-    }
-</style>

@@ -18,7 +18,7 @@ $button_href  = $button_href ?? 'https://www.google.com/maps/place/%D0%90%D0%B7+
         <?= htmlspecialchars($title_part_2) ?>
     </div>
 
-    <div class="md:flex md:justify-center p-5">
+    <div class="flex justify-start p-5">
         <?php View::component("directions-button", "partials", [
             'mapsLink' => $button_href,
             'label' => $button_text,

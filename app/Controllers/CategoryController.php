@@ -111,7 +111,9 @@ class CategoryController extends BaseController
             $item['entity_type'] = ($displayData['type'] === 'categories') ? 'category' : 'company';
         }
 
-        $offers = $this->getOffersForCategory($category, $city['id']);
+        $scope = $_GET['scope'] ?? null;
+
+        $offers = $this->getOffersForCategory($category, $city['id'], $country['id'], $scope);
 
         View::render('categories/show', [
             'title'        => ($category ? HelperService::getTranslation($category, 'name', 'category') : HelperService::trans('categories')) . ' - ' . HelperService::getTranslation($city, 'name', 'city'),
@@ -121,6 +123,8 @@ class CategoryController extends BaseController
             'items'        => $displayData['items'],
             'showType'     => $displayData['type'],
             'offers'       => $offers,
+            'countryName' => HelperService::getTranslation($country, 'name', 'country'),
+            'cityName'    => HelperService::getTranslation($city, 'name', 'city'),
             'breadcrumbs'  => $breadcrumbs,
             'base_url'     => "/{$countrySlug}/cities/{$citySlug}/" . ($categoriesPath ? trim($categoriesPath, '/') . '/' : ''),
             'categoryPath' => $categoryPathArr
@@ -195,32 +199,67 @@ class CategoryController extends BaseController
         ]);
     }
 
-    private function getOffersForCategory($category, $cityId)
+    private function getOffersForCategory($category, $cityId, $countryId, $scope = null)
     {
         if (!$category) return [];
 
-        $companiesInCategory = $this->companyModel->all([
-            'where' => ['category_id' => $category['id'], 'city_id' => $cityId, 'is_active' => 1]
+        $allCompanies = $this->companyModel->all([
+            'where' => [
+                'category_id' => (int)$category['id'],
+                'is_active'   => 1
+            ]
         ]);
 
-        if (empty($companiesInCategory)) return [];
+        if (empty($allCompanies)) return [];
 
         $companiesMap = [];
-        foreach ($companiesInCategory as $comp) {
-            $companiesMap[$comp['id']] = $comp;
+        $targetCountryId = (int)$countryId;
+        $targetCityId = (int)$cityId;
+
+        foreach ($allCompanies as $comp) {
+            $compCountryId = (int)($comp['country_id'] ?? 0);
+            $compCityId = (int)($comp['city_id'] ?? 0);
+
+            if ($scope === 'country') {
+                if ($compCountryId === $targetCountryId) {
+                    $companiesMap[$comp['id']] = $comp;
+                }
+            } else {
+                if ($compCityId === $targetCityId) {
+                    $companiesMap[$comp['id']] = $comp;
+                }
+            }
         }
+
+        if (empty($companiesMap)) return [];
+
+        $timeString = ($scope === null) ? '-24 hours' : '-1 month';
+        $thresholdTimestamp = strtotime($timeString);
 
         $rawOffers = $this->offerModel->all([
             'where_in' => ['company_id' => array_keys($companiesMap)],
-            'where'    => ['status' => 'active']
+            'where'    => ['status' => 'active'],
+            'order'    => 'created_at DESC'
         ]);
 
         $offers = [];
         foreach ($rawOffers as $offer) {
-            $offer['entity_type'] = 'offer';
+            if (!isset($companiesMap[$offer['company_id']])) continue;
+
+            $dateColumn = $offer['created_at'] ?? $offer['date_created'] ?? null;
+            $offerTime = $dateColumn ? strtotime($dateColumn) : 0;
+
+            if ($offerTime < $thresholdTimestamp) {
+                continue;
+            }
+
             $company = $companiesMap[$offer['company_id']];
+
+            $offer['entity_type'] = 'offer';
             $offer['company_slug'] = $company['slug'];
             $offer['company_name'] = HelperService::getTranslation($company, 'name', 'company');
+            $offer['city_name'] = HelperService::getTranslation($company, 'city_name', 'city');
+
             $offers[] = $offer;
         }
 

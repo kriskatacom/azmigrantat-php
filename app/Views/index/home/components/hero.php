@@ -14,7 +14,7 @@ use App\Services\HelperService;
         <h1 class="text-white text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wider leading-tight">
             <?= HelperService::trans('hero_title_part1') ?> <br>
             <?= HelperService::trans('hero_title_part2') ?>
-            <span class="text-primary-light">"<?= HelperService::trans('home') ?>"</span>!
+            <span class="text-primary-light">"<?= HelperService::trans('i_the_migrant') ?>"</span>!
         </h1>
 
         <div class="mt-8">

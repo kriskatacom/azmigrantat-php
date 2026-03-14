@@ -5,40 +5,101 @@ use App\Services\HelperService;
 
 ?>
 
-<?php if (!empty($offers)): ?>
-    <div class="md:container md:mx-auto py-3 overflow-hidden">
-        <h2 class="text-2xl font-bold uppercase mb-3 border-l-4 border-primary pl-4">
-            <?= HelperService::trans('promotions_and_ads_in') ?> <?= htmlspecialchars($category['name']) ?>
-        </h2>
 
-        <div class="swiper categoryOffersSwiper overflow-visible">
-            <div class="swiper-wrapper flex ease-linear">
-                <?php foreach ($offers as $offer): ?>
-                    <div class="swiper-slide h-auto">
-                        <div class="bg-primary-dark rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 transition shadow-lg flex flex-col h-full mx-1">
-                            <div class="relative h-48 overflow-hidden">
-                                <img src="<?= HelperService::getImage($offer['image_url']) ?>"
-                                    class="w-full h-full object-cover">
-                            </div>
+<?php $activeScope = $_GET['scope'] ?? ''; ?>
 
-                            <div class="p-5 flex flex-col grow">
-                                <h3 class="text-white font-bold text-lg mb-1 line-clamp-1"><?= htmlspecialchars($offer['name']) ?></h3>
-                                <p class="text-primary-light text-xs mb-3 uppercase tracking-tighter">
-                                    <?= HelperService::trans('from') ?>: <?= htmlspecialchars($offer['company_name']) ?>
-                                </p>
+<?php if ($category): ?>
+    <?php if (!empty($offers)): ?>
+        <div class="md:container md:mx-auto mt-5">
+            <h2 class="text-2xl font-bold uppercase max-md:border-l-4 max-md:border-primary max-md:pl-4 mb-2 md:text-center">
+                <?= HelperService::trans('promotions_and_ads_in') ?> <?= htmlspecialchars($category['name']) ?>
+            </h2>
 
-                                <div class="mt-auto">
-                                    <a href="<?= $base_url . $offer['company_slug'] ?>"
-                                        class="inline-block w-full text-center bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg transition text-sm">
-                                        <?= HelperService::trans('view_details') ?>
-                                    </a>
-                                </div>
-                            </div>
+            <?php ob_start(); ?>
+            <?php foreach ($offers as $offer): ?>
+                <div class="w-screen md:w-[320px] shrink-0 px-2 py-4">
+                    <div class="bg-primary-dark rounded-2xl overflow-hidden border border-white/10 shadow-lg flex flex-col h-full">
+                        <div class="relative h-40 overflow-hidden">
+                            <img src="<?= HelperService::getImage($offer['image_url']) ?>" class="w-full h-full object-cover grayscale-30 hover:grayscale-0 transition-all duration-500">
+                        </div>
+                        <div class="p-5 flex flex-col grow text-white">
+                            <h3 class="font-bold text-base mb-1 line-clamp-1"><?= htmlspecialchars($offer['name']) ?></h3>
+                            <p class="text-primary-light mb-3 uppercase text-xs font-semibold tracking-wider">
+                                <?= htmlspecialchars($offer['company_name']) ?>
+                                <?php if (!empty($offer['city_name'])): ?>
+                                    <span class="text-white/30 ml-1 font-normal">| <?= htmlspecialchars($offer['city_name']) ?></span>
+                                <?php endif; ?>
+                            </p>
+                            <a href="<?= $base_url . $offer['company_slug'] ?>" class="btn-primary hover:bg-primary-light hover:text-primary-dark text-center block">Детайли</a>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
+            <?php
+            $my_content = ob_get_clean();
+
+            View::component('ping-pong-slider', 'partials', [
+                'unique_id' => 'offers_slider',
+                'content'   => $my_content
+            ]);
+            ?>
+        </div>
+    <?php else: ?>
+        <div class="md:container md:mx-auto my-5 px-5">
+            <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-3xl p-10 text-center">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-calendar-day text-2xl text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                    <?= $activeScope ? 'Няма активни обяви за избрания филтър' : 'Няма нови обяви за днес' ?>
+                </h3>
+                <p class="text-gray-500 max-w-md mx-auto">
+                    <?php if ($activeScope): ?>
+                        Опитайте да изчистите филтрите или проверете друга локация, за да видите актуалните предложения.
+                    <?php else: ?>
+                        В момента няма нови промоции в категория <strong><?= htmlspecialchars($category['name']) ?></strong> за последните 24 часа. Проверете филтрите за целия месец по-долу.
+                    <?php endif; ?>
+                </p>
             </div>
         </div>
+    <?php endif; ?>
+
+    <div class="flex flex-wrap items-center justify-center gap-5 px-5 mb-5">
+        <?php
+        $cityBtnClasses = "relative group flex items-center gap-3 md:gap-5 px-5 py-4 md:px-8 md:py-3 rounded-2xl border-2 transition-all duration-500 no-underline w-full md:w-auto ";
+        $cityBtnClasses .= ($activeScope === 'city') ? "bg-primary-dark border-primary text-white shadow-lg" : "bg-white/5 border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-white";
+
+        $countryBtnClasses = "relative group flex items-center gap-3 md:gap-5 px-5 py-4 md:px-8 md:py-3 rounded-2xl border-2 transition-all duration-500 no-underline w-full md:w-auto ";
+        $countryBtnClasses .= ($activeScope === 'country') ? "bg-primary-dark border-primary text-white shadow-lg" : "bg-white/5 border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-white";
+        ?>
+
+        <a href="?scope=city" class="<?= $cityBtnClasses ?>">
+            <div class="flex items-center justify-center w-12 h-12 md:w-10 md:h-10 shrink-0 rounded-full <?= $activeScope === 'city' ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-primary/10' ?>">
+                <i class="fa-solid fa-location-dot <?= $activeScope === 'city' ? 'text-white' : 'text-gray-500 group-hover:text-primary' ?>"></i>
+            </div>
+            <div class="flex flex-col text-left">
+                <span class="text-[10px] md:text-[9px] uppercase tracking-[0.15em] font-bold opacity-70">Филтър: Месец</span>
+                <span class="text-base md:text-sm lg:text-base font-extrabold whitespace-nowrap"><?= htmlspecialchars($cityName) ?></span>
+            </div>
+        </a>
+
+        <a href="?scope=country" class="<?= $countryBtnClasses ?>">
+            <div class="flex items-center justify-center w-12 h-12 md:w-10 md:h-10 shrink-0 rounded-full <?= $activeScope === 'country' ? 'bg-white/10' : 'bg-gray-100 group-hover:bg-primary-dark/10' ?>">
+                <i class="fa-solid fa-globe <?= $activeScope === 'country' ? 'text-white' : 'text-gray-500 group-hover:text-primary-dark' ?>"></i>
+            </div>
+            <div class="flex flex-col text-left">
+                <span class="text-[10px] md:text-[9px] uppercase tracking-[0.15em] font-bold opacity-70">Филтър: Месец</span>
+                <span class="text-base md:text-sm lg:text-base font-extrabold whitespace-nowrap"><?= htmlspecialchars($countryName) ?></span>
+            </div>
+        </a>
+
+        <?php if ($activeScope): ?>
+            <div class="w-full flex justify-center">
+                <a href="<?= strtok($_SERVER["REQUEST_URI"], '?') ?>" class="btn-primary bg-red-500 hover:bg-red-600 border-none">
+                    <i class="fa-solid fa-xmark mr-2"></i>Изчисти филтрите
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 <?php endif; ?>
 
@@ -62,11 +123,16 @@ use App\Services\HelperService;
     </div>
 
     <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
-        <div class="container mx-auto px-4">
-            <h1 class="text-xl md:text-2xl xl:text-3xl font-semibold tracking-wide">
-                <?= htmlspecialchars($mainTitle) ?>
-            </h1>
-            <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl md:text-2xl xl:text-3xl font-semibold tracking-wide">
+                    <?= htmlspecialchars($mainTitle) ?>
+                </h1>
+                <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
+            </div>
+            <div>
+                <button class="btn-primary"><?= HelperService::trans('municipal_cities') ?></button>
+            </div>
         </div>
     </div>
 </section>
@@ -98,40 +164,3 @@ use App\Services\HelperService;
         </div>
     <?php endif; ?>
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        new Swiper('.categoryOffersSwiper', {
-            loop: true,
-            spaceBetween: 20,
-            grabCursor: true,
-            freeMode: true,
-            speed: 5000,
-            autoplay: {
-                delay: 0,
-                disableOnInteraction: false,
-            },
-            breakpoints: {
-                320: {
-                    slidesPerView: 1.2
-                },
-                640: {
-                    slidesPerView: 2.2
-                },
-                1024: {
-                    slidesPerView: 3.5
-                },
-                1280: {
-                    slidesPerView: 4
-                }
-            },
-            allowTouchMove: true,
-        });
-    });
-</script>
-
-<style>
-    .categoryOffersSwiper .swiper-wrapper {
-        transition-timing-function: linear !important;
-    }
-</style>
