@@ -27,9 +27,10 @@ class HomeController
     public function index()
     {
         $countries = $this->countryModel->getAllSorted();
-        
+
         foreach ($countries as &$country) {
             $country['entity_type'] = 'country';
+            $country['name'] = HelperService::getTranslation($country, 'name', 'country');
         }
 
         $banners = $this->bannerModel->where('group_key', 'HOME_ELEMENTS', 'sort_order ASC');
@@ -38,7 +39,7 @@ class HomeController
         }
 
         View::render('index/home/index', [
-            'title'     => HelperService::trans('home'),
+            'title'     => HelperService::trans('home_title'),
             'countries' => $countries,
             'banners'   => $banners,
         ]);
@@ -47,7 +48,9 @@ class HomeController
     public function travel()
     {
         $mainBanner = $this->bannerModel->where('link', '/travel')[0] ?? null;
-        if ($mainBanner) $mainBanner['entity_type'] = 'banner';
+        if ($mainBanner) {
+            $mainBanner['entity_type'] = 'banner';
+        }
 
         $travelBanners = $this->bannerModel->where('group_key', 'TRAVEL_ELEMENTS', 'sort_order ASC');
 
@@ -66,7 +69,7 @@ class HomeController
         }
 
         View::render('travel/index', [
-            'title'   => HelperService::trans('travel'),
+            'title'   => HelperService::trans('travel_page_title'),
             'banner'  => $mainBanner,
             'banners' => $items
         ]);
@@ -75,13 +78,15 @@ class HomeController
     public function sharedTravel()
     {
         $mainBanner = $this->bannerModel->where('link', '/travel/shared-travel')[0] ?? null;
-        if ($mainBanner) $mainBanner['entity_type'] = 'banner';
+        if ($mainBanner) {
+            $mainBanner['entity_type'] = 'banner';
+        }
 
-        $bannerTitle = $mainBanner ? HelperService::getTranslation($mainBanner, 'name', 'banner') : HelperService::trans('shared_travel');
+        $bannerTitle = $mainBanner ? HelperService::getTranslation($mainBanner, 'name', 'banner') : HelperService::trans('shared_travel_label');
 
         $breadcrumbs = [
             [
-                'label' => HelperService::trans('travel') ?? HelperService::trans('home'),
+                'label' => HelperService::trans('travel_label') ?? HelperService::trans('home_label'),
                 'href'  => '/travel'
             ],
             [

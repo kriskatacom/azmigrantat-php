@@ -3,21 +3,33 @@
 use App\Core\View;
 use App\Services\HelperService;
 
- ?>
+// Взимаме преведеното име на държавата веднъж за целия файл
+$translatedCountryName = HelperService::getTranslation($country, 'name', 'country');
+?>
 
 <section>
     <div class="aspect-video max-h-100 w-full">
-        <img src="<?= $cityElement['image_url'] ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($country['name']) ?>">
+        <img src="<?= $cityElement['image_url'] ?>" 
+             class="w-full h-full object-cover" 
+             alt="<?= htmlspecialchars($translatedCountryName) ?>">
     </div>
+    
     <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
         <div class="container mx-auto px-4">
             <h1 class="text-xl md:text-2xl xl:text-3xl font-semibold tracking-wide">
-                <?= HelperService::trans('cities_in') ?> <?= HelperService::getTranslation($country, 'name') ?>
+                <?= HelperService::trans('cities_in') ?> <?= $translatedCountryName ?>
             </h1>
+            
             <?php View::component('breadcrumbs', 'partials', [
                 'items' => [
-                    ['label' => $country['name'], 'href' => '/' . $country['slug']],
-                    ['label' => HelperService::trans('cities'), 'href' => '']
+                    [
+                        'label' => $translatedCountryName, 
+                        'href' => '/' . $country['slug']
+                    ],
+                    [
+                        'label' => HelperService::trans('cities'), 
+                        'href' => ''
+                    ]
                 ]
             ]); ?>
         </div>

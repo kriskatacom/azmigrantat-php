@@ -32,7 +32,8 @@ class CityController extends BaseController
 
         if (!$country || (isset($country['is_active']) && !$country['is_active'])) {
             header("HTTP/1.0 404 Not Found");
-            exit('Държавата не е намерена.');
+            // Преведен изход при грешка
+            exit(HelperService::trans('error_country_not_found'));
         }
 
         $cityElement = $elementModel->all([
@@ -55,8 +56,11 @@ class CityController extends BaseController
             $city['entity_type'] = 'city';
         }
 
+        // Динамично заглавие с превод на държавата
+        $countryName = HelperService::getTranslation($country, 'name', 'country');
+        
         View::render('cities/index', [
-            'title'       => 'Градове в ' . HelperService::getTranslation($country, 'name', 'country'),
+            'title'       => HelperService::trans('cities_in_label') . ' ' . $countryName,
             'country'     => $country,
             'cityElement' => $cityElement,
             'cities'      => $cities
@@ -76,7 +80,7 @@ class CityController extends BaseController
         );
 
         View::render('admin/cities/index', [
-            'title'      => 'Управление на градове',
+            'title'      => HelperService::trans('admin_manage_cities'),
             'cities'     => $cities,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
@@ -87,7 +91,7 @@ class CityController extends BaseController
     {
         $this->checkAccess('admin');
         View::render('admin/cities/form', [
-            'title' => 'Добавяне на град',
+            'title' => HelperService::trans('admin_add_city'),
             'countries' => $this->countryModel->all(['order' => 'name ASC']),
             'layout' => 'admin'
         ]);
@@ -105,7 +109,7 @@ class CityController extends BaseController
 
         $city = $this->cityModel->find($id);
         if (!$city) {
-            $this->flash('error', 'Записът не е намерен.');
+            $this->flash('error', HelperService::trans('error_record_not_found'));
             $this->redirect('/admin/cities');
         }
 
@@ -115,7 +119,7 @@ class CityController extends BaseController
         $prevId = $this->cityModel->getPrevId($id);
 
         View::render('admin/cities/form', [
-            'title'        => 'Редактиране на ' . $city['name'],
+            'title'        => HelperService::trans('admin_edit_label') . ' ' . $city['name'],
             'city'      => $city,
             'countries' => $this->countryModel->all(['order' => 'name ASC']),
             'nextId'       => $nextId,

@@ -57,10 +57,11 @@ class LandmarkController extends BaseController
             $l['entity_type'] = 'landmark';
         }
 
-        $translatedCountryName = HelperService::getTranslation($country, 'name');
+        // Превеждаме името на държавата за SEO заглавието
+        $translatedCountryName = HelperService::getTranslation($country, 'name', 'country');
 
         View::render('landmarks/index', [
-            'title'           => HelperService::trans('landmarks_in') . ' ' . $translatedCountryName,
+            'title'           => HelperService::trans('landmarks_in_label') . ' ' . $translatedCountryName,
             'country'         => $country,
             'landmarkElement' => $landmarkElement,
             'landmarks'       => $landmarks
@@ -84,7 +85,7 @@ class LandmarkController extends BaseController
         $landmark['entity_type'] = 'landmark';
 
         View::render('landmarks/show', [
-            'title'    => HelperService::getTranslation($landmark, 'name'),
+            'title'    => HelperService::getTranslation($landmark, 'name', 'landmark'),
             'landmark' => $landmark,
             'country'  => $country
         ]);
@@ -104,7 +105,7 @@ class LandmarkController extends BaseController
         ]);
 
         View::render('admin/landmarks/index', [
-            'title'      => 'Забележителности',
+            'title'      => HelperService::trans('admin_landmarks_title'),
             'landmarks'  => $landmarks,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
@@ -114,11 +115,10 @@ class LandmarkController extends BaseController
     public function create()
     {
         $this->checkAccess('admin');
-        $countryModel = new Country();
         return View::render('admin/landmarks/form', [
-            'countries' => $countryModel->all(['order' => 'name ASC']),
-            'title' => 'Добавяне на забележителност',
-            'layout' => 'admin'
+            'countries' => $this->countryModel->all(['order' => 'name ASC']),
+            'title'     => HelperService::trans('admin_add_landmark'),
+            'layout'    => 'admin'
         ]);
     }
 
@@ -136,7 +136,7 @@ class LandmarkController extends BaseController
 
         $landmark = $this->landmarkModel->find($id);
         if (!$landmark) {
-            $this->flash('error', 'Записът не е намерен.');
+            $this->flash('error', HelperService::trans('error_record_not_found'));
             $this->redirect('/admin/landmarks');
         }
 
@@ -146,9 +146,9 @@ class LandmarkController extends BaseController
         $prevId = $this->landmarkModel->getPrevId($id);
 
         View::render('admin/landmarks/form', [
-            'title'        => 'Редактиране на ' . $landmark['name'],
-            'landmark'      => $landmark,
-            'countries' => $this->countryModel->all(['order' => 'name ASC']),
+            'title'        => HelperService::trans('admin_edit_label') . ' ' . $landmark['name'],
+            'landmark'     => $landmark,
+            'countries'    => $this->countryModel->all(['order' => 'name ASC']),
             'nextId'       => $nextId,
             'prevId'       => $prevId,
             'languages'    => HelperService::AVAILABLE_LANGUAGES,

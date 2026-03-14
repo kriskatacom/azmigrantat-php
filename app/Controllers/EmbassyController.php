@@ -57,10 +57,10 @@ class EmbassyController extends BaseController
             $e['entity_type'] = 'embassy';
         }
 
-        $translatedCountryName = HelperService::getTranslation($country, 'name');
+        $translatedCountryName = HelperService::getTranslation($country, 'name', 'country');
 
         View::render('embassies/index', [
-            'title'          => HelperService::trans('embassies_in') . ' ' . $translatedCountryName,
+            'title'          => HelperService::trans('embassies_in_label') . ' ' . $translatedCountryName,
             'country'        => $country,
             'embassyElement' => $embassyElement,
             'embassies'      => $embassies
@@ -84,7 +84,7 @@ class EmbassyController extends BaseController
         $embassy['entity_type'] = 'embassy';
 
         View::render('embassies/show', [
-            'title'   => HelperService::getTranslation($embassy, 'name'),
+            'title'   => HelperService::getTranslation($embassy, 'name', 'embassy'),
             'embassy' => $embassy,
             'country' => $country
         ]);
@@ -104,7 +104,7 @@ class EmbassyController extends BaseController
         ]);
 
         View::render('admin/embassies/index', [
-            'title'      => 'Посолства',
+            'title'      => HelperService::trans('admin_embassies_title'),
             'embassies'  => $embassies,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
@@ -116,7 +116,7 @@ class EmbassyController extends BaseController
         $this->checkAccess('admin');
         return View::render('admin/embassies/form', [
             'countries' => $this->countryModel->all(['order' => 'name ASC']),
-            'title'     => 'Добавяне на посолство',
+            'title'     => HelperService::trans('admin_add_embassy'),
             'layout'    => 'admin'
         ]);
     }
@@ -133,7 +133,7 @@ class EmbassyController extends BaseController
 
         $embassy = $this->embassyModel->find((int)$id);
         if (!$embassy) {
-            $this->flash('error', 'Записът не е намерен.');
+            $this->flash('error', HelperService::trans('error_record_not_found'));
             $this->redirect('/admin/embassies');
         }
 
@@ -143,7 +143,7 @@ class EmbassyController extends BaseController
         $prevId = $this->embassyModel->getPrevId($id);
 
         View::render('admin/embassies/form', [
-            'title'     => 'Редактиране на ' . $embassy['name'],
+            'title'     => HelperService::trans('admin_edit_label') . ' ' . $embassy['name'],
             'embassy'   => $embassy,
             'countries' => $this->countryModel->all(['order' => 'name ASC']),
             'nextId'    => $nextId,

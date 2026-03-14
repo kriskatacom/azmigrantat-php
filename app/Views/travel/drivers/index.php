@@ -4,9 +4,9 @@ use App\Core\View;
 use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => HelperService::trans('home'), 'href' => '/travel'],
-    ['label' => 'Споделено пътуване', 'href' => '/travel/shared-travel'],
-    ['label' => 'Шофьори'],
+    ['label' => HelperService::trans('travel'), 'href' => '/travel'],
+    ['label' => HelperService::trans('shared_travel_label'), 'href' => '/travel/shared-travel'],
+    ['label' => HelperService::trans('drivers_label')],
 ];
 
 $activeDrivers = array_filter($drivers, function($driver) {
@@ -21,7 +21,7 @@ $limit = 2;
 
     <div class="bg-primary-dark py-5">
         <h2 class="text-white text-center text-2xl lg:text-3xl font-semibold">
-            Нашите пътешественици
+            <?= HelperService::trans('drivers_page_title') ?>
         </h2>
         <div class="text-white bg-primary-dark">
             <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
@@ -29,7 +29,10 @@ $limit = 2;
     </div>
 
     <section class="py-5 md:py-10 max-w-5xl mx-auto px-5 md:px-0">
-        <h2 class="text-center text-xl md:text-2xl lg:text-3xl font-semibold mb-5">Шофьори</h2>
+        <h2 class="text-center text-xl md:text-2xl lg:text-3xl font-semibold mb-5">
+            <?= HelperService::trans('drivers_label') ?>
+        </h2>
+        
         <div id="drivers-container" class="grid md:grid-cols-2 gap-5">
             <?php $j = 0; foreach ($activeDrivers as $driver): ?>
                 <div class="grid-item-driver <?= $j >= $limit ? 'hidden' : '' ?>">
@@ -37,6 +40,7 @@ $limit = 2;
                 </div>
             <?php $j++; endforeach; ?>
         </div>
+
         <?php if (count($activeDrivers) > $limit): ?>
             <div class="flex justify-center mt-5">
                 <button onclick="loadMore('driver')" id="btn-load-driver" class="bg-white border border-gray-200 text-gray-800 font-semibold px-10 py-3 rounded-lg shadow-sm hover:bg-gray-50 transition-all cursor-pointer">
@@ -54,6 +58,8 @@ $limit = 2;
         const btnId = type === 'post' ? 'btn-load-post' : 'btn-load-driver';
         
         const container = document.getElementById(containerId);
+        if (!container) return;
+
         const hiddenItems = container.querySelectorAll(itemClass);
         const limit = <?= (int)$limit ?>;
 
@@ -65,7 +71,10 @@ $limit = 2;
         }
 
         if (container.querySelectorAll(itemClass).length === 0) {
-            document.getElementById(btnId).parentElement.style.display = 'none';
+            const btn = document.getElementById(btnId);
+            if (btn && btn.parentElement) {
+                btn.parentElement.style.display = 'none';
+            }
         }
     }
 </script>

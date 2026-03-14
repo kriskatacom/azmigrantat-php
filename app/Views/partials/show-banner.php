@@ -11,6 +11,8 @@ $rawHref    = $banner['href'] ?? '';
 $cleanHref  = HelperService::formatUrl($rawHref);
 $isExternal = HelperService::isExternalLink($rawHref);
 
+$cleanHref = $isExternal ? $cleanHref : HelperService::url($cleanHref);
+
 $paddingClass = $padding ?? ($banner['padding'] ?? 'p-6 md:p-16');
 $titleSize    = $title_size ?? ($banner['title_size'] ?? 'text-4xl md:text-6xl xl:text-7xl');
 $titleWeight  = $title_weight ?? ($banner['title_weight'] ?? 'font-black');
@@ -35,38 +37,51 @@ $height = !empty($banner['height']) ? (is_numeric($banner['height']) ? $banner['
 $image  = !empty($banner['image_url']) ? HelperService::getImage($banner['image_url']) : '/assets/img/default-banner.jpg';
 ?>
 
-<section class="relative w-full overflow-hidden" style="height: <?= $height ?>; max-height: 85vh;">
+<section 
+    x-data="{ loaded: false }" 
+    x-init="setTimeout(() => loaded = true, 100)"
+    class="group relative w-full overflow-hidden transition-all duration-700 ease-in-out shadow-inner" 
+    style="height: <?= $height ?>; max-height: 85vh;"
+>
     <img src="<?= $image ?>"
-         class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
+         class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
          alt="<?= htmlspecialchars($name ?: 'Banner') ?>">
 
     <?php if (($banner['show_overlay'] ?? 1) == 1): ?>
-        <div class="absolute inset-0 bg-black/40 backdrop-brightness-90"></div>
+        <div class="absolute inset-0 bg-black/40 backdrop-brightness-90 transition-all duration-700 group-hover:bg-black/50"
+             :class="loaded ? 'opacity-100' : 'opacity-0'"></div>
     <?php endif; ?>
 
-    <div class="absolute inset-0 flex flex-col z-10 <?= $paddingClass ?> <?= $alignmentClass ?>">
-        <div class="max-w-4xl w-full text-white drop-shadow-2xl">
+    <div class="absolute inset-0 flex flex-col z-10 <?= $paddingClass ?> <?= $alignmentClass ?> transition-all duration-700 transform"
+         :class="loaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'">
+        
+        <div class="max-w-4xl w-full text-white drop-shadow-2xl transition-transform duration-700 group-hover:-translate-y-2">
             
             <?php if (($banner['show_name'] ?? 1) == 1 && !empty($name)): ?>
-                <h1 class="<?= $titleSize ?> <?= $titleWeight ?> uppercase tracking-tighter mb-4 animate-fade-in-up">
+                <h1 class="<?= $titleSize ?> <?= $titleWeight ?> uppercase tracking-tighter mb-4 transition-all duration-500 group-hover:tracking-normal">
                     <?= htmlspecialchars($name) ?>
                 </h1>
             <?php endif; ?>
 
             <?php if (($banner['show_description'] ?? 1) == 1 && !empty($description)): ?>
-                <p class="text-lg md:text-2xl font-light mb-8 leading-relaxed max-w-2xl <?= strpos($alignmentClass, 'center') !== false ? 'mx-auto' : '' ?>">
-                    <?= htmlspecialchars($description) ?>
-                </p>
+                <div class="text-lg md:text-2xl font-light mb-8 leading-relaxed max-w-2xl <?= strpos($alignmentClass, 'center') !== false ? 'mx-auto' : '' ?> opacity-90 group-hover:opacity-100 transition-opacity">
+                    <?= $description ?>
+                </div>
             <?php endif; ?>
 
-            <?php if (($banner['show_button'] ?? 0) == 1 && !empty($cleanHref)): ?>
+            <?php 
+                $hasLink = !empty($banner['link']) || !empty($banner['href']);
+                $shouldShowBtn = (int)($banner['show_button'] ?? 0) === 1;
+            ?>
+
+            <?php if ($shouldShowBtn && $hasLink): ?>
                 <div class="mt-2">
                     <a href="<?= $cleanHref ?>"
                        <?= $isExternal ? 'target="_blank" rel="noopener noreferrer"' : '' ?>
-                       class="inline-flex items-center gap-2 <?= $btnClass ?> font-bold transition-all transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-sm">
+                       class="inline-flex items-center gap-2 <?= $btnClass ?> font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-white/20 active:scale-95 uppercase tracking-widest text-sm shadow-xl">
                         <?= htmlspecialchars($buttonText) ?>
                         <?php if ($isExternal): ?>
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"></i>
                         <?php endif; ?>
                     </a>
                 </div>

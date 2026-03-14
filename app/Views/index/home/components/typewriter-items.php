@@ -9,7 +9,7 @@ $translatedItems = array_map(function($key) {
 ?>
 
 <div class="text-white bg-primary-dark py-5 text-center text-xl md:text-2xl">
-    <span class="text-primary-blue">Аз мигрантът</span>
+    <span class="text-primary-blue"><?= HelperService::trans('i_the_migrant') ?></span>
 
     <span>|</span>
 

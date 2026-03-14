@@ -36,6 +36,7 @@ class DriverController extends BaseController
         $drivers = $this->driverModel->searchByCityInDetails($fromSlug, $toSlug);
 
         $mainBanner = $this->bannerModel->where('link', '/travel/shared-travel/drivers')[0] ?? null;
+        if ($mainBanner) $mainBanner['entity_type'] = 'banner';
 
         return View::render('travel/drivers/index', [
             'drivers' => $drivers,

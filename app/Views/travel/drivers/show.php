@@ -5,14 +5,13 @@ use App\Models\User;
 use App\Services\HelperService;
 
 $breadcrumbs = [
-    ['label' => HelperService::trans('home'), 'href' => '/travel'],
-    ['label' => 'Споделено пътуване', 'href' => '/travel/shared-travel'],
-    ['label' => 'Шофьори', 'href' => '/travel/shared-travel/drivers'],
+    ['label' => HelperService::trans('travel'), 'href' => '/travel'],
+    ['label' => HelperService::trans('shared_travel_label'), 'href' => '/travel/shared-travel'],
+    ['label' => HelperService::trans('drivers_label'), 'href' => '/travel/shared-travel/drivers'],
     ['label' => $driver['name']]
 ];
 
 $hasContacts = !empty($driver['address']) || !empty($driver['phone']) || !empty($driver['email']) || !empty($driver['website_link']);
-
 $user = User::auth();
 ?>
 <section>
@@ -31,7 +30,9 @@ $user = User::auth();
 
     <?php if (!empty($user) && (($user['id'] === $driver['user_id']) || ($user['role'] === 'admin'))): ?>
         <div class="m-2 md:m-5">
-            <a href="/admin/users/edit/<?= $driver['user_id'] ?>" class="btn-primary w-full xs:w-fit mx-auto text-center block">Администрация</a>
+            <a href="/admin/users/edit/<?= $driver['user_id'] ?>" class="btn-primary w-full xs:w-fit mx-auto text-center block">
+                <?= HelperService::trans('administration') ?>
+            </a>
         </div>
     <?php endif; ?>
 
@@ -40,16 +41,18 @@ $user = User::auth();
             <div x-data="{ isOpen: false }" x-cloak class="bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto">
                 <div class="p-2 md:p-5 border-b border-gray-200 flex items-center gap-3 text-xs md:text-lg lg:text-xl font-semibold text-gray-800">
                     <i class="fas fa-id-card text-primary-dark text-lg md:text-2xl"></i>
-                    За шофьора
+                    <?= HelperService::trans('about_driver') ?>
                 </div>
                 <div class="p-2 md:p-5 space-y-3 md:space-y-5 text-xs md:text-base">
                     <?php if ($driver['description']): ?>
-                        <button @click="$dispatch('open-modal-show-description')" class="btn-primary">Повече информация</button>
+                        <button @click="$dispatch('open-modal-show-description')" class="btn-primary">
+                            <?= HelperService::trans('more_info') ?>
+                        </button>
                         <div class="text-gray-700 leading-relaxed text-xs md:text-base line-clamp-3 sm:line-clamp-8 md:line-clamp-6 lg:line-clamp-8 xl:line-clamp-12 2xl:line-clamp-none">
                             <?= $driver['description'] ?>
                         </div>
                     <?php else: ?>
-                        <div class="text-gray-500 italic">Няма добавено описание за шофьора.</div>
+                        <div class="text-gray-500 italic"><?= HelperService::trans('no_description_available') ?></div>
                     <?php endif; ?>
                 </div>
 
@@ -64,7 +67,7 @@ $user = User::auth();
 
             <?php View::component('gallery', 'partials', [
                 'images' => $driver['gallery_images'],
-                'title'  => 'Галерия',
+                'title'  => HelperService::trans('gallery'),
                 'icon'   => 'images'
             ]); ?>
         </div>
@@ -84,7 +87,7 @@ $user = User::auth();
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Адрес</span>
+                                <span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider"><?= HelperService::trans('address') ?></span>
                                 <span class="text-gray-700 break-all font-medium"><?= $driver['address'] ?></span>
                             </div>
                         </div>
@@ -96,7 +99,7 @@ $user = User::auth();
                                 <i class="fas fa-phone-alt"></i>
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Телефон</span>
+                                <span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider"><?= HelperService::trans('phone') ?></span>
                                 <a class="text-gray-700 break-all font-medium hover:text-green-600" href="tel:<?= $driver['phone'] ?>"><?= $driver['phone'] ?></a>
                             </div>
                         </div>
@@ -108,7 +111,7 @@ $user = User::auth();
                                 <i class="fas fa-envelope"></i>
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Имейл</span>
+                                <span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider"><?= HelperService::trans('email') ?></span>
                                 <a class="text-gray-700 break-all font-medium hover:text-blue-600" href="mailto:<?= $driver['email'] ?>"><?= $driver['email'] ?></a>
                             </div>
                         </div>
@@ -120,7 +123,7 @@ $user = User::auth();
                                 <i class="fas fa-globe"></i>
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Уебсайт</span>
+                                <span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider"><?= HelperService::trans('website') ?></span>
                                 <a class="text-gray-700 break-all font-medium hover:text-purple-600" href="<?= $driver['website_link'] ?>" target="_blank" rel="noopener"><?= $driver['website_link'] ?></a>
                             </div>
                         </div>
@@ -139,14 +142,18 @@ $user = User::auth();
 
                 <div class="p-2 md:p-5 border-b border-gray-200 flex items-center justify-between text-xs md:text-lg lg:text-xl font-semibold text-gray-800">
                     <div class="flex items-center gap-2">
-                        <i class="fas <?= $driver['driver_travel_status'] === 'departure' ? 'fa-plane-departure text-blue-500' : 'fa-plane-arrival text-emerald-500' ?>"></i>
-                        <?= $driver['driver_travel_status'] === 'departure' ? 'Отпътуване' : 'Връщане' ?>
+                        <?php
+                        $is_departure = ($driver['driver_travel_status'] === 'departure');
+                        $status_label = $is_departure ? HelperService::trans('travel_departure') : HelperService::trans('travel_return');
+                        $status_icon = $is_departure ? 'fa-plane-departure text-blue-500' : 'fa-plane-arrival text-emerald-500';
+                        ?>
+                        <i class="fas <?= $status_icon ?>"></i>
+                        <?= $status_label ?>
                     </div>
                 </div>
 
                 <div class="p-2 md:p-5">
                     <?php
-                    $is_departure = ($driver['driver_travel_status'] === 'departure');
                     $img_src = $is_departure ? $driver['travel_departure_image'] : $driver['travel_return_image'];
                     $details = $is_departure ? $driver['travel_departure_details'] : $driver['travel_return_details'];
                     ?>
@@ -165,7 +172,7 @@ $user = User::auth();
                                 </div>
 
                                 <span class="mt-3 text-white font-medium tracking-wide text-sm md:text-base opacity-0 group-hover:opacity-100 transition-opacity delay-100">
-                                    Преглед на цял екран
+                                    <?= HelperService::trans('view_full_screen') ?>
                                 </span>
                             </div>
 
@@ -188,7 +195,7 @@ $user = User::auth();
 
     <?php if (!empty($driver['facebook_page_link'])): ?>
         <div id="fb-root"></div>
-        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/bg_BG/sdk.js#xfbml=1&version=v19.0"></script>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/<?= HelperService::getLangFromUrl() === 'bg' ? 'bg_BG' : 'en_US' ?>/sdk.js#xfbml=1&version=v19.0"></script>
 
         <?php $facebook_page_url = $driver['facebook_page_link'] ?>
 

@@ -3,7 +3,7 @@
 use App\Services\HelperService;
 ?>
 <div class="px-4 md:mt-2 flex flex-wrap gap-2 text-sm justify-center items-center">
-    <a href="/" class="text-primary-light md:text-lg hover:underline">
+    <a href="<?= HelperService::url('/') ?>" class="text-primary-light md:text-lg hover:underline">
         <?= HelperService::trans('home') ?>
     </a>
     
@@ -21,7 +21,7 @@ use App\Services\HelperService;
                 <?= htmlspecialchars($item['label']) ?>
             </span>
         <?php else: ?>
-            <a href="<?= htmlspecialchars($item['href']) ?>" class="text-primary-light md:text-lg hover:underline">
+            <a href="<?= htmlspecialchars(HelperService::url($item['href'])) ?>" class="text-primary-light md:text-lg hover:underline">
                 <?= htmlspecialchars($item['label']) ?>
             </a>
         <?php endif; ?>
