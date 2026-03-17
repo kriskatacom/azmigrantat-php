@@ -47,10 +47,13 @@ class CountryController extends BaseController
 
         $pageTitle = !empty($translatedHeading) ? $translatedHeading : $translatedName;
 
-        View::render('countries/show', [
+        $layout = $country['layout'] ?? 'secondary';
+
+        View::render("countries/$layout-show", [
             'country'  => $country,
             'elements' => $elements,
-            'title'    => $pageTitle
+            'title'    => $pageTitle,
+            'layout' => $layout
         ]);
     }
 
@@ -115,7 +118,7 @@ class CountryController extends BaseController
     public function update($id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->countryModel, (int)$id, '/admin/countries', ['image_url'], 'countries');
+        $this->handleUpdate($this->countryModel, (int)$id, '/admin/countries', ['image_url', 'image_mobile_url'], 'countries');
     }
 
     public function updateOrder()

@@ -12,7 +12,7 @@ class View
         include __DIR__ . '/../Views/' . $view . '.php';
         $content = ob_get_clean();
 
-        $layoutName = $data['layout'] ?? 'layout';
+        $layoutName = $data['layout'] ?? 'primary';
         $layoutPath = __DIR__ . '/../Views/layouts/' . $layoutName . '.php';
 
         if (file_exists($layoutPath)) {

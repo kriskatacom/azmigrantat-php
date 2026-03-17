@@ -1,4 +1,5 @@
 <?php
+
 use App\Core\View;
 
 $item = $country ?? [];
@@ -18,7 +19,7 @@ $countryData = [
     'id' => (int)($item['id'] ?? 0),
     'entity' => $entityName,
     'fields' => array_keys($translatableFields),
-    'translations' => $item['translations'] ?? (object)[] 
+    'translations' => $item['translations'] ?? (object)[]
 ];
 ?>
 
@@ -102,14 +103,14 @@ $countryData = [
 
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
+
             <div class="lg:col-span-2 space-y-6">
                 <?php ob_start(); ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="space-y-2">
                         <label class="text-sm font-semibold text-gray-600">Име на държавата</label>
-                        <input type="text" name="name" id="country-name-input" 
-                            value="<?= htmlspecialchars($item['name'] ?? '') ?>" 
+                        <input type="text" name="name" id="country-name-input"
+                            value="<?= htmlspecialchars($item['name'] ?? '') ?>"
                             required class="form-control">
                     </div>
                     <div class="space-y-2">
@@ -137,12 +138,18 @@ $countryData = [
 
             <div class="space-y-6">
                 <?php ob_start(); ?>
-                <div class="max-w-xl mx-auto">
+                <div class="max-w-xl mx-auto space-y-5">
                     <?php View::component('image-upload', 'admin/components', [
                         'name'  => 'image_url',
-                        'label' => 'Знаме / Основно изображение',
+                        'label' => 'Основно изображение (Desktop)',
                         'value' => $item['image_url'] ?? null,
                         'id'    => 'country-image'
+                    ]); ?>
+                    <?php View::component('image-upload', 'admin/components', [
+                        'name'  => 'image_mobile_url',
+                        'label' => 'Основно изображение (Mobile)',
+                        'value' => $item['image_mobile_url'] ?? null,
+                        'id'    => 'country-mobile-image'
                     ]); ?>
                 </div>
                 <?php View::component('lightbox', 'admin/components'); ?>
@@ -154,15 +161,25 @@ $countryData = [
                     'label' => 'Показвай в сайта',
                     'value' => $item['is_active'] ?? true
                 ]); ?>
-                <div class="mt-5 pt-5 border-t border-slate-100">
-                    <?php View::component('submit-button', 'admin/components', [
-                        'text' => !$isEdit ? 'Създаване' : 'Запазване',
-                        'is_active' => $item['is_active'] ?? true
-                    ]); ?>
-                </div>
+                <?php View::component('select-dropdown', 'admin/components', [
+                    'name'       => 'layout',
+                    'label'      => 'Изберете шаблон',
+                    'placeholder'      => '-- Няма избран шаблон --',
+                    'options'    => [
+                        ['id' => 'primary', 'name' => 'Шаблон 1'],
+                        ['id' => 'secondary', 'name' => 'Шаблон 2']
+                    ],
+                    'selectedId' => $item['layout'] ?? null,
+                ]); ?>
                 <?php View::component('card', 'admin/components', ['title' => 'Статус', 'slot' => ob_get_clean()]); ?>
             </div>
+        </div>
 
+        <div class="z-40 pt-5 border-t border-slate-100">
+            <?php View::component('submit-button', 'admin/components', [
+                'text' => !$isEdit ? 'Създаване' : 'Запазване',
+                'is_active' => $item['is_active'] ?? true
+            ]); ?>
         </div>
     </form>
 </div>

@@ -16,11 +16,5 @@ use App\Services\HelperService;
             <?= HelperService::trans('hero_title_part2') ?>
             <span class="text-primary-light">"<?= HelperService::trans('i_the_migrant') ?>"</span>!
         </h1>
-
-        <div class="mt-8">
-            <a href="/travel" class="bg-primary-light text-primary-dark font-bold px-8 py-3 rounded-full hover:bg-white transition-all shadow-lg">
-                <?= HelperService::trans('hero_button') ?>
-            </a>
-        </div>
     </div>
 </section>
