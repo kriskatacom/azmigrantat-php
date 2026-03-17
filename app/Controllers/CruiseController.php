@@ -6,6 +6,7 @@ use App\Models\Cruise;
 use App\Core\View;
 use App\Models\Banner;
 use App\Services\HelperService;
+use App\Services\MetaTagsService;
 
 class CruiseController extends BaseController
 {
@@ -33,10 +34,13 @@ class CruiseController extends BaseController
         }
 
         $this->render('travel/cruises/cruise-companies/index', [
-            'title' => HelperService::trans('cruise_companies_title') ?? 'Круизни компании – информация и връзки към официални сайтове',
             'banner' => $banner,
             'cruisesBanner' => $cruisesBanner,
             'cruises' => $cruises,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 
@@ -78,7 +82,7 @@ class CruiseController extends BaseController
     {
         $this->checkAccess('admin');
         $cruise = $this->cruiseModel->find((int)$id);
-        
+
         if (!$cruise) {
             $this->flash('error', 'Круизната компания не е намерена.');
             $this->redirect('/admin/cruises');

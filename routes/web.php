@@ -192,7 +192,7 @@ $router->get('/admin/translations/create', [TranslationController::class, 'creat
 $router->post('/admin/translations/store', [TranslationController::class, 'store']);
 $router->get('/admin/translations/edit/(\d+)', [TranslationController::class, 'edit']);
 $router->post('/admin/translations/update/(\d+)', [TranslationController::class, 'update']);
-$router->post('/admin/translations/delete/(\d+)', [TranslationController::class, 'delete']);
+$router->post('/admin/translations/delete/([^/]+)', [TranslationController::class, 'delete']);
 
 $router->post('/admin/translations/confirm/{entity}/{id}', [TranslationController::class, 'confirmTranslations']);
 

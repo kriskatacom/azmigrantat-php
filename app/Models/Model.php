@@ -87,10 +87,30 @@ abstract class Model
         return $result ?: null;
     }
 
+    public function findAllBy(string $column, $value): array
+    {
+        $column = preg_replace('/[^A-Za-z0-9_]/', '', $column);
+
+        $sql = "SELECT * FROM {$this->table} WHERE {$column} = :value";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['value' => $value]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function delete($id): bool
     {
         $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = :id");
         return $stmt->execute(['id' => $id]);
+    }
+
+    public function deleteAllBy(string $column, $value): bool
+    {
+        $column = preg_replace('/[^A-Za-z0-9_]/', '', $column);
+
+        $sql = "DELETE FROM {$this->table} WHERE {$column} = :value";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['value' => $value]);
     }
 
     public function where(string $column, $value, string|null $orderBy = null): array

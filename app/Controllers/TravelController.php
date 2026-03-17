@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\Airport;
 use App\Models\Banner;
 use App\Services\HelperService;
+use App\Services\MetaTagsService;
 
 class TravelController extends BaseController
 {
@@ -48,8 +49,13 @@ class TravelController extends BaseController
             $airport['entity_type'] = 'airport';
         }
 
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans($banner['name']),
+            'description' => HelperService::trans($banner['description']),
+        ]);
+
         $this->render('travel/air-tickets/index', [
-            'title' => HelperService::trans('air_tickets_seo_title'),
+            'title' => HelperService::trans($banner['name']),
             'banners' => $this->prepareBanners($banners),
             'banner' => $banner,
             'airports' => $airports
@@ -63,10 +69,16 @@ class TravelController extends BaseController
 
         $banners = $this->bannerModel->where('group_key', 'AUTOBUSES_ELEMENTS', 'sort_order ASC');
 
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans($banner['name']),
+            'description' => HelperService::trans($banner['description']),
+        ]);
+
         $this->render('travel/autobuses/index', [
-            'title' => HelperService::trans('autobuses_seo_title'),
+            'title' => HelperService::trans($banner['name']),
             'banners' => $this->prepareBanners($banners),
-            'banner' => $banner
+            'banner' => $banner,
+            'seo' => $seo
         ]);
     }
 
@@ -77,10 +89,16 @@ class TravelController extends BaseController
 
         $banners = $this->bannerModel->where('group_key', 'TRAINS_ELEMENTS', 'sort_order ASC');
 
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans($banner['name']),
+            'description' => HelperService::trans($banner['description']),
+        ]);
+
         $this->render('travel/autobuses/index', [
-            'title' => HelperService::trans('trains_seo_title'),
+            'title' => HelperService::trans($banner['name']),
             'banners' => $this->prepareBanners($banners),
             'banner' => $banner,
+            'seo' => $seo,
         ]);
     }
 
@@ -91,10 +109,16 @@ class TravelController extends BaseController
 
         $banners = $this->bannerModel->where('group_key', 'TAXIS_ELEMENTS', 'sort_order ASC');
 
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans($banner['name']),
+            'description' => HelperService::trans($banner['description']),
+        ]);
+
         $this->render('travel/taxis/index', [
-            'title' => HelperService::trans('taxis_seo_title'),
+            'title' => HelperService::trans($banner['name']),
             'banners' => $this->prepareBanners($banners),
             'banner' => $banner,
+            'seo' => $seo,
         ]);
     }
 
@@ -105,10 +129,16 @@ class TravelController extends BaseController
 
         $banners = $this->bannerModel->where('group_key', 'CRUISES_ELEMENTS', 'sort_order ASC');
 
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans($banner['name']),
+            'description' => HelperService::trans($banner['description']),
+        ]);
+
         $this->render('travel/cruises/index', [
-            'title' => HelperService::trans('cruises_seo_title'),
+            'title' => HelperService::trans($banner['name']),
             'banners' => $this->prepareBanners($banners),
             'banner' => $banner,
+            'seo' => $seo,
         ]);
     }
 }

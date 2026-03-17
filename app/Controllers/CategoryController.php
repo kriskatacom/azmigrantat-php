@@ -116,7 +116,7 @@ class CategoryController extends BaseController
         $offers = $this->getOffersForCategory($category, $city['id'], $country['id'], $scope);
 
         View::render('categories/show', [
-            'title'        => ($category ? HelperService::getTranslation($category, 'name', 'category') : HelperService::trans('categories')) . ' - ' . HelperService::getTranslation($city, 'name', 'city'),
+            'title'        => HelperService::trans('companies_in') . ' ' . HelperService::getTranslation($country, 'name', 'country'),
             'country'      => $country,
             'city'         => $city,
             'category'     => $category,
@@ -188,7 +188,7 @@ class CategoryController extends BaseController
         $breadcrumbs[] = ['label' => HelperService::getTranslation($company, 'name', 'company'), 'href' => ''];
 
         View::render('companies/details', [
-            'title'       => HelperService::getTranslation($company, 'name', 'company') . ' - ' . HelperService::getTranslation($city, 'name', 'city'),
+            'title'       => HelperService::getTranslation($company, 'name', 'company') . ' - ' . HelperService::getTranslation($city, 'name', 'city') . ', ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
             'company'     => $company,
             'country'     => $country,
             'city'        => $city,

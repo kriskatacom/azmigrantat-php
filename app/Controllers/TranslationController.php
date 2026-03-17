@@ -147,7 +147,7 @@ class TranslationController extends BaseController
                         $fieldTranslations[$langCode] = $values[$field];
                     }
                 }
-                
+
                 $this->translationModel->addFullTranslation($key, $fieldTranslations);
             }
 
@@ -161,9 +161,15 @@ class TranslationController extends BaseController
         }
     }
 
-    public function delete(int $id)
+    public function delete($value)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->translationModel, (int)$id, $this->baseRoute, []);
+        $this->handleDelete(
+            model: $this->translationModel,
+            value: $value,
+            redirectUrl: $this->baseRoute,
+            column: 'translation_key',
+            multiple: true,
+        );
     }
 }

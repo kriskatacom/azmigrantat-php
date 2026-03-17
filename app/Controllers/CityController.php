@@ -26,13 +26,11 @@ class CityController extends BaseController
     {
         $elementModel = new CountryElement();
 
-        // 1. Взимаме държавата
         $countryResults = $this->countryModel->where('slug', $countrySlug);
         $country = $countryResults[0] ?? null;
 
         if (!$country || (isset($country['is_active']) && !$country['is_active'])) {
             header("HTTP/1.0 404 Not Found");
-            // Преведен изход при грешка
             exit(HelperService::trans('error_country_not_found'));
         }
 
@@ -55,15 +53,12 @@ class CityController extends BaseController
         foreach ($cities as &$city) {
             $city['entity_type'] = 'city';
         }
-
-        // Динамично заглавие с превод на държавата
-        $countryName = HelperService::getTranslation($country, 'name', 'country');
         
         View::render('cities/index', [
-            'title'       => HelperService::trans('cities_in_label') . ' ' . $countryName,
+            'title'     => HelperService::trans('cities_in') . ' ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
             'country'     => $country,
             'cityElement' => $cityElement,
-            'cities'      => $cities
+            'cities'      => $cities,
         ]);
     }
 

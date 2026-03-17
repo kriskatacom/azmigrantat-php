@@ -7,7 +7,8 @@ use App\Models\Airline;
 use App\Models\Banner;
 use App\Models\Country;
 use App\Models\Category;
-use App\Services\HelperService; // Добавяме, ако ще ползваме преводи тук
+use App\Services\HelperService;
+use App\Services\MetaTagsService;
 
 class AirlineController extends BaseController
 {
@@ -28,12 +29,10 @@ class AirlineController extends BaseController
 
         $airlines = $this->airlineModel->all(['order' => 'sort_order ASC']);
 
-        // Маркираме банерите за превод
         if ($banner) $banner['entity_type'] = 'banner';
         if ($airTicketsBanner) $airTicketsBanner['entity_type'] = 'banner';
         if ($airlinesBanner) $airlinesBanner['entity_type'] = 'banner';
 
-        // Маркираме авиолиниите за превод
         foreach ($airlines as &$airline) {
             $airline['entity_type'] = 'airline';
         }
@@ -41,12 +40,14 @@ class AirlineController extends BaseController
         $displayBanner = $banner ?? $airlinesBanner;
 
         $this->render('travel/air-tickets/airlines/index', [
-            // Локализираме заглавието на страницата
-            'title' => HelperService::trans('airlines_page_title') ?? 'Европейски авиокомпании – информация и връзки към официални сайтове',
             'banner' => $displayBanner,
             'airTicketsBanner' => $airTicketsBanner,
             'airlinesBanner' => $airlinesBanner,
-            'airlines' => $airlines
+            'airlines' => $airlines,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 

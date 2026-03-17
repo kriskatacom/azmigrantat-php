@@ -8,6 +8,7 @@ use App\Models\Banner;
 use App\Models\City;
 use App\Models\Country;
 use App\Services\HelperService;
+use App\Services\MetaTagsService;
 
 class AutobusController extends BaseController
 {
@@ -37,11 +38,16 @@ class AutobusController extends BaseController
             $c['entity_type'] = 'country';
         }
 
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans($banner['name']),
+            'description' => HelperService::trans($banner['description'] ?? ''),
+        ]);
+
         $this->render('travel/autobuses/countries/index', [
-            'title' => HelperService::trans('bus_stations_europe_title') ?? 'Автобусни гари и превози в Европа',
             'banner' => $banner,
             'autobusesBanner' => $autobusesBanner,
-            'countries' => $countries
+            'countries' => $countries,
+            'seo' => $seo
         ]);
     }
 
@@ -71,15 +77,18 @@ class AutobusController extends BaseController
             $city['entity_type'] = 'city';
         }
 
-        $translatedCountryName = HelperService::getTranslation($country, 'name');
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans($banner['name']),
+            'description' => HelperService::trans($banner['description'] ?? ''),
+        ]);
 
         $this->render('travel/autobuses/countries/show-by-country/index', [
-            'title' => HelperService::trans('bus_stations_in') . " {$translatedCountryName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'autobusesBanner' => $autobusesBanner,
             'country' => $country,
-            'cities' => $cities
+            'cities' => $cities,
+            'seo' => $seo
         ]);
     }
 
@@ -112,16 +121,19 @@ class AutobusController extends BaseController
             $a['entity_type'] = 'autobus';
         }
 
-        $translatedCityName = HelperService::getTranslation($city, 'name');
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans($banner['name']),
+            'description' => HelperService::trans($banner['description'] ?? ''),
+        ]);
 
         $this->render('travel/autobuses/countries/show-by-country/show-by-city/index', [
-            'title' => HelperService::trans('bus_stations_in') . " {$translatedCityName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'autobusesBanner' => $autobusesBanner,
             'country' => $country,
             'city' => $city,
-            'autobuses' => $autobuses
+            'autobuses' => $autobuses,
+            'seo' => $seo
         ]);
     }
 

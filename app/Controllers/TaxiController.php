@@ -8,6 +8,7 @@ use App\Models\Taxi;
 use App\Models\Country;
 use App\Models\City;
 use App\Services\HelperService;
+use App\Services\MetaTagsService;
 
 class TaxiController extends BaseController
 {
@@ -39,10 +40,13 @@ class TaxiController extends BaseController
         }
 
         $this->render('travel/taxis/countries/index', [
-            'title' => HelperService::trans('taxi_companies_europe_title') ?? 'Таксиметрови компании в Европа',
             'banner' => $banner,
             'taxisBanner' => $taxisBanner,
-            'countries' => $countries
+            'countries' => $countries,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 
@@ -71,15 +75,16 @@ class TaxiController extends BaseController
             $city['entity_type'] = 'city';
         }
 
-        $translatedCountryName = HelperService::getTranslation($country, 'name');
-
         $this->render('travel/taxis/countries/show-by-country/index', [
-            'title' => HelperService::trans('taxi_companies_in') . " {$translatedCountryName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'taxisBanner' => $taxisBanner,
             'country' => $country,
-            'cities' => $cities
+            'cities' => $cities,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 
@@ -111,16 +116,17 @@ class TaxiController extends BaseController
             $taxi['entity_type'] = 'taxi';
         }
 
-        $translatedCityName = HelperService::getTranslation($city, 'name');
-
         $this->render('travel/taxis/countries/show-by-country/show-by-city/index', [
-            'title' => HelperService::trans('taxi_companies_in') . " {$translatedCityName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'taxisBanner' => $taxisBanner,
             'country' => $country,
             'city' => $city,
-            'taxis' => $taxis
+            'taxis' => $taxis,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 

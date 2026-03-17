@@ -8,6 +8,7 @@ use App\Models\Airport;
 use App\Models\Banner;
 use App\Models\Country;
 use App\Services\HelperService;
+use App\Services\MetaTagsService;
 
 class AirportController extends BaseController
 {
@@ -36,10 +37,13 @@ class AirportController extends BaseController
         }
 
         $this->render('travel/air-tickets/airports/index', [
-            'title' => HelperService::trans('airports_seo_title') ?? 'Европейски летища',
             'banner' => $banner,
             'airTicketsBanner' => $airTicketsBanner,
-            'countries' => $countries
+            'countries' => $countries,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 
@@ -66,12 +70,15 @@ class AirportController extends BaseController
         $displayBanner = $banner ?? $airportsBanner;
 
         $this->render('travel/air-tickets/airports/show-by-country/index', [
-            'title' => HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('airports'),
             'banner' => $displayBanner,
             'airTicketsBanner' => $airTicketsBanner,
             'airportsBanner' => $airportsBanner,
             'country' => $country,
-            'airports' => $airports
+            'airports' => $airports,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 

@@ -42,17 +42,12 @@ class CountryController extends BaseController
             $element['entity_type'] = 'country_element';
         }
 
-        $translatedHeading = HelperService::getTranslation($country, 'heading', 'country');
-        $translatedName = HelperService::getTranslation($country, 'name', 'country');
-
-        $pageTitle = !empty($translatedHeading) ? $translatedHeading : $translatedName;
-
         $layout = $country['layout'] ?? 'secondary';
 
         View::render("countries/$layout-show", [
+            'title' => HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
             'country'  => $country,
             'elements' => $elements,
-            'title'    => $pageTitle,
             'layout' => $layout
         ]);
     }

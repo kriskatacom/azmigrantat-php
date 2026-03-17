@@ -105,7 +105,7 @@ $totalLangsCount = count($languages);
             <td class="px-5 py-4 text-right">
                 <?php View::component('table-actions', 'admin/components', [
                     'edit_url'   => "/admin/translations/edit/{$item['id']}",
-                    'delete_url' => "/admin/translations/delete/{$item['id']}",
+                    'delete_url' => "/admin/translations/delete/{$item['translation_key']}",
                     'name'       => $item['translation_key']
                 ]); ?>
             </td>

@@ -57,11 +57,8 @@ class LandmarkController extends BaseController
             $l['entity_type'] = 'landmark';
         }
 
-        // Превеждаме името на държавата за SEO заглавието
-        $translatedCountryName = HelperService::getTranslation($country, 'name', 'country');
-
         View::render('landmarks/index', [
-            'title'           => HelperService::trans('landmarks_in_label') . ' ' . $translatedCountryName,
+            'title'    => HelperService::trans('landmarks_in') . ' ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
             'country'         => $country,
             'landmarkElement' => $landmarkElement,
             'landmarks'       => $landmarks
@@ -85,7 +82,7 @@ class LandmarkController extends BaseController
         $landmark['entity_type'] = 'landmark';
 
         View::render('landmarks/show', [
-            'title'    => HelperService::getTranslation($landmark, 'name', 'landmark'),
+            'title'    => HelperService::getTranslation($landmark, 'name', 'landmark') . ' - ' . HelperService::trans('i_the_migrant'),
             'landmark' => $landmark,
             'country'  => $country
         ]);

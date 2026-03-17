@@ -105,39 +105,56 @@ abstract class BaseController
         ];
     }
 
-    protected function handleDelete($model, $id, string|null $redirectUrl = null, array $fileFields = ['image_url'], array $jsonFileFields = [], callable|null $callback = null)
-    {
+    protected function handleDelete(
+        $model,
+        $value,
+        string|null $redirectUrl = null,
+        array $fileFields = ['image_url'],
+        array $jsonFileFields = [],
+        callable|null $callback = null,
+        string $column = 'id',
+        bool $multiple = false,
+    ) {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return;
         }
 
-        $item = $model->find($id);
+        if ($multiple) {
+            $items = $model->findAllBy($column, $value);
+        } else {
+            $singleItem = $model->find($value, $column);
+            $items = $singleItem ? [$singleItem] : [];
+        }
+
         $redirectUrl = $redirectUrl ?? $_SERVER['HTTP_REFERER'] ?? '/admin/dashboard';
 
-        if ($item) {
-            if ($callback) {
-                $callback($item);
-            }
+        if (!empty($items)) {
+            foreach ($items as $item) {
+                if ($callback) $callback($item);
 
-            foreach ($fileFields as $field) {
-                if (!empty($item[$field])) {
-                    FileService::delete($item[$field]);
+                foreach ($fileFields as $field) {
+                    if (!empty($item[$field])) FileService::delete($item[$field]);
                 }
-            }
 
-            foreach ($jsonFileFields as $field) {
-                if (!empty($item[$field])) {
-                    $images = json_decode($item[$field], true);
-                    if (is_array($images)) {
-                        foreach ($images as $img) FileService::delete($img);
+                foreach ($jsonFileFields as $field) {
+                    if (!empty($item[$field])) {
+                        $images = json_decode($item[$field], true);
+                        if (is_array($images)) {
+                            foreach ($images as $img) FileService::delete($img);
+                        }
                     }
                 }
             }
 
-            $model->delete($id);
+            if ($multiple) {
+                $model->deleteAllBy($column, $value);
+            } else {
+                $model->delete($value, $column);
+            }
+
             $this->flash('success', 'Изтриването беше успешно!');
         } else {
-            $this->flash('error', 'Записът не съществува.');
+            $this->flash('error', 'Записът не беше намерен.');
         }
 
         $this->redirect($redirectUrl);

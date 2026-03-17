@@ -57,10 +57,8 @@ class EmbassyController extends BaseController
             $e['entity_type'] = 'embassy';
         }
 
-        $translatedCountryName = HelperService::getTranslation($country, 'name', 'country');
-
         View::render('embassies/index', [
-            'title'          => HelperService::trans('embassies_in_label') . ' ' . $translatedCountryName,
+            'title'   => HelperService::trans('embassies_in') . ' ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
             'country'        => $country,
             'embassyElement' => $embassyElement,
             'embassies'      => $embassies
@@ -84,9 +82,9 @@ class EmbassyController extends BaseController
         $embassy['entity_type'] = 'embassy';
 
         View::render('embassies/show', [
-            'title'   => HelperService::getTranslation($embassy, 'name', 'embassy'),
+            'title'   => HelperService::getTranslation($embassy, 'heading', 'embassy') . ' - ' . HelperService::trans('i_the_migrant'),
             'embassy' => $embassy,
-            'country' => $country
+            'country' => $country,
         ]);
     }
 

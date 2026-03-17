@@ -8,6 +8,7 @@ use App\Models\Train;
 use App\Models\Country;
 use App\Models\City;
 use App\Services\HelperService;
+use App\Services\MetaTagsService;
 
 class TrainController extends BaseController
 {
@@ -39,10 +40,13 @@ class TrainController extends BaseController
         }
 
         $this->render('travel/trains/countries/index', [
-            'title' => HelperService::trans('trains_europe_title') ?? 'Жележопътни гари и превози в Европа',
             'banner' => $banner,
             'trainsBanner' => $trainsBanner,
-            'countries' => $countries
+            'countries' => $countries,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 
@@ -56,10 +60,8 @@ class TrainController extends BaseController
         $countriesBanner = $this->bannerModel->findByColumn('link', '/travel/trains/countries');
         $trainsBanner = $this->bannerModel->findByColumn('link', '/travel/trains');
 
-        // Търсим специфичен банер или ползваме държавата
         $banner = $this->bannerModel->findByColumn('link', '/travel/trains/countries/' . $countrySlug) ?? $country;
 
-        // Определяме типа на банера
         if (isset($banner['group_key'])) {
             $banner['entity_type'] = 'banner';
         } else {
@@ -74,15 +76,16 @@ class TrainController extends BaseController
             $city['entity_type'] = 'city';
         }
 
-        $translatedCountryName = HelperService::getTranslation($country, 'name');
-
         $this->render('travel/trains/countries/show-by-country/index', [
-            'title' => HelperService::trans('train_stations_in') . " {$translatedCountryName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'trainsBanner' => $trainsBanner,
             'country' => $country,
-            'cities' => $cities
+            'cities' => $cities,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 
@@ -115,16 +118,17 @@ class TrainController extends BaseController
             $train['entity_type'] = 'train';
         }
 
-        $translatedCityName = HelperService::getTranslation($city, 'name');
-
         $this->render('travel/trains/countries/show-by-country/show-by-city/index', [
-            'title' => HelperService::trans('train_stations_in') . " {$translatedCityName}",
             'banner' => $banner,
             'countriesBanner' => $countriesBanner,
             'trainsBanner' => $trainsBanner,
             'country' => $country,
             'city' => $city,
-            'trains' => $trains
+            'trains' => $trains,
+            'seo' => new MetaTagsService([
+                'title'       => HelperService::trans($banner['name']),
+                'description' => HelperService::trans($banner['description'] ?? ''),
+            ])
         ]);
     }
 

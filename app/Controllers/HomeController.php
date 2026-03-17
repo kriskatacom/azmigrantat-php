@@ -8,6 +8,7 @@ use App\Models\Banner;
 use App\Models\City;
 use App\Models\Driver;
 use App\Services\HelperService;
+use App\Services\MetaTagsService;
 
 class HomeController
 {
@@ -38,10 +39,16 @@ class HomeController
             $b['entity_type'] = 'banner';
         }
 
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans('home_meta_title'),
+            'description' => HelperService::trans('home_meta_description'),
+        ]);
+
         View::render('index/home/index', [
-            'title'     => HelperService::trans('home_title'),
+            'title'     => HelperService::trans('home_meta_title'),
             'countries' => $countries,
             'banners'   => $banners,
+            'seo'   => $seo,
         ]);
     }
 
@@ -68,10 +75,16 @@ class HomeController
             ];
         }
 
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans('travel_meta_title'),
+            'description' => HelperService::trans('travel_meta_description'),
+        ]);
+
         View::render('travel/index', [
-            'title'   => HelperService::trans('travel_page_title'),
+            'title'   => HelperService::trans('travel_meta_title'),
             'banner'  => $mainBanner,
-            'banners' => $items
+            'banners' => $items,
+            'seo' => $seo
         ]);
     }
 
@@ -105,12 +118,18 @@ class HomeController
             $driver['entity_type'] = 'driver';
         }
 
+        $seo = new MetaTagsService([
+            'title'       => HelperService::trans('shared_meta_title'),
+            'description' => HelperService::trans('shared_meta_description'),
+        ]);
+
         View::render('travel/shared-travel/index', [
             'title'       => $bannerTitle,
             'banner'      => $mainBanner,
             'drivers'     => $drivers,
             'citiesJson'  => json_encode($allCities, JSON_UNESCAPED_UNICODE),
-            'breadcrumbs' => $breadcrumbs
+            'breadcrumbs' => $breadcrumbs,
+            'seo' => $seo
         ]);
     }
 }
