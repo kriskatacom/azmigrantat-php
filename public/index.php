@@ -8,6 +8,8 @@ use App\Core\App;
 
 $app = new App();
 
+$app->redirect_bulgaria_url();
+
 $app->initSession();
 $routePath = $app->initLanguage();
 $app->dispatch($routePath);

@@ -3,12 +3,9 @@
 use App\Core\View;
 use App\Models\User;
 use App\Services\HelperService;
-
-$isHome = HelperService::isHome();
-$navClasses = $isHome ? "absolute top-0 left-0 w-full z-50 bg-transparent" : "bg-primary-darken";
 ?>
 
-<nav x-data="{ sidebarOpen: false }" @keydown.escape="sidebarOpen = false" class="<?= $navClasses ?> px-6 py-4 flex flex-col gap-4 transition-colors duration-500">
+<nav x-data="{ sidebarOpen: false }" @keydown.escape="sidebarOpen = false" class="<?= $navClasses ?> z-40 sticky top-0 left-0 w-full px-6 py-4 flex flex-col gap-4 transition-colors bg-primary-darken duration-500">
     <div class="container mx-auto flex justify-between items-center w-full">
         <div class="flex items-center">
             <div class="text-3xl font-bold flex">

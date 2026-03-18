@@ -82,4 +82,17 @@ class App
             }
         }
     }
+
+    public function redirect_bulgaria_url()
+    {
+        $current_url = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        if (strpos($current_url, '/balgaria/') !== false) {
+            $new_url = str_replace('/balgaria/', '/bulgaria/', $current_url);
+
+            header("HTTP/1.1 301 Moved Permanently");
+            header("Location: " . $new_url);
+            exit();
+        }
+    }
 }
