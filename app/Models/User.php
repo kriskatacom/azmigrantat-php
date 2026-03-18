@@ -155,19 +155,37 @@ class User extends Model
         return $this->update($id, $newData);
     }
 
-    public function getPaginatedWithRoles(int $limit, int $offset): array
+    public function getPaginatedWithRoles(array $options = [], array $searchColumns = ['first_name', 'last_name', 'email']): array
     {
         $sql = "SELECT u.*, r.name as role_name, r.label as role_label 
             FROM {$this->table} u 
-            LEFT JOIN roles r ON u.role_id = r.id 
-            WHERE u.deleted_at IS NULL
-            ORDER BY u.created_at DESC 
-            LIMIT :limit OFFSET :offset";
+            LEFT JOIN roles r ON u.role_id = r.id";
+
+        $params = [];
+        $whereClauses = ["u.deleted_at IS NULL"];
+
+        if (!empty($options['search']) && !empty($searchColumns)) {
+            $searchTerms = [];
+            foreach ($searchColumns as $index => $column) {
+                $paramName = "search_" . $index;
+                $searchTerms[] = "u.$column LIKE :$paramName";
+                $params[$paramName] = "%{$options['search']}%";
+            }
+            $whereClauses[] = "(" . implode(' OR ', $searchTerms) . ")";
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $sql .= " ORDER BY u.created_at DESC";
+
+        if (isset($options['limit'])) {
+            $sql .= " LIMIT " . (int)$options['limit'] . " OFFSET " . (int)($options['offset'] ?? 0);
+        }
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute($params);
 
         return $stmt->fetchAll();
     }

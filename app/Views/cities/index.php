@@ -8,7 +8,7 @@ $isBulgaria = $country['slug'] === 'bulgaria';
 ?>
 
 <section>
-    <div class="aspect-video max-h-100 w-full">
+    <div class="w-full h-100 md:h-120 overflow-hidden">
         <img src="<?= $cityElement['image_url'] ?>"
             class="w-full h-full object-cover"
             alt="<?= htmlspecialchars($translatedCountryName) ?>">

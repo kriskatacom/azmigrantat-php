@@ -141,11 +141,6 @@ abstract class Model
         return $result ?: null;
     }
 
-    public function count(): int
-    {
-        return (int)$this->db->query("SELECT COUNT(*) FROM {$this->table}")->fetchColumn();
-    }
-
     public function max(string $column)
     {
         $sql = "SELECT MAX({$column}) AS max_val FROM {$this->table}";
@@ -219,5 +214,74 @@ abstract class Model
         $result = $stmt->fetch();
 
         return $result ? (int)$result['id'] : null;
+    }
+
+    public function getFiltered(array $options = [], array $searchColumns = ['name']): array
+    {
+        $sql = "SELECT * FROM {$this->table}";
+        $params = [];
+        $whereClauses = [];
+
+        if (!empty($options['group_key'])) {
+            $whereClauses[] = "group_key = :group_key";
+            $params['group_key'] = $options['group_key'];
+        }
+
+        if (!empty($options['search']) && !empty($searchColumns)) {
+            $searchTerms = [];
+            foreach ($searchColumns as $index => $column) {
+                $paramName = "search_" . $index;
+                $searchTerms[] = "$column LIKE :$paramName";
+                $params[$paramName] = "%{$options['search']}%";
+            }
+            $whereClauses[] = "(" . implode(' OR ', $searchTerms) . ")";
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $order = $options['order'] ?? 'sort_order ASC';
+        $sql .= " ORDER BY " . $order;
+
+        if (isset($options['per_page'])) {
+            $limit = (int)$options['per_page'];
+            $offset = (int)($options['offset'] ?? 0);
+            $sql .= " LIMIT {$limit} OFFSET {$offset}";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    public function count(array $options = [], array $searchColumns = ['name']): int
+    {
+        $sql = "SELECT COUNT(*) FROM {$this->table}";
+        $params = [];
+        $whereClauses = [];
+
+        if (!empty($options['group_key'])) {
+            $whereClauses[] = "group_key = :group_key";
+            $params['group_key'] = $options['group_key'];
+        }
+
+        if (!empty($options['search']) && !empty($searchColumns)) {
+            $searchTerms = [];
+            foreach ($searchColumns as $index => $column) {
+                $paramName = "search_" . $index;
+                $searchTerms[] = "$column LIKE :$paramName";
+                $params[$paramName] = "%{$options['search']}%";
+            }
+            $whereClauses[] = "(" . implode(' OR ', $searchTerms) . ")";
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
     }
 }

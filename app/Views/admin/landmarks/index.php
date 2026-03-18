@@ -9,6 +9,13 @@ use App\Core\View;
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="pt-5 px-5">
+        <?php View::component('search-bar', 'admin/components', [
+            'action'      => '/admin/landmarks',
+            'placeholder' => 'Търсене по име на забележителност...',
+        ]); ?>
+    </div>
+
     <?php View::component('page-header', 'admin/components', [
         'title'        => 'Списък със забележителности',
         'button_label' => 'Нова забележителност',

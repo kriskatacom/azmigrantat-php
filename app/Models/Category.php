@@ -77,20 +77,6 @@ class Category extends Model
         $this->filterParentId = $parentId;
     }
 
-    public function count(): int
-    {
-        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE ";
-        $sql .= ($this->filterParentId === null) ? "parent_id IS NULL" : "parent_id = :pid";
-
-        $stmt = $this->db->prepare($sql);
-        if ($this->filterParentId !== null) {
-            $stmt->bindValue(':pid', $this->filterParentId, \PDO::PARAM_INT);
-        }
-        $stmt->execute();
-
-        return (int)$stmt->fetchColumn();
-    }
-
     public function getByParentPaginated(?int $parentId, int $limit, int $offset): array
     {
         $sql = "SELECT * FROM {$this->table} WHERE ";

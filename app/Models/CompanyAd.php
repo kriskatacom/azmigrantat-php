@@ -6,22 +6,37 @@ class CompanyAd extends Model
 {
     protected string $table = 'ads';
 
-    public function getAllWithRelations(int $limit = 10, int $offset = 0): array
+    public function getAllWithRelations(array $options = [], array $searchColumns = ['title']): array
     {
-        $sql = "SELECT ca.*, 
-                       c.name as company_name, 
-                       u.name as user_name
-                FROM {$this->table} ca
-                LEFT JOIN companies c ON ca.company_id = c.id
-                LEFT JOIN users u ON ca.user_id = u.id
-                ORDER BY ca.sort_order ASC, ca.created_at DESC
-                LIMIT :limit OFFSET :offset";
+        $sql = "SELECT a.*, c.name as company_name 
+            FROM {$this->table} a
+            LEFT JOIN companies c ON a.company_id = c.id";
+
+        $params = [];
+        $whereClauses = [];
+
+        if (!empty($options['search']) && !empty($searchColumns)) {
+            $searchTerms = [];
+            foreach ($searchColumns as $index => $column) {
+                $paramName = "search_" . $index;
+                $searchTerms[] = "a.$column LIKE :$paramName";
+                $params[$paramName] = "%{$options['search']}%";
+            }
+            $whereClauses[] = "(" . implode(' OR ', $searchTerms) . ")";
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $sql .= " ORDER BY a.created_at DESC";
+
+        if (isset($options['limit'])) {
+            $sql .= " LIMIT " . (int)$options['limit'] . " OFFSET " . (int)($options['offset'] ?? 0);
+        }
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $stmt->execute();
-
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 

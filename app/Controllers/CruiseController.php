@@ -47,17 +47,23 @@ class CruiseController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $pageData = $this->paginate($this->cruiseModel);
 
-        $cruises = $this->cruiseModel->all([
+        $filters = $this->getFilters();
+
+        $searchColumns = ['name'];
+
+        $pageData = $this->paginate($this->cruiseModel, $filters, $searchColumns);
+
+        $cruises = $this->cruiseModel->getFiltered(array_merge($filters, [
             'limit'  => $pageData['limit'],
             'offset' => $pageData['offset'],
             'order'  => 'sort_order ASC, name ASC'
-        ]);
+        ]), $searchColumns);
 
         View::render('admin/cruises/index', [
             'title'      => 'Круизни компании',
             'cruises'    => $cruises,
+            'filters'    => $filters,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
         ]);

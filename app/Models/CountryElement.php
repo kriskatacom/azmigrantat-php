@@ -19,7 +19,7 @@ class CountryElement extends Model
 
         $data['sort_order'] = (int)($data['sort_order'] ?? 0);
         $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
-        
+
         return $data;
     }
 
@@ -56,5 +56,73 @@ class CountryElement extends Model
         $result = $stmt->fetch();
 
         return $result ?: null;
+    }
+
+    public function count(array $options = [], array $searchColumns = ['name']): int
+    {
+        $sql = "SELECT COUNT(*) FROM {$this->table}";
+        $params = [];
+        $whereClauses = [];
+
+        if (!empty($options['country_id'])) {
+            $whereClauses[] = "country_id = :country_id";
+            $params['country_id'] = $options['country_id'];
+        }
+
+        if (!empty($options['search']) && !empty($searchColumns)) {
+            $searchTerms = [];
+            foreach ($searchColumns as $index => $column) {
+                $paramName = "search_" . $index;
+                $searchTerms[] = "$column LIKE :$paramName";
+                $params[$paramName] = "%{$options['search']}%";
+            }
+            $whereClauses[] = "(" . implode(' OR ', $searchTerms) . ")";
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getFiltered(array $options = [], array $searchColumns = ['name']): array
+    {
+        $sql = "SELECT * FROM {$this->table}";
+        $params = [];
+        $whereClauses = [];
+
+        if (!empty($options['country_id'])) {
+            $whereClauses[] = "country_id = :country_id";
+            $params['country_id'] = $options['country_id'];
+        }
+
+        if (!empty($options['search']) && !empty($searchColumns)) {
+            $searchTerms = [];
+            foreach ($searchColumns as $index => $column) {
+                $paramName = "search_" . $index;
+                $searchTerms[] = "$column LIKE :$paramName";
+                $params[$paramName] = "%{$options['search']}%";
+            }
+            $whereClauses[] = "(" . implode(' OR ', $searchTerms) . ")";
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $sql .= " ORDER BY " . ($options['order'] ?? 'sort_order ASC');
+
+        if (isset($options['limit'])) {
+            $limit = (int)$options['limit'];
+            $offset = (int)($options['offset'] ?? 0);
+            $sql .= " LIMIT {$limit} OFFSET {$offset}";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
     }
 }

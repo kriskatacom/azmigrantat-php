@@ -27,16 +27,22 @@ class CompanyController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $pageData = $this->paginate($this->companyModel, 10);
 
-        $companies = $this->companyModel->getAllWithRelations(
-            $pageData['limit'],
-            $pageData['offset']
-        );
+        $filters = $this->getFilters();
+
+        $searchColumns = ['name', 'slug', 'description'];
+
+        $pageData = $this->paginate($this->companyModel, $filters, $searchColumns);
+
+        $companies = $this->companyModel->getAllWithRelations(array_merge($filters, [
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset']
+        ]), $searchColumns);
 
         $this->render('admin/companies/index', [
             'title'      => 'Компании',
             'companies'  => $companies,
+            'filters'    => $filters,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
         ]);

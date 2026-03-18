@@ -135,16 +135,22 @@ class TrainController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $paginationData = $this->paginate($this->trainModel);
-        $trains = $this->trainModel->all([
-            'limit' => $paginationData['limit'],
+
+        $filters = $this->getFilters();
+
+        $searchColumns = ['name', 'train_number'];
+        $paginationData = $this->paginate($this->trainModel, $filters, $searchColumns);
+
+        $trains = $this->trainModel->getFiltered(array_merge($filters, [
+            'limit'  => $paginationData['limit'],
             'offset' => $paginationData['offset'],
-            'order' => 'sort_order ASC'
-        ]);
+            'order'  => 'sort_order ASC'
+        ]), $searchColumns);
 
         $this->render('admin/trains/index', [
-            'title' => 'Влакове',
-            'trains' => $trains,
+            'title'      => 'Влакове',
+            'trains'     => $trains,
+            'filters'    => $filters,
             'pagination' => $paginationData['pagination'],
             'layout'     => 'admin'
         ]);

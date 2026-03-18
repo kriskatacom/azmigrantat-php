@@ -7,6 +7,13 @@
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="pt-5 px-5">
+        <?php View::component('search-bar', 'admin/components', [
+            'action'      => '/admin/offers',
+            'placeholder' => 'Търсене по име на обява на компания...',
+        ]); ?>
+    </div>
+
     <?php View::component('page-header', 'admin/components', [
         'title' => 'Обяви на компании',
         'button_label' => 'Нова обява',

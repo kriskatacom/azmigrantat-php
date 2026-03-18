@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Models\User;
-use App\Models\Role;
 
 class UserController extends BaseController
 {
@@ -19,18 +18,22 @@ class UserController extends BaseController
     {
         $this->checkAccess('admin');
 
-        $paginationData = $this->paginate($this->userModel, 10);
+        $filters = $this->getFilters();
+        $searchColumns = ['first_name', 'last_name', 'email'];
 
-        $users = $this->userModel->getPaginatedWithRoles(
-            $paginationData['limit'],
-            $paginationData['offset']
-        );
+        $pageData = $this->paginate($this->userModel, $filters, $searchColumns);
+
+        $users = $this->userModel->getPaginatedWithRoles(array_merge($filters, [
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset']
+        ]), $searchColumns);
 
         View::render('admin/users/index', [
-            'title' => 'Потребители',
-            'users' => $users,
-            'pagination' => $paginationData['pagination'],
-            'layout' => 'admin'
+            'title'      => 'Потребители',
+            'users'      => $users,
+            'filters'    => $filters,
+            'pagination' => $pageData['pagination'],
+            'layout'     => 'admin'
         ]);
     }
 

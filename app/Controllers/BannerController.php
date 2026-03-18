@@ -18,21 +18,14 @@ class BannerController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $groupKey = $_GET['group_key'] ?? null;
 
-        $paginationData = $this->paginate($this->bannerModel, 10);
+        $filters = $this->getFilters([
+            'group_key' => $_GET['group_key'] ?? null
+        ]);
 
-        if ($groupKey) {
-            $total = $this->bannerModel->countFiltered($groupKey);
-            $paginationData['pagination']['total'] = ceil($total / $paginationData['limit']);
-            $paginationData['pagination']['total_records'] = $total;
-        }
+        $pageData = $this->paginate($this->bannerModel, $filters);
 
-        $banners = $this->bannerModel->getFiltered(
-            $groupKey,
-            $paginationData['limit'],
-            $paginationData['offset']
-        );
+        $banners = $this->bannerModel->getFiltered($filters, ['name']);
 
         $groups = $this->bannerModel->getUniqueGroups();
 
@@ -40,8 +33,9 @@ class BannerController extends BaseController
             'title'      => 'Управление на банери',
             'banners'    => $banners,
             'groups'     => $groups,
+            'filters'    => $filters,
+            'pagination' => $pageData['pagination'],
             'layout'     => 'admin',
-            'pagination' => $paginationData['pagination'],
         ]);
     }
 

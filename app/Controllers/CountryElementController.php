@@ -21,27 +21,38 @@ class CountryElementController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $countryId = (int)($_GET['country_id'] ?? 0);
 
+        $countryId = (int)($_GET['country_id'] ?? 0);
         if (!$countryId) {
             $this->flash('error', 'Не е избрана държава.');
             $this->redirect('/admin/countries');
         }
 
         $country = $this->countryModel->find($countryId);
-
         if (!$country) {
             $this->flash('error', 'Държавата не съществува.');
             $this->redirect('/admin/countries');
         }
 
-        $elements = $this->elementModel->getByCountry($country['id']);
+        $filters = $this->getFilters();
+        $filters['country_id'] = $countryId;
+        $searchColumns = ['title'];
+
+        $pageData = $this->paginate($this->elementModel, $filters, $searchColumns);
+
+        $elements = $this->elementModel->getFiltered(array_merge($filters, [
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset'],
+            'order'  => 'sort_order ASC'
+        ]), $searchColumns);
 
         View::render('admin/country_elements/index', [
-            'title'    => 'Елементи за ' . $country['name'],
-            'elements' => $elements,
-            'country'  => $country,
-            'layout'   => 'admin'
+            'title'      => 'Елементи за ' . $country['name'],
+            'elements'   => $elements,
+            'country'    => $country,
+            'filters'    => $filters,
+            'pagination' => $pageData['pagination'],
+            'layout'     => 'admin'
         ]);
     }
 
@@ -63,7 +74,7 @@ class CountryElementController extends BaseController
         $this->checkAccess('admin');
         $countryId = $_POST['country_id'] ?? 0;
         $redirectUrl = "/admin/countries/country-elements?country_id=" . $countryId;
-        
+
         $this->handleStore($this->elementModel, $redirectUrl, ['image_url'], 'country_elements');
     }
 
@@ -71,7 +82,7 @@ class CountryElementController extends BaseController
     {
         $this->checkAccess('admin');
         $element = $this->elementModel->find((int)$id);
-        
+
         if (!$element) {
             $this->flash('error', 'Елементът не е намерен');
             $this->redirect('/admin/countries');
@@ -105,7 +116,7 @@ class CountryElementController extends BaseController
     public function delete($id)
     {
         $this->checkAccess('admin');
-        
+
         $element = $this->elementModel->find((int)$id);
         $redirectUrl = $element ? "/admin/countries/country-elements?country_id={$element['country_id']}" : "/admin/countries";
 

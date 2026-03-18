@@ -85,17 +85,23 @@ class AirportController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $pageData = $this->paginate($this->airportModel);
 
-        $airports = $this->airportModel->getAllWithCountries([
+        $filters = $this->getFilters();
+
+        $searchColumns = ['name', 'description'];
+
+        $pageData = $this->paginate($this->airportModel, $filters, $searchColumns);
+
+        $airports = $this->airportModel->getAllWithCountries(array_merge($filters, [
             'order'  => 'sort_order ASC',
             'limit'  => $pageData['limit'],
             'offset' => $pageData['offset']
-        ]);
+        ]), $searchColumns);
 
         $this->render('admin/airports/index', [
-            'title'      => 'Авиолинии',
+            'title'      => 'Летища',
             'airports'   => $airports,
+            'filters'    => $filters,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
         ]);

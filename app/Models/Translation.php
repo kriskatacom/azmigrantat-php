@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\HelperService;
 use App\Services\TranslateService;
 use PDO;
 
@@ -141,43 +142,10 @@ class Translation extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function count(array $options = []): int
-    {
-        $totalLangsCount = count(\App\Services\HelperService::AVAILABLE_LANGUAGES);
-
-        $sql = "SELECT COUNT(DISTINCT translation_key) FROM {$this->table}";
-        $params = [];
-        $whereClauses = [];
-
-        if (isset($options['where']) && is_array($options['where'])) {
-            foreach ($options['where'] as $column => $value) {
-                if ($column === 'lang_code') continue;
-
-                $paramKey = "where_" . str_replace('.', '_', $column);
-                $whereClauses[] = "{$column} = :{$paramKey}";
-                $params[$paramKey] = $value;
-            }
-        }
-
-        if (!empty($options['search'])) {
-            $whereClauses[] = "(translation_key LIKE :search1 OR translation_value LIKE :search2)";
-            $params['search1'] = "%{$options['search']}%";
-            $params['search2'] = "%{$options['search']}%";
-        }
-
-        if (!empty($whereClauses)) {
-            $sql .= " WHERE " . implode(' AND ', $whereClauses);
-        }
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        return (int)$stmt->fetchColumn();
-    }
-
     public function getUniqueKeys(array $options = []): array
     {
-        $currentLang = $options['where']['lang_code'] ?? 'bg';
-        $totalLangsCount = count(\App\Services\HelperService::AVAILABLE_LANGUAGES);
+        $currentLang = $options['lang'] ?? 'bg';
+        $totalLangsCount = count(HelperService::AVAILABLE_LANGUAGES);
 
         $sql = "SELECT 
                 translation_key, 
@@ -190,9 +158,9 @@ class Translation extends Model
         $whereClauses = [];
 
         if (!empty($options['search'])) {
-            $whereClauses[] = "(translation_key LIKE :search1 OR translation_value LIKE :search2)";
-            $params['search1'] = "%{$options['search']}%";
-            $params['search2'] = "%{$options['search']}%";
+            $whereClauses[] = "(translation_key LIKE :search_k OR translation_value LIKE :search_v)";
+            $params['search_k'] = "%{$options['search']}%";
+            $params['search_v'] = "%{$options['search']}%";
         }
 
         if (!empty($whereClauses)) {
@@ -222,5 +190,36 @@ class Translation extends Model
         $sql = "SELECT DISTINCT lang_code FROM {$this->table} ORDER BY lang_code ASC";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+    
+    public function count(array $options = [], array $searchColumns = []): int
+    {
+        $sql = "SELECT 1 FROM {$this->table}";
+        $params = [];
+        $whereClauses = [];
+
+        if (!empty($options['search'])) {
+            $whereClauses[] = "(translation_key LIKE :s1 OR translation_value LIKE :s2)";
+            $params['s1'] = "%{$options['search']}%";
+            $params['s2'] = "%{$options['search']}%";
+        }
+
+        if ($whereClauses) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $sql .= " GROUP BY translation_key";
+
+        if (!empty($options['incomplete'])) {
+            $totalLangs = count(\App\Services\HelperService::AVAILABLE_LANGUAGES);
+            $sql .= " HAVING COUNT(CASE WHEN translation_value != '' AND translation_value IS NOT NULL THEN 1 END) < :limit_langs";
+            $params['limit_langs'] = $totalLangs;
+        }
+
+        $finalSql = "SELECT COUNT(*) FROM ($sql) as subquery";
+
+        $stmt = $this->db->prepare($finalSql);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
     }
 }

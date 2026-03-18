@@ -18,6 +18,13 @@ $allRoles = [
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="pt-5 px-5">
+        <?php View::component('search-bar', 'admin/components', [
+            'action'      => '/admin/users',
+            'placeholder' => 'Търсене по име и имейл на потребител...',
+        ]); ?>
+    </div>
+
     <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <h3 class="font-bold text-gray-800 text-lg">Списък с потребители</h3>
         <a href="/admin/users/create" class="btn-primary">+ Нов потребител</a>

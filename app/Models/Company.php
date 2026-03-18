@@ -6,27 +6,35 @@ class Company extends Model
 {
     protected string $table = 'companies';
 
-    public function getAllWithRelations(int $limit = 10, int $offset = 0): array
+    public function getAllWithRelations(array $options = [], array $searchColumns = ['name']): array
     {
-        $sql = "SELECT c.*, 
-                   co.name as country_name, 
-                   ci.name as city_name, 
-                   cat.name as category_name,
-                   u.name as owner_name,
-                   u.email as owner_email
-            FROM {$this->table} c
-            LEFT JOIN countries co ON c.country_id = co.id
-            LEFT JOIN cities ci ON c.city_id = ci.id
-            LEFT JOIN categories cat ON c.category_id = cat.id
-            LEFT JOIN users u ON c.user_id = u.id
-            ORDER BY c.sort_order ASC 
-            LIMIT :limit OFFSET :offset";
+        $sql = "SELECT c.* FROM {$this->table} c";
+
+        $params = [];
+        $whereClauses = [];
+
+        if (!empty($options['search']) && !empty($searchColumns)) {
+            $searchTerms = [];
+            foreach ($searchColumns as $index => $column) {
+                $paramName = "search_" . $index;
+                $searchTerms[] = "c.$column LIKE :$paramName";
+                $params[$paramName] = "%{$options['search']}%";
+            }
+            $whereClauses[] = "(" . implode(' OR ', $searchTerms) . ")";
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $sql .= " ORDER BY c.name ASC";
+
+        if (isset($options['limit'])) {
+            $sql .= " LIMIT " . (int)$options['limit'] . " OFFSET " . (int)($options['offset'] ?? 0);
+        }
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $stmt->execute();
-
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 

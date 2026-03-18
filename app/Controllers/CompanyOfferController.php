@@ -24,16 +24,21 @@ class CompanyOfferController extends BaseController
     {
         $this->checkAccess(['admin', 'entrepreneur']);
 
-        $pageData = $this->paginate($this->offerModel, 15);
+        $filters = $this->getFilters();
 
-        $offers = $this->offerModel->getAllWithRelations(
-            $pageData['limit'],
-            $pageData['offset']
-        );
+        $searchColumns = ['name'];
+
+        $pageData = $this->paginate($this->offerModel, $filters, $searchColumns);
+
+        $offers = $this->offerModel->getAllWithRelations(array_merge($filters, [
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset']
+        ]), $searchColumns);
 
         $this->render('admin/offers/index', [
             'title'      => HelperService::trans('company_ads'),
             'offers'     => $offers,
+            'filters'    => $filters,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
         ]);

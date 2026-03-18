@@ -23,6 +23,13 @@ $positions = [
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="pt-5 px-5">
+        <?php View::component('search-bar', 'admin/components', [
+            'action'      => '/admin/banners',
+            'placeholder' => 'Търсене име на банер...',
+        ]); ?>
+    </div>
+
     <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <h2 class="font-bold text-gray-800 text-lg">Управление на банери</h2>
 

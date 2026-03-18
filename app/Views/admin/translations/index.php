@@ -21,35 +21,32 @@ $totalLangsCount = count($languages);
     ]); ?>
 
     <div class="px-6 py-4 bg-white border-b border-gray-100">
-        <form action="/admin/translations" method="GET" class="flex flex-col md:flex-row items-center gap-4">
+        <?php ob_start(); ?>
 
-            <div class="relative grow w-full">
-                <input type="text"
-                    name="search"
-                    value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                    placeholder="Търсене по ключ или превод..."
-                    class="form-control">
-            </div>
+        <div class="relative w-full md:w-72">
+            <select name="lang" onchange="this.form.submit()" class="form-control">
+                <?php foreach ($languages as $code => $lang): ?>
+                    <option value="<?= $code ?>" <?= ($_GET['lang'] ?? 'bg') === $code ? 'selected' : '' ?>>
+                        <?= $lang['flag'] ?> <?= $lang['name'] ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
-            <div class="relative w-full md:w-72">
-                <select name="lang" onchange="this.form.submit()" class="form-control">
-                    <?php foreach ($languages as $code => $lang): ?>
-                        <option value="<?= $code ?>" <?= ($_GET['lang'] ?? 'bg') === $code ? 'selected' : '' ?>>
-                            <?= $lang['flag'] ?> <?= $lang['name'] ?> (<?= strtoupper($code) ?>)
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+        <div class="w-full md:w-100 flex items-center border-gray-200 rounded-xl transition-all">
+            <?php View::component('toggle', 'admin/components', [
+                'name'  => 'incomplete',
+                'label' => 'Само незавършени',
+                'value' => isset($_GET['incomplete']) && $_GET['incomplete'] === '1'
+            ]); ?>
+        </div>
 
-            <div class="w-full md:w-100 flex itemsborder-gray-200 rounded-xl transition-all">
-                <?php View::component('toggle', 'admin/components', [
-                    'name'  => 'incomplete',
-                    'label' => 'Само незавършени',
-                    'value' => isset($_GET['incomplete']) && $_GET['incomplete'] === '1'
-                ]); ?>
-            </div>
-
-        </form>
+        <?php $extraFilters = ob_get_clean();
+        View::component('search-bar', 'admin/components', [
+            'action'      => '/admin/translations',
+            'placeholder' => 'Търсене по ключ или превод...',
+            'slot'        => $extraFilters
+        ]); ?>
     </div>
 
     <?php

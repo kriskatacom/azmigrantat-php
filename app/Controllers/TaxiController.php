@@ -34,7 +34,7 @@ class TaxiController extends BaseController
 
         if ($banner) $banner['entity_type'] = 'banner';
         if ($taxisBanner) $taxisBanner['entity_type'] = 'banner';
-        
+
         foreach ($countries as &$country) {
             $country['entity_type'] = 'country';
         }
@@ -60,7 +60,7 @@ class TaxiController extends BaseController
         $countriesBanner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries');
         $taxisBanner = $this->bannerModel->findByColumn('link', '/travel/taxis');
         $banner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries/' . $countrySlug) ?? $country;
-        
+
         if (isset($banner['group_key'])) {
             $banner['entity_type'] = 'banner';
         } else {
@@ -101,7 +101,7 @@ class TaxiController extends BaseController
         $countriesBanner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries');
         $taxisBanner = $this->bannerModel->findByColumn('link', '/travel/taxis');
         $banner = $this->bannerModel->findByColumn('link', '/travel/taxis/countries/' . $countrySlug) ?? $city;
-        
+
         if (isset($banner['group_key'])) {
             $banner['entity_type'] = 'banner';
         } else {
@@ -133,16 +133,17 @@ class TaxiController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $paginationData = $this->paginate($this->taxiModel);
-        $taxis = $this->taxiModel->all([
-            'limit' => $paginationData['limit'],
-            'offset' => $paginationData['offset'],
-            'order' => 'sort_order ASC'
-        ]);
+
+        $filters = $this->getFilters();
+
+        $paginationData = $this->paginate($this->taxiModel, $filters);
+
+        $taxis = $this->taxiModel->getFiltered($filters, ['name', 'phone']);
 
         $this->render('admin/taxis/index', [
-            'title' => 'Таксита',
-            'taxis' => $taxis,
+            'title'      => 'Таксита',
+            'taxis'      => $taxis,
+            'filters'    => $filters,
             'pagination' => $paginationData['pagination'],
             'layout'     => 'admin'
         ]);

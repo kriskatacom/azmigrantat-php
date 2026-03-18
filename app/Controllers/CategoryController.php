@@ -127,7 +127,7 @@ class CategoryController extends BaseController
             'cityName'    => HelperService::getTranslation($city, 'name', 'city'),
             'breadcrumbs'  => $breadcrumbs,
             'base_url'     => "/{$countrySlug}/cities/{$citySlug}/" . ($categoriesPath ? trim($categoriesPath, '/') . '/' : ''),
-            'categoryPath' => $categoryPathArr
+            'categoryPath' => $categoryPathArr,
         ]);
     }
 
@@ -138,7 +138,7 @@ class CategoryController extends BaseController
             'company' => $company,
             'country' => $country,
             'city'    => $city,
-            'categoryPath' => $pathArray
+            'categoryPath' => $pathArray,
         ]);
     }
 
@@ -305,23 +305,28 @@ class CategoryController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
+
         $parentId = isset($_GET['parent_id']) ? (int)$_GET['parent_id'] : null;
-        $this->categoryModel->setFilterParent($parentId);
-        $paginationData = $this->paginate($this->categoryModel);
+        $filters = $this->getFilters();
+        $filters['parent_id'] = $parentId;
+        $searchColumns = ['name'];
+
+        $pageData = $this->paginate($this->categoryModel, $filters, $searchColumns);
 
         $path = $parentId ? $this->categoryModel->getBreadcrumbs($parentId) : [];
 
-        $categories = $this->categoryModel->getByParentPaginated(
-            $parentId,
-            $paginationData['limit'],
-            $paginationData['offset']
-        );
+        $categories = $this->categoryModel->getFiltered(array_merge($filters, [
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset'],
+            'order'  => 'sort_order ASC, name ASC'
+        ]), $searchColumns);
 
         $this->render('admin/categories/index', [
             'title'      => 'Категории',
             'categories' => $categories,
             'parentId'   => $parentId,
-            'pagination' => $paginationData['pagination'],
+            'filters'    => $filters,
+            'pagination' => $pageData['pagination'],
             'path'       => $path,
             'layout'     => 'admin'
         ]);

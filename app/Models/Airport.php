@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Model as ModelsModel;
-use App\Services\HelperService;
 
 class Airport extends ModelsModel
 {
@@ -27,18 +26,37 @@ class Airport extends ModelsModel
         return $this->db->query($sql)->fetchAll();
     }
 
-    public function getAllWithCountries(array $params = []): array
+    public function getAllWithCountries(array $options = [], array $searchColumns = ['name']): array
     {
-        $limit  = $params['limit'] ?? 10;
-        $offset = $params['offset'] ?? 0;
-        $order  = $params['order'] ?? 'airports.sort_order ASC, airports.name ASC';
+        $sql = "SELECT a.*, c.name as country_name 
+            FROM {$this->table} a
+            LEFT JOIN countries c ON a.country_id = c.id";
 
-        $sql = "SELECT airports.*, countries.name as country_name 
-                FROM {$this->table} 
-                LEFT JOIN countries ON airports.country_id = countries.id 
-                ORDER BY {$order} 
-                LIMIT {$limit} OFFSET {$offset}";
+        $params = [];
+        $whereClauses = [];
 
-        return $this->db->query($sql)->fetchAll();
+        if (!empty($options['search']) && !empty($searchColumns)) {
+            $searchTerms = [];
+            foreach ($searchColumns as $index => $column) {
+                $paramName = "search_" . $index;
+                $searchTerms[] = "a.$column LIKE :$paramName";
+                $params[$paramName] = "%{$options['search']}%";
+            }
+            $whereClauses[] = "(" . implode(' OR ', $searchTerms) . ")";
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $sql .= " ORDER BY " . ($options['order'] ?? 'a.sort_order ASC');
+
+        if (isset($options['limit'])) {
+            $sql .= " LIMIT " . (int)$options['limit'] . " OFFSET " . (int)($options['offset'] ?? 0);
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
     }
 }

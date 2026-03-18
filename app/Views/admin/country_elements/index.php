@@ -10,6 +10,13 @@
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="pt-5 px-5">
+        <?php View::component('search-bar', 'admin/components', [
+            'action'      => '/admin/countries/country-elements',
+            'placeholder' => 'Търсене по име на елемент в държавата...',
+        ]); ?>
+    </div>
+
     <?php View::component('page-header', 'admin/components', [
         'title' => 'Елементи към ' . htmlspecialchars($country['name'] ?? ''),
         'button_label' => 'Нов елемент',

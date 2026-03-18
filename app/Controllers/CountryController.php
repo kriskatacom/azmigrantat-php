@@ -57,17 +57,23 @@ class CountryController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $pageData = $this->paginate($this->countryModel);
 
-        $countries = $this->countryModel->all([
+        $filters = $this->getFilters();
+
+        $searchColumns = ['name'];
+
+        $pageData = $this->paginate($this->countryModel, $filters, $searchColumns);
+
+        $countries = $this->countryModel->getFiltered(array_merge($filters, [
             'limit'  => $pageData['limit'],
             'offset' => $pageData['offset'],
             'order'  => 'sort_order ASC, name ASC'
-        ]);
+        ]), $searchColumns);
 
         View::render('admin/countries/index', [
             'title'      => 'Държави',
             'countries'  => $countries,
+            'filters'    => $filters,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
         ]);

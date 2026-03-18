@@ -9,6 +9,13 @@ use App\Core\View;
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="pt-5 px-5">
+        <?php View::component('search-bar', 'admin/components', [
+            'action'      => '/admin/cruises',
+            'placeholder' => 'Търсене по име на круизна компания...',
+        ]); ?>
+    </div>
+
     <?php View::component('page-header', 'admin/components', [
         'title'        => 'Круизни компании',
         'button_label' => 'Нова компания',

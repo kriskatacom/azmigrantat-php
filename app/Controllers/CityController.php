@@ -53,12 +53,13 @@ class CityController extends BaseController
         foreach ($cities as &$city) {
             $city['entity_type'] = 'city';
         }
-        
+
         View::render('cities/index', [
             'title'     => HelperService::trans('cities_in') . ' ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
             'country'     => $country,
             'cityElement' => $cityElement,
             'cities'      => $cities,
+            'layout'      => 'secondary',
         ]);
     }
 

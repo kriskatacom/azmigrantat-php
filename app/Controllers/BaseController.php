@@ -87,20 +87,35 @@ abstract class BaseController
         exit;
     }
 
-    protected function paginate($model, $options = [], $perPage = 15)
+    protected function getFilters(array $extraFilters = [])
     {
+        $defaults = [
+            'search'     => $_GET['search'] ?? null,
+            'incomplete' => isset($_GET['incomplete']) && $_GET['incomplete'] === '1',
+            'lang'       => $_GET['lang'] ?? 'bg',
+            'per_page'   => (int)($_GET['per_page'] ?? 15),
+            'page'       => max(1, (int)($_GET['page'] ?? 1)),
+        ];
+
+        return array_merge($defaults, $extraFilters);
+    }
+
+    protected function paginate($model, $filters = [], $searchColumns = ['name'])
+    {
+        $perPage = $filters['per_page'] ?? 15;
         $page = max(1, (int)($_GET['page'] ?? 1));
         $offset = ($page - 1) * $perPage;
 
-        $total = $model->count($options);
+        $total = $model->count($filters, $searchColumns);
 
         return [
             'limit'      => $perPage,
             'offset'     => $offset,
             'pagination' => [
-                'current'  => $page,
-                'total'    => ceil($total / $perPage),
-                'total_records' => $total
+                'current'       => $page,
+                'total'         => ceil($total / $perPage),
+                'total_records' => $total,
+                'limit'    => $perPage,
             ]
         ];
     }

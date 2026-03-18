@@ -61,7 +61,8 @@ class EmbassyController extends BaseController
             'title'   => HelperService::trans('embassies_in') . ' ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
             'country'        => $country,
             'embassyElement' => $embassyElement,
-            'embassies'      => $embassies
+            'embassies'      => $embassies,
+            'layout'      => 'secondary'
         ]);
     }
 

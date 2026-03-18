@@ -104,7 +104,7 @@ use App\Services\HelperService;
 <?php endif; ?>
 
 <section>
-    <div class="aspect-video max-h-100 w-full overflow-hidden">
+    <div class="h-80 md:h-100 lg:h-120 w-full overflow-hidden">
         <?php
         $countryName = HelperService::getTranslation($country, 'name', 'country');
         $cityName    = HelperService::getTranslation($city, 'name', 'city');
@@ -113,26 +113,31 @@ use App\Services\HelperService;
         $mainTitle = !empty($category)
             ? "{$catName} " . HelperService::trans('in') . " {$cityName} - {$countryName}"
             : HelperService::trans('info_guide_of') . " {$cityName} - {$countryName}";
+
+        $imageUrl = !empty($category) ? $category['image_url'] : $city['image_url'];
         ?>
 
-        <?php if (!empty($category)): ?>
-            <img src="<?= $category['image_url'] ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($mainTitle) ?>">
-        <?php else: ?>
-            <img src="<?= $city['image_url'] ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($mainTitle) ?>">
-        <?php endif; ?>
+        <img src="<?= $imageUrl ?>"
+            class="w-full h-full object-cover object-center"
+            alt="<?= htmlspecialchars($mainTitle) ?>">
     </div>
 
     <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <div>
+        <div class="container mx-auto px-4 flex flex-col-reverse md:flex-row gap-2 justify-between items-center">
+
+            <div class="flex flex-col items-center">
                 <h1 class="text-xl md:text-2xl xl:text-3xl font-semibold tracking-wide">
                     <?= htmlspecialchars($mainTitle) ?>
                 </h1>
                 <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
             </div>
-            <div>
-                <button class="btn-primary"><?= HelperService::trans('municipal_cities') ?></button>
+
+            <div class="w-full md:w-auto">
+                <button class="btn-primary bg-primary-light text-primary-dark max-md:mt-1 md:w-auto justify-center">
+                    <?= HelperService::trans('municipal_cities') ?>
+                </button>
             </div>
+
         </div>
     </div>
 </section>

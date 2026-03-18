@@ -54,17 +54,23 @@ class AirlineController extends BaseController
     public function index()
     {
         $this->checkAccess('admin');
-        $pageData = $this->paginate($this->airlineModel);
 
-        $airlines = $this->airlineModel->all([
-            'order'  => 'sort_order ASC',
+        $filters = $this->getFilters();
+
+        $searchColumns = ['name'];
+
+        $pageData = $this->paginate($this->airlineModel, $filters, $searchColumns);
+
+        $airlines = $this->airlineModel->getFiltered(array_merge($filters, [
             'limit'  => $pageData['limit'],
-            'offset' => $pageData['offset']
-        ]);
+            'offset' => $pageData['offset'],
+            'order'  => 'sort_order ASC'
+        ]), $searchColumns);
 
         $this->render('admin/airlines/index', [
-            'title'      => 'Компании',
-            'airlines'  => $airlines,
+            'title'      => 'Авиолинии',
+            'airlines'   => $airlines,
+            'filters'    => $filters,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
         ]);

@@ -23,16 +23,21 @@ class CompanyAdController extends BaseController
     {
         $this->checkAccess(['admin', 'entrepreneur']);
 
-        $pageData = $this->paginate($this->adModel, 15);
+        $filters = $this->getFilters();
 
-        $ads = $this->adModel->getAllWithRelations(
-            $pageData['limit'],
-            $pageData['offset']
-        );
+        $searchColumns = ['name'];
+
+        $pageData = $this->paginate($this->adModel, $filters, $searchColumns);
+
+        $ads = $this->adModel->getAllWithRelations(array_merge($filters, [
+            'limit'  => $pageData['limit'],
+            'offset' => $pageData['offset']
+        ]), $searchColumns);
 
         $this->render('admin/ads/index', [
             'title'      => 'Реклами на компании',
             'ads'        => $ads,
+            'filters'    => $filters,
             'pagination' => $pageData['pagination'],
             'layout'     => 'admin'
         ]);

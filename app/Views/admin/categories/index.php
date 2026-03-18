@@ -22,6 +22,13 @@ use App\Core\View;
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="pt-5 px-5">
+        <?php View::component('search-bar', 'admin/components', [
+            'action'      => '/admin/categories',
+            'placeholder' => 'Търсене по име на категории...',
+        ]); ?>
+    </div>
+
     <?php View::component('page-header', 'admin/components', [
         'title'        => isset($parentId) ? 'Подкатегории' : 'Основни категории',
         'button_label' => 'Нова категория',

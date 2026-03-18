@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\Translation;
 use App\Core\View;
-use App\Core\Response;
 
 class TranslationController extends BaseController
 {
@@ -21,30 +20,21 @@ class TranslationController extends BaseController
     {
         $this->checkAccess('admin');
 
-        $incomplete = isset($_GET['incomplete']);
+        $filters = $this->getFilters();
 
-        $currentLang = $_GET['lang'] ?? 'bg';
-        $search = $_GET['search'] ?? null;
-        $perPage = (int)($_GET['per_page'] ?? 15);
+        $pageData = $this->paginate($this->translationModel, $filters, ['translation_value']);
 
-        $pageData = $this->paginate($this->translationModel, [
-            'search' => $search,
-            'incomplete' => $incomplete,
-        ], $perPage);
-
-        $translations = $this->translationModel->getUniqueKeys([
-            'where'  => ['lang_code' => $currentLang],
-            'search' => $search,
-            'incomplete' => $incomplete,
+        $translations = $this->translationModel->getUniqueKeys(array_merge($filters, [
             'limit'  => $pageData['limit'],
             'offset' => $pageData['offset'],
             'order'  => 'translation_key ASC'
-        ]);
+        ]));
 
         View::render('admin/translations/index', [
             'title'        => 'Езикови преводи',
             'translations' => $translations,
             'pagination'   => $pageData['pagination'],
+            'filters'      => $filters,
             'layout'       => 'admin'
         ]);
     }
