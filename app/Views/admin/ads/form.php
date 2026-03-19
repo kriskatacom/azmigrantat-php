@@ -9,8 +9,8 @@ $action = $isEdit ? "/admin/ads/update/{$ad['id']}" : "/admin/ads/store";
 <div class="mb-5">
     <?php View::component('breadcrumbs', 'admin/components', [
         'items' => [
-            ['label' => 'Реклами', 'url' => '/admin/ads'],
-            ['label' => $isEdit ? 'Редактиране' : 'Нова реклама']
+            ['label' => 'Услуги', 'url' => '/admin/ads'],
+            ['label' => $isEdit ? 'Редактиране' : 'Нова услуга']
         ]
     ]); ?>
 </div>
@@ -31,9 +31,9 @@ $action = $isEdit ? "/admin/ads/update/{$ad['id']}" : "/admin/ads/store";
     <?php ob_start(); ?>
     <div class="space-y-4">
         <div class="space-y-2">
-            <label class="text-sm font-semibold text-gray-600">Име/Заглавие на рекламата</label>
+            <label class="text-sm font-semibold text-gray-600">Име/Заглавие на услугата</label>
             <input type="text" name="name" id="ad-name"
-                value="<?= htmlspecialchars($ad['name'] ?? '') ?>" required
+                value="<?= htmlspecialchars($ad['name'] ?? '') ?>"
                 class="form-control">
         </div>
 
@@ -90,7 +90,7 @@ $action = $isEdit ? "/admin/ads/update/{$ad['id']}" : "/admin/ads/store";
                         const company = companiesData[companyId];
 
                         if (adNameInput && adNameInput.value === '') {
-                            adNameInput.value = "Реклама на " + company.name;
+                            adNameInput.value = "Услуга на " + company.name;
                         }
 
                         if (company.user_id && company.user_id !== "") {
@@ -120,7 +120,7 @@ $action = $isEdit ? "/admin/ads/update/{$ad['id']}" : "/admin/ads/store";
     <?php ob_start(); ?>
     <div class="grid md:grid-cols-2 gap-5 items-end">
         <div class="space-y-2">
-            <label class="text-sm font-semibold text-gray-600">Статус на рекламата</label>
+            <label class="text-sm font-semibold text-gray-600">Статус на услугата</label>
             <select name="status" class="form-control">
                 <?php
                 $statuses = [

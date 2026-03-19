@@ -7,36 +7,31 @@ $translatedCountryName = HelperService::getTranslation($country, 'name', 'countr
 $isBulgaria = $country['slug'] === 'bulgaria';
 ?>
 
-<section>
-    <div class="w-full h-100 md:h-120 overflow-hidden">
-        <img src="<?= $cityElement['image_url'] ?>"
-            class="w-full h-full object-cover"
-            alt="<?= htmlspecialchars($translatedCountryName) ?>">
-    </div>
+<?php
+$breadcrumbs = [
+    [
+        'label' => $translatedCountryName,
+        'href' => '/' . $country['slug']
+    ],
+    [
+        'label' => HelperService::trans('cities'),
+        'href' => ''
+    ]
+];
+?>
 
-    <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
-        <div class="container mx-auto px-4">
-            <h1 class="text-xl md:text-2xl xl:text-3xl font-semibold tracking-wide mb-4">
-                <?= HelperService::trans('cities_in') ?> <?= $translatedCountryName ?>
-            </h1>
+<?php View::component('search-hero', 'partials', [
+    'country'         => $country,
+    'backgroundImage' => $cityElement['image_url'] ?? '',
+    'title'           => $cityElement['name'],
+    'formAction'      => '/' . $country['slug'] . '/cities',
+    'placeholderKey'  => 'search_cities',
+    'breadcrumbs'   => $breadcrumbs,
+    'searchValue'     => $searchTerm ?? '',
+    'showSearch'     => true,
+]); ?>
 
-            <?php View::component('breadcrumbs', 'partials', [
-                'items' => [
-                    [
-                        'label' => $translatedCountryName,
-                        'href' => '/' . $country['slug']
-                    ],
-                    [
-                        'label' => HelperService::trans('cities'),
-                        'href' => ''
-                    ]
-                ]
-            ]); ?>
-        </div>
-    </div>
-</section>
-
-<main class="py-10">
+<main class="py-5">
     <div class="container mx-auto px-4">
         <?php if ($isBulgaria): ?>
             <?php View::component('bulgaria-map', 'cities/components', [
@@ -48,7 +43,8 @@ $isBulgaria = $country['slug'] === 'bulgaria';
                 'items'     => $cities,
                 'style'     => 'list',
                 'base_url'  => $country['slug'] . '/cities/',
-                'limit'     => 9
+                'limit'     => 9,
+                'show_search' => false,
             ]); ?>
         <?php endif; ?>
     </div>

@@ -58,7 +58,8 @@ class TravelController extends BaseController
             'title' => HelperService::trans($banner['name']),
             'banners' => $this->prepareBanners($banners),
             'banner' => $banner,
-            'airports' => $airports
+            'airports' => $airports,
+            'layout'   => 'secondary',
         ]);
     }
 
@@ -78,7 +79,8 @@ class TravelController extends BaseController
             'title' => HelperService::trans($banner['name']),
             'banners' => $this->prepareBanners($banners),
             'banner' => $banner,
-            'seo' => $seo
+            'seo' => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 
@@ -99,6 +101,7 @@ class TravelController extends BaseController
             'banners' => $this->prepareBanners($banners),
             'banner' => $banner,
             'seo' => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 
@@ -119,6 +122,7 @@ class TravelController extends BaseController
             'banners' => $this->prepareBanners($banners),
             'banner' => $banner,
             'seo' => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 
@@ -139,6 +143,7 @@ class TravelController extends BaseController
             'banners' => $this->prepareBanners($banners),
             'banner' => $banner,
             'seo' => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 }

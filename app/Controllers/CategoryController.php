@@ -196,7 +196,8 @@ class CategoryController extends BaseController
             'category'    => $category,
             'ads'         => $ads,
             'offers'      => $offers,
-            'breadcrumbs' => $breadcrumbs
+            'breadcrumbs' => $breadcrumbs,
+            'layout' => 'secondary'
         ]);
     }
 

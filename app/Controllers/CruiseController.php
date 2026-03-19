@@ -37,6 +37,7 @@ class CruiseController extends BaseController
             'banner' => $banner,
             'cruisesBanner' => $cruisesBanner,
             'cruises' => $cruises,
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
                 'title'       => HelperService::trans($banner['name']),
                 'description' => HelperService::trans($banner['description'] ?? ''),

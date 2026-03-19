@@ -10,7 +10,6 @@ $translatableFields = [
     'your_location'        => ['label' => 'Точен адрес (Текст)', 'type' => 'text'],
     'services_description' => ['label' => 'Услуги на компанията', 'type' => 'editor'],
     'description'          => ['label' => 'Пълно описание', 'type' => 'editor'],
-    'contacts_content'     => ['label' => 'Допълнителна информация за контакти', 'type' => 'editor']
 ];
 
 $companyData = [
@@ -106,7 +105,7 @@ $companyData = [
 
             <?php View::component('image-upload', 'admin/components', [
                 'name'  => 'ads_image_url',
-                'label' => 'Изображение за рекламите',
+                'label' => 'Изображение за услугите',
                 'value' => $company['ads_image_url'] ?? null,
                 'id'    => 'company-ads-image'
             ]); ?>
@@ -120,7 +119,7 @@ $companyData = [
         </div>
 
         <?php View::component('lightbox', 'admin/components'); ?>
-        <?php View::component('card', 'admin/components', ['title' => 'Медия и Реклама', 'slot' => ob_get_clean()]); ?>
+        <?php View::component('card', 'admin/components', ['title' => 'Медия и Услуга', 'slot' => ob_get_clean()]); ?>
 
         <?php ob_start(); ?>
         <div class="space-y-4">
@@ -196,12 +195,6 @@ $companyData = [
                 'label' => 'Пълно описание',
                 'value' => $company['description'] ?? null,
             ]); ?>
-
-            <?php View::component('editor', 'admin/components', [
-                'name'  => 'contacts_content',
-                'label' => 'Допълнителна информация за контакти',
-                'value' => $company['contacts_content'] ?? null,
-            ]); ?>
         </div>
         <?php View::component('card', 'admin/components', ['title' => 'Текстово съдържание', 'slot' => ob_get_clean()]); ?>
 
@@ -218,12 +211,38 @@ $companyData = [
                 <input type="text" name="facebook_page_link" value="<?= htmlspecialchars($company['facebook_page_link'] ?? '') ?>" placeholder="https://facebook.com/..."
                     class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none">
             </div>
+
+            <div class="space-y-2">
+                <label class="text-sm font-semibold text-gray-600">Уебсайт</label>
+                <input type="text" name="website_link" value="<?= htmlspecialchars($company['website_link'] ?? '') ?>" placeholder="https://example.com"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none">
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-sm font-semibold text-gray-600">Имейл</label>
+                <input type="email" name="email" value="<?= htmlspecialchars($company['email'] ?? '') ?>" placeholder="info@example.com"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none">
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-sm font-semibold text-gray-600">Телефон</label>
+                <input type="tel" name="phone" value="<?= htmlspecialchars($company['phone'] ?? '') ?>" placeholder="+359 123 456 789"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none">
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-sm font-semibold text-gray-600">Физически адрес</label>
+                <input type="text" name="address" value="<?= htmlspecialchars($company['address'] ?? '') ?>" placeholder="гр. София, ул. Тинтява 99"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none">
+            </div>
         </div>
 
-        <div class="space-y-2 mt-5">
-            <label class="text-sm font-semibold text-gray-600">Уебсайт</label>
-            <input type="text" name="website_link" value="<?= htmlspecialchars($company['website_link'] ?? '') ?>" placeholder="https://example.com"
-                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none">
+        <div class="mt-5">
+            <?php View::component('editor', 'admin/components', [
+                'name'  => 'working_time',
+                'label' => 'Работно време',
+                'value' => $company['working_time'] ?? null,
+            ]); ?>
         </div>
 
         <div class="mt-5">
@@ -232,6 +251,12 @@ $companyData = [
                 'label' => 'Google Map Embed/Link',
                 'value' => $company['google_map'] ?? ''
             ]); ?>
+        </div>
+
+        <div class="space-y-2 mt-5">
+            <label class="text-sm font-semibold text-gray-600">Линк за упътване (Google Map)</label>
+            <input type="text" name="your_location" value="<?= htmlspecialchars($company['your_location'] ?? '') ?>" placeholder="https://example.com"
+                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none">
         </div>
 
         <?php View::component('card', 'admin/components', ['title' => 'Локация и Връзки', 'slot' => ob_get_clean()]); ?>
@@ -258,13 +283,12 @@ $companyData = [
         ]); ?>
 
         <?php View::component('card', 'admin/components', ['title' => 'Статус и запис', 'slot' => ob_get_clean()]); ?>
-        
+
         <div class="mt-5 pt-5 border-t border-slate-100">
             <?php View::component('submit-button', 'admin/components', [
                 'text' => !$isEdit ? 'Създаване' : 'Запазване',
                 'is_active' => $company['is_active'] ?? true
             ]); ?>
         </div>
-
     </form>
 </div>

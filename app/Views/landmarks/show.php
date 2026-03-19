@@ -15,16 +15,16 @@ $breadcrumbs = [
     ['label' => $landmarkName, 'href' => '']
 ];
 ?>
-<div class="aspect-video max-h-100 w-full">
-    <img src="<?= HelperService::getImage($landmark['image_url']) ?>" class="w-full h-full object-cover">
-</div>
 
-<div class="text-white bg-primary-dark py-3 md:py-5">
-    <h1 class="text-xl md:text-2xl lg:text-3xl font-semibold text-center">
-        <?= $landmarkName ?>
-    </h1>
-    <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
-</div>
+<?php View::component('search-hero', 'partials', [
+    'country'         => $country,
+    'backgroundImage' => $landmark['image_url'] ?? '',
+    'title'           => $landmark['name'],
+    'formAction'      => '/' . $country['slug'] . '/landmarks',
+    'placeholderKey'  => 'search_landmarks',
+    'breadcrumbs'   => $breadcrumbs,
+    'searchValue'     => $searchTerm ?? ''
+]); ?>
 
 <div class="container mx-auto px-2 md:px-5 mt-2 md:mt-5">
     <div class="grid grid-cols-2 gap-2 md:gap-5">

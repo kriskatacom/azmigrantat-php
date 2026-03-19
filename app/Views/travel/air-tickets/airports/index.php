@@ -7,27 +7,18 @@ $airTicketsName = isset($airTicketsBanner) ? HelperService::getTranslation($airT
 $currentBannerName = isset($banner) ? HelperService::getTranslation($banner, 'name', 'banner') : '';
 
 $breadcrumbs = [
+    ['label' => HelperService::trans('travel'), 'href' => '/travel'],
     ['label' => $airTicketsName, 'href' => '/travel/air-tickets'],
     ['label' => $currentBannerName],
 ];
 ?>
 
-<section>
-    <?php if (isset($banner)): ?>
-        <?= View::component('show-banner', 'partials', ['banner' => $banner]) ?>
-    <?php endif; ?>
-    
-    <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
-        <div class="container mx-auto px-4">
-            <h1 class="text-xl md:text-2xl xl:text-3xl font-bold uppercase tracking-wide">
-                <?= htmlspecialchars($currentBannerName) ?>
-            </h1>
-            <?php View::component('breadcrumbs', 'partials', [
-                'items' => $breadcrumbs,
-            ]); ?>
-        </div>
-    </div>
-</section>
+<?php View::component('search-hero', 'partials', [
+    'backgroundImage' => $banner['image_url'] ?? '',
+    'title'           => HelperService::getTranslation($banner, 'name', 'banner'),
+    'breadcrumbs'   => $breadcrumbs,
+    'searchValue'     => $searchTerm ?? '',
+]); ?>
 
 <main>
     <?php 
@@ -39,7 +30,6 @@ $breadcrumbs = [
     View::component('load-more-grid', 'partials', [
         'items'       => $translatedCountries,
         'card_name'   => 'item-card',
-        'show_search' => false,
         'base_url'    => '/travel/air-tickets/airports',
     ]); 
     ?>

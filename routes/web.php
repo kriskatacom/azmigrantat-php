@@ -132,7 +132,7 @@ $router->post('/admin/companies/update/{id}', [CompanyController::class, 'update
 $router->post('/admin/companies/delete/{id}', [CompanyController::class, 'delete']);
 $router->post('/admin/companies/update-order', [CompanyController::class, 'updateOrder']);
 
-// Реклами на компании (Company Ads)
+// Услуги на компании (Company Ads)
 $router->get('/admin/ads', [CompanyAdController::class, 'index']);
 $router->get('/admin/ads/create', [CompanyAdController::class, 'create']);
 $router->post('/admin/ads/store', [CompanyAdController::class, 'store']);

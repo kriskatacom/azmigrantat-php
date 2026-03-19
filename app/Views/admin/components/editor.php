@@ -6,7 +6,7 @@ $uniqueId = 'editor_' . bin2hex(random_bytes(4));
     <label class="text-sm font-semibold text-gray-600 block"><?= $label ?? 'Текст' ?></label>
     
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-        <div id="<?= $uniqueId ?>" style="height: 300px;">
+        <div id="<?= $uniqueId ?>" style="height: 300px;" class="wysiwyg-text">
             <?= $value ?? '' ?>
         </div>
     </div>

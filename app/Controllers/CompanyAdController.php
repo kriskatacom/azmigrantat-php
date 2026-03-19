@@ -35,7 +35,7 @@ class CompanyAdController extends BaseController
         ]), $searchColumns);
 
         $this->render('admin/ads/index', [
-            'title'      => 'Реклами на компании',
+            'title'      => 'Услуги на компании',
             'ads'        => $ads,
             'filters'    => $filters,
             'pagination' => $pageData['pagination'],
@@ -48,7 +48,7 @@ class CompanyAdController extends BaseController
         $this->checkAccess(['admin', 'entrepreneur']);
 
         $this->render('admin/ads/form', [
-            'title'     => 'Нова реклама',
+            'title'     => 'Нова услуга',
             'companies' => $this->companyModel->getAllWithRelations(),
             'users'     => $this->userModel->all(),
             'nextOrder' => $this->adModel->getNextSortOrder(),
@@ -63,7 +63,7 @@ class CompanyAdController extends BaseController
         $_POST['user_id'] = !empty($_POST['auto_user_id']) ? $_POST['auto_user_id'] : ($_POST['user_id'] ?? null);
 
         if (empty($_POST['user_id'])) {
-            $this->flash('error', 'Моля, изберете собственик за тази реклама.');
+            $this->flash('error', 'Моля, изберете собственик за тази услуга.');
             $this->redirect($_SERVER['HTTP_REFERER']);
         }
 
@@ -76,12 +76,12 @@ class CompanyAdController extends BaseController
 
         $ad = $this->adModel->find((int)$id);
         if (!$ad) {
-            $this->flash('error', 'Рекламата не е намерена.');
+            $this->flash('error', 'Услугата не е намерена.');
             $this->redirect('/admin/ads');
         }
 
         $this->render('admin/ads/form', [
-            'title'     => 'Редакция на реклама: ' . $ad['name'],
+            'title'     => 'Редакция на услуга: ' . $ad['name'],
             'ad'        => $ad,
             'companies' => $this->companyModel->all(['order' => 'name ASC']),
             'users'     => $this->userModel->all(),

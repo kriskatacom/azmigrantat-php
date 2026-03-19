@@ -13,7 +13,8 @@ $translatedCountryName = HelperService::getTranslation($country, 'name', 'countr
     'formAction'      => '/' . $country['slug'] . '/landmarks',
     'placeholderKey'  => 'search_landmarks',
     'breadcrumbs'   => $breadcrumbs,
-    'searchValue'     => $searchTerm ?? ''
+    'searchValue'     => $searchTerm ?? '',
+    'showSearch'     => true,
 ]); ?>
 
 <main>

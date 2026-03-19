@@ -46,7 +46,7 @@ $cancelText = $cancelText ?? HelperService::trans('cancel');
                 </button>
             </div>
 
-            <div class="px-6 py-4 text-gray-600">
+            <div class="wysiwyg-text px-6 py-4 text-gray-600 overflow-auto max-h-100">
                 <?= $content ?>
             </div>
 

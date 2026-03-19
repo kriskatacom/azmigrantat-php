@@ -47,7 +47,8 @@ class AutobusController extends BaseController
             'banner' => $banner,
             'autobusesBanner' => $autobusesBanner,
             'countries' => $countries,
-            'seo' => $seo
+            'seo' => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 
@@ -88,7 +89,8 @@ class AutobusController extends BaseController
             'autobusesBanner' => $autobusesBanner,
             'country' => $country,
             'cities' => $cities,
-            'seo' => $seo
+            'seo' => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 
@@ -133,7 +135,8 @@ class AutobusController extends BaseController
             'country' => $country,
             'city' => $city,
             'autobuses' => $autobuses,
-            'seo' => $seo
+            'seo' => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 

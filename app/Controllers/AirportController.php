@@ -40,6 +40,7 @@ class AirportController extends BaseController
             'banner' => $banner,
             'airTicketsBanner' => $airTicketsBanner,
             'countries' => $countries,
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
                 'title'       => HelperService::trans($banner['name']),
                 'description' => HelperService::trans($banner['description'] ?? ''),
@@ -75,8 +76,9 @@ class AirportController extends BaseController
             'airportsBanner' => $airportsBanner,
             'country' => $country,
             'airports' => $airports,
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
-                'title'       => HelperService::trans($banner['name']),
+                'title'       => HelperService::trans($banner['name'] ?? ''),
                 'description' => HelperService::trans($banner['description'] ?? ''),
             ])
         ]);

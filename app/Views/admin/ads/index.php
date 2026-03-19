@@ -2,7 +2,7 @@
 
 <div class="mb-5">
     <?php View::component('breadcrumbs', 'admin/components', [
-        'items' => [['label' => 'Реклами', 'url' => '/admin/ads']]
+        'items' => [['label' => 'Услуги', 'url' => '/admin/ads']]
     ]); ?>
 </div>
 
@@ -10,20 +10,20 @@
     <div class="pt-5 px-5">
         <?php View::component('search-bar', 'admin/components', [
             'action'      => '/admin/ads',
-            'placeholder' => 'Търсене по име на реклама на компания...',
+            'placeholder' => 'Търсене по име на услуга на компания...',
         ]); ?>
     </div>
     
     <?php View::component('page-header', 'admin/components', [
-        'title' => 'Реклами на компании',
-        'button_label' => 'Нова реклама',
+        'title' => 'Услуги на компании',
+        'button_label' => 'Нова услуга',
         'button_url' => '/admin/ads/create'
     ]); ?>
 
     <?php
     $headers = [
         ['label' => 'Ред'],
-        ['label' => 'Реклама'],
+        ['label' => 'Услуга'],
         ['label' => 'Компания'],
         ['label' => 'Статус', 'align' => 'center'],
         ['label' => 'Дата', 'align' => 'center'],

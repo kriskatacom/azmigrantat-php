@@ -34,6 +34,11 @@ class CityController extends BaseController
             exit(HelperService::trans('error_country_not_found'));
         }
 
+        $country['entity_type'] = 'country';
+
+        // Вземаме термина за търсене
+        $searchTerm = $_GET['search'] ?? null;
+
         $cityElement = $elementModel->all([
             'where' => [
                 'country_id' => $country['id'],
@@ -42,24 +47,53 @@ class CityController extends BaseController
             ]
         ])[0] ?? null;
 
-        $cities = $this->cityModel->all([
+        if ($cityElement) {
+            $cityElement['entity_type'] = 'country_element';
+        }
+
+        // Подготвяме опциите за филтриране
+        $filterOptions = [
             'where' => [
                 'country_id' => $country['id'],
                 'is_active'  => 1
             ],
             'order' => 'sort_order ASC'
-        ]);
+        ];
+
+        // Логика за търсене
+        if (!empty($searchTerm)) {
+            $filterOptions = [
+                'where'  => ['country_id' => $country['id']],
+                'search' => $searchTerm, // Моделът трябва да поддържа 'search' ключ
+                'order'  => 'sort_order ASC'
+            ];
+
+            // Тук приемаме, че имаш метод getFiltered в CityModel, подобно на LandmarkModel
+            $cities = $this->cityModel->getFiltered($filterOptions);
+        } else {
+            $cities = $this->cityModel->all($filterOptions);
+        }
 
         foreach ($cities as &$city) {
             $city['entity_type'] = 'city';
         }
 
         View::render('cities/index', [
-            'title'     => HelperService::trans('cities_in') . ' ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
+            'title'       => HelperService::trans('cities_in') . ' ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
             'country'     => $country,
             'cityElement' => $cityElement,
             'cities'      => $cities,
+            'searchTerm'  => $searchTerm, // Подаваме го към View-то, за да го покажем в input полето
             'layout'      => 'secondary',
+            'breadcrumbs' => [
+                [
+                    'label' => HelperService::getTranslation($country, 'name', 'country'),
+                    'href'  => '/' . $country['slug']
+                ],
+                [
+                    'label' => HelperService::trans('cities'),
+                ],
+            ],
         ]);
     }
 

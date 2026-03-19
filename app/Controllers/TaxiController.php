@@ -43,6 +43,8 @@ class TaxiController extends BaseController
             'banner' => $banner,
             'taxisBanner' => $taxisBanner,
             'countries' => $countries,
+            'layout'   => 'secondary',
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
                 'title'       => HelperService::trans($banner['name']),
                 'description' => HelperService::trans($banner['description'] ?? ''),
@@ -81,6 +83,8 @@ class TaxiController extends BaseController
             'taxisBanner' => $taxisBanner,
             'country' => $country,
             'cities' => $cities,
+            'layout'   => 'secondary',
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
                 'title'       => HelperService::trans($banner['name']),
                 'description' => HelperService::trans($banner['description'] ?? ''),
@@ -123,6 +127,7 @@ class TaxiController extends BaseController
             'country' => $country,
             'city' => $city,
             'taxis' => $taxis,
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
                 'title'       => HelperService::trans($banner['name']),
                 'description' => HelperService::trans($banner['description'] ?? ''),

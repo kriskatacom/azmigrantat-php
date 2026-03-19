@@ -44,6 +44,7 @@ class AirlineController extends BaseController
             'airTicketsBanner' => $airTicketsBanner,
             'airlinesBanner' => $airlinesBanner,
             'airlines' => $airlines,
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
                 'title'       => HelperService::trans($banner['name']),
                 'description' => HelperService::trans($banner['description'] ?? ''),

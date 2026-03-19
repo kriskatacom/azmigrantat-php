@@ -13,7 +13,8 @@ $translatedCountryName = HelperService::getTranslation($country, 'name', 'countr
     'formAction'      => '/' . $country['slug'] . '/embassies',
     'placeholderKey'  => 'search_embassies',
     'breadcrumbs'   => $breadcrumbs,
-    'searchValue'     => $searchTerm ?? ''
+    'searchValue'     => $searchTerm ?? '',
+    'showSearch'     => true,
 ]); ?>
 
 <main>

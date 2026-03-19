@@ -43,6 +43,7 @@ class TrainController extends BaseController
             'banner' => $banner,
             'trainsBanner' => $trainsBanner,
             'countries' => $countries,
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
                 'title'       => HelperService::trans($banner['name']),
                 'description' => HelperService::trans($banner['description'] ?? ''),
@@ -82,6 +83,7 @@ class TrainController extends BaseController
             'trainsBanner' => $trainsBanner,
             'country' => $country,
             'cities' => $cities,
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
                 'title'       => HelperService::trans($banner['name']),
                 'description' => HelperService::trans($banner['description'] ?? ''),
@@ -125,6 +127,7 @@ class TrainController extends BaseController
             'country' => $country,
             'city' => $city,
             'trains' => $trains,
+            'layout'   => 'secondary',
             'seo' => new MetaTagsService([
                 'title'       => HelperService::trans($banner['name']),
                 'description' => HelperService::trans($banner['description'] ?? ''),

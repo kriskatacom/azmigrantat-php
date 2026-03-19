@@ -17,8 +17,8 @@ $mainTitle = !empty($category) ? "{$catName} " . HelperService::trans('in') . " 
 $imageUrl = !empty($category) ? $category['image_url'] : $city['image_url'];
 
 ob_start(); ?>
-<div class="w-full md:w-auto mb-2 flex justify-center">
-    <a href="#" class="text-base text-primary-light hover:underline cursor-pointer"><?= HelperService::trans('municipal_cities') ?></a>
+<div class="w-full md:w-auto mb-4 flex justify-center">
+    <a href="#" class="text-base bg-primary-light/80 py-1 px-2 rounded hover:underline cursor-pointer"><?= HelperService::trans('municipal_cities') ?></a>
 </div>
 <?php $slotContent = ob_get_clean();
 
@@ -32,6 +32,7 @@ View::component('search-hero', 'partials', [
     'breadcrumbKey'   => !empty($category) ? 'category' : 'city',
     'breadcrumbs'     => $breadcrumbs,
     'slot'            => $slotContent,
+    'showSearch'     => true,
 ]);
 ?>
 

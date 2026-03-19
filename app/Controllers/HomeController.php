@@ -49,12 +49,13 @@ class HomeController
             'countries' => $countries,
             'banners'   => $banners,
             'seo'   => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 
     public function travel()
     {
-        $mainBanner = $this->bannerModel->where('link', '/travel')[0] ?? null;
+        $mainBanner = $this->bannerModel->where('link', '/travel-page')[0] ?? null;
         if ($mainBanner) {
             $mainBanner['entity_type'] = 'banner';
         }
@@ -84,7 +85,8 @@ class HomeController
             'title'   => HelperService::trans('travel_meta_title'),
             'banner'  => $mainBanner,
             'banners' => $items,
-            'seo' => $seo
+            'seo' => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 
@@ -129,7 +131,8 @@ class HomeController
             'drivers'     => $drivers,
             'citiesJson'  => json_encode($allCities, JSON_UNESCAPED_UNICODE),
             'breadcrumbs' => $breadcrumbs,
-            'seo' => $seo
+            'seo' => $seo,
+            'layout'   => 'secondary',
         ]);
     }
 }
