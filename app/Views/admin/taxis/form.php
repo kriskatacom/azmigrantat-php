@@ -64,14 +64,19 @@ $action = $isEdit ? "/admin/taxis/update/{$taxi['id']}" : "/admin/taxis/store";
         ]); ?>
     </div>
 
+    <?php ob_start(); ?>
     <?php View::component('toggle', 'admin/components', [
         'name'  => 'is_active',
         'label' => 'Показвай в сайта',
         'value' => $taxi['is_active'] ?? true
     ]); ?>
 
-    <?php View::component('submit-button', 'admin/components', [
-        'text' => !$isEdit ? 'Създаване' : 'Запазване',
-        'is_active' => $taxi['is_active'] ?? true
-    ]); ?>
+    <?php View::component('card', 'admin/components', ['title' => 'Статус и запис', 'slot' => ob_get_clean()]); ?>
+
+    <div class="mt-5 pt-5 border-t border-slate-100">
+        <?php View::component('submit-button', 'admin/components', [
+            'text' => !$isEdit ? 'Създаване' : 'Запазване',
+            'is_active' => $taxi['is_active'] ?? true
+        ]); ?>
+    </div>
 </form>

@@ -99,108 +99,107 @@ $router->post('/admin/banners/update-order', [BannerController::class, 'updateOr
 $router->get('/admin/cities', [CityController::class, 'index']);
 $router->get('/admin/cities/create', [CityController::class, 'create']);
 $router->post('/admin/cities/store', [CityController::class, 'store']);
-$router->get('/admin/cities/edit/(\d+)', [CityController::class, 'edit']);
-$router->post('/admin/cities/update/(\d+)', [CityController::class, 'update']);
-$router->post('/admin/cities/delete/(\d+)', [CityController::class, 'delete']);
-$router->get('/api/cities-by-country/(\d+)', [CityController::class, 'getByCountry']);
+$router->get('/admin/cities/edit/{id}', [CityController::class, 'edit']);
+$router->post('/admin/cities/update/{id}', [CityController::class, 'update']);
+$router->post('/admin/cities/delete/{id}', [CityController::class, 'delete']);
+$router->get('/api/cities-by-country/{id}', [CityController::class, 'getByCountry']);
 $router->post('/admin/cities/update-order', [CityController::class, 'updateOrder']);
 
-// Автобуси (Autobuses / Bus Lines)
+// Автобуси (Autobuses)
 $router->get('/admin/autobuses', [AutobusController::class, 'index']);
 $router->get('/admin/autobuses/create', [AutobusController::class, 'create']);
 $router->post('/admin/autobuses/store', [AutobusController::class, 'store']);
-$router->get('/admin/autobuses/edit/(\d+)', [AutobusController::class, 'edit']);
-$router->post('/admin/autobuses/update/(\d+)', [AutobusController::class, 'update']);
-$router->post('/admin/autobuses/delete/(\d+)', [AutobusController::class, 'delete']);
+$router->get('/admin/autobuses/edit/{id}', [AutobusController::class, 'edit']);
+$router->post('/admin/autobuses/update/{id}', [AutobusController::class, 'update']);
+$router->post('/admin/autobuses/delete/{id}', [AutobusController::class, 'delete']);
 $router->post('/admin/autobuses/update-order', [AutobusController::class, 'updateOrder']);
 
 // Авиокомпании (Airlines)
 $router->get('/admin/airlines', [AirlineController::class, 'index']);
 $router->get('/admin/airlines/create', [AirlineController::class, 'create']);
 $router->post('/admin/airlines/store', [AirlineController::class, 'store']);
-$router->get('/admin/airlines/edit/(\d+)', [AirlineController::class, 'edit']);
-$router->post('/admin/airlines/update/(\d+)', [AirlineController::class, 'update']);
-$router->post('/admin/airlines/delete/(\d+)', [AirlineController::class, 'delete']);
+$router->get('/admin/airlines/edit/{id}', [AirlineController::class, 'edit']);
+$router->post('/admin/airlines/update/{id}', [AirlineController::class, 'update']);
+$router->post('/admin/airlines/delete/{id}', [AirlineController::class, 'delete']);
 $router->post('/admin/airlines/update-order', [AirlineController::class, 'updateOrder']);
 
 // Компании (Companies)
 $router->get('/admin/companies', [CompanyController::class, 'index']);
 $router->get('/admin/companies/create', [CompanyController::class, 'create']);
 $router->post('/admin/companies/store', [CompanyController::class, 'store']);
-$router->get('/admin/companies/edit/(\d+)', [CompanyController::class, 'edit']);
-$router->post('/admin/companies/update/(\d+)', [CompanyController::class, 'update']);
-$router->post('/admin/companies/delete/(\d+)', [CompanyController::class, 'delete']);
+$router->get('/admin/companies/edit/{id}', [CompanyController::class, 'edit']);
+$router->post('/admin/companies/update/{id}', [CompanyController::class, 'update']);
+$router->post('/admin/companies/delete/{id}', [CompanyController::class, 'delete']);
 $router->post('/admin/companies/update-order', [CompanyController::class, 'updateOrder']);
 
 // Реклами на компании (Company Ads)
 $router->get('/admin/ads', [CompanyAdController::class, 'index']);
 $router->get('/admin/ads/create', [CompanyAdController::class, 'create']);
 $router->post('/admin/ads/store', [CompanyAdController::class, 'store']);
-$router->get('/admin/ads/edit/(\d+)', [CompanyAdController::class, 'edit']);
-$router->post('/admin/ads/update/(\d+)', [CompanyAdController::class, 'update']);
-$router->post('/admin/ads/delete/(\d+)', [CompanyAdController::class, 'delete']);
+$router->get('/admin/ads/edit/{id}', [CompanyAdController::class, 'edit']);
+$router->post('/admin/ads/update/{id}', [CompanyAdController::class, 'update']);
+$router->post('/admin/ads/delete/{id}', [CompanyAdController::class, 'delete']);
 $router->post('/admin/ads/update-order', [CompanyAdController::class, 'updateOrder']);
 
 // Обяви на компании (Company Offers)
 $router->get('/admin/offers', [CompanyOfferController::class, 'index']);
 $router->get('/admin/offers/create', [CompanyOfferController::class, 'create']);
 $router->post('/admin/offers/store', [CompanyOfferController::class, 'store']);
-$router->get('/admin/offers/edit/(\d+)', [CompanyOfferController::class, 'edit']);
-$router->post('/admin/offers/update/(\d+)', [CompanyOfferController::class, 'update']);
-$router->post('/admin/offers/delete/(\d+)', [CompanyOfferController::class, 'delete']);
+$router->get('/admin/offers/edit/{id}', [CompanyOfferController::class, 'edit']);
+$router->post('/admin/offers/update/{id}', [CompanyOfferController::class, 'update']);
+$router->post('/admin/offers/delete/{id}', [CompanyOfferController::class, 'delete']);
 $router->post('/admin/offers/update-order', [CompanyOfferController::class, 'updateOrder']);
 
 // Летища (Airports)
 $router->get('/admin/airports', [AirportController::class, 'index']);
 $router->get('/admin/airports/create', [AirportController::class, 'create']);
 $router->post('/admin/airports/store', [AirportController::class, 'store']);
-$router->get('/admin/airports/edit/(\d+)', [AirportController::class, 'edit']);
-$router->post('/admin/airports/update/(\d+)', [AirportController::class, 'update']);
-$router->post('/admin/airports/delete/(\d+)', [AirportController::class, 'delete']);
-$router->post('/admin/airports/update-order', [airportController::class, 'updateOrder']);
+$router->get('/admin/airports/edit/{id}', [AirportController::class, 'edit']);
+$router->post('/admin/airports/update/{id}', [AirportController::class, 'update']);
+$router->post('/admin/airports/delete/{id}', [AirportController::class, 'delete']);
+$router->post('/admin/airports/update-order', [AirportController::class, 'updateOrder']);
 
 // Влакове (Trains)
 $router->get('/admin/trains', [TrainController::class, 'index']);
 $router->get('/admin/trains/create', [TrainController::class, 'create']);
 $router->post('/admin/trains/store', [TrainController::class, 'store']);
-$router->get('/admin/trains/edit/(\d+)', [TrainController::class, 'edit']);
-$router->post('/admin/trains/update/(\d+)', [TrainController::class, 'update']);
-$router->post('/admin/trains/delete/(\d+)', [TrainController::class, 'delete']);
+$router->get('/admin/trains/edit/{id}', [TrainController::class, 'edit']);
+$router->post('/admin/trains/update/{id}', [TrainController::class, 'update']);
+$router->post('/admin/trains/delete/{id}', [TrainController::class, 'delete']);
 $router->post('/admin/trains/update-order', [TrainController::class, 'updateOrder']);
 
 // Таксита (Taxis)
 $router->get('/admin/taxis', [TaxiController::class, 'index']);
 $router->get('/admin/taxis/create', [TaxiController::class, 'create']);
 $router->post('/admin/taxis/store', [TaxiController::class, 'store']);
-$router->get('/admin/taxis/edit/(\d+)', [TaxiController::class, 'edit']);
-$router->post('/admin/taxis/update/(\d+)', [TaxiController::class, 'update']);
-$router->post('/admin/taxis/delete/(\d+)', [TaxiController::class, 'delete']);
+$router->get('/admin/taxis/edit/{id}', [TaxiController::class, 'edit']);
+$router->post('/admin/taxis/update/{id}', [TaxiController::class, 'update']);
+$router->post('/admin/taxis/delete/{id}', [TaxiController::class, 'delete']);
 $router->post('/admin/taxis/update-order', [TaxiController::class, 'updateOrder']);
 
 // Категории (Categories)
 $router->get('/admin/categories', [CategoryController::class, 'index']);
 $router->get('/admin/categories/create', [CategoryController::class, 'create']);
 $router->post('/admin/categories/store', [CategoryController::class, 'store']);
-$router->get('/admin/categories/edit/(\d+)', [CategoryController::class, 'edit']);
-$router->post('/admin/categories/update/(\d+)', [CategoryController::class, 'update']);
-$router->post('/admin/categories/delete/(\d+)', [CategoryController::class, 'delete']);
+$router->get('/admin/categories/edit/{id}', [CategoryController::class, 'edit']);
+$router->post('/admin/categories/update/{id}', [CategoryController::class, 'update']);
+$router->post('/admin/categories/delete/{id}', [CategoryController::class, 'delete']);
 $router->post('/admin/categories/update-order', [CategoryController::class, 'updateOrder']);
 
 // Преводи (Translations)
 $router->get('/admin/translations', [TranslationController::class, 'index']);
 $router->get('/admin/translations/create', [TranslationController::class, 'create']);
 $router->post('/admin/translations/store', [TranslationController::class, 'store']);
-$router->get('/admin/translations/edit/(\d+)', [TranslationController::class, 'edit']);
-$router->post('/admin/translations/update/(\d+)', [TranslationController::class, 'update']);
-$router->post('/admin/translations/delete/([^/]+)', [TranslationController::class, 'delete']);
-
+$router->get('/admin/translations/edit/{id}', [TranslationController::class, 'edit']);
+$router->post('/admin/translations/update/{id}', [TranslationController::class, 'update']);
+$router->post('/admin/translations/delete/{key}', [TranslationController::class, 'delete']);
 $router->post('/admin/translations/confirm/{entity}/{id}', [TranslationController::class, 'confirmTranslations']);
 
 // --- Шофьори (Drivers)
 $router->get('/admin/users/edit/{id}', [DriverController::class, 'account']);
 $router->post('/admin/users/update/{id}', [DriverController::class, 'updateAccount']);
 
-// --- Начална страница & Общи ---
+// --- Начална страница ---
 $router->get('/', [HomeController::class, 'index']);
 
 // --- Пътувания (Travel) ---
@@ -209,29 +208,10 @@ $router->get('/travel/shared-travel', [HomeController::class, 'sharedTravel']);
 $router->get('/travel/shared-travel/drivers', [DriverController::class, 'index']);
 $router->get('/travel/shared-travel/drivers/{username}', [DriverController::class, 'show']);
 
-// --- Държави & Локации ({countrySlug}) ---
-$router->get('/{countrySlug}', [CountryController::class, 'show']);
-
-// Посолства
-$router->get('/{countrySlug}/embassies', [EmbassyController::class, 'indexByCountry']);
-$router->get('/{countrySlug}/embassies/{embassySlug}', [EmbassyController::class, 'show']);
-
-// Забележителности
-$router->get('/{countrySlug}/landmarks', [LandmarkController::class, 'indexByCountry']);
-$router->get('/{countrySlug}/landmarks/{landmarkSlug}', [LandmarkController::class, 'show']);
-
-// --- Градове & Категории ---
-$router->get('/{countrySlug}/cities', [CityController::class, 'indexByCountry']);
-$router->get('/{countrySlug}/cities/{citySlug}', [CategoryController::class, 'categoriesShow']);
-
-// Динамични пътища за категории (Catch-all)
-$router->get('/{countrySlug}/cities/{citySlug}/{categories*}', [CategoryController::class, 'categoriesShow']);
-
-// Ламолетни билети
+// --- Транспортни услуги ---
 $router->get('/travel/air-tickets', [TravelController::class, 'airTickets']);
 $router->get('/travel/air-tickets/airports', [AirportController::class, 'showCountries']);
 $router->get('/travel/air-tickets/airports/{countrySlug}', [AirportController::class, 'showByCountry']);
-
 $router->get('/travel/air-tickets/airlines', [AirlineController::class, 'all']);
 
 $router->get('/travel/autobuses', [TravelController::class, 'autobuses']);
@@ -251,5 +231,18 @@ $router->get('/travel/taxis/countries/{countrySlug}/{citySlug}', [TaxiController
 
 $router->get('/travel/cruises', [TravelController::class, 'cruises']);
 $router->get('/travel/cruises/cruise-companies', [CruiseController::class, 'show']);
+
+// --- Динамични страници (ВАЖНО: Трябва да са накрая) ---
+$router->get('/{countrySlug}', [CountryController::class, 'show']);
+
+$router->get('/{countrySlug}/embassies', [EmbassyController::class, 'indexByCountry']);
+$router->get('/{countrySlug}/embassies/{embassySlug}', [EmbassyController::class, 'show']);
+
+$router->get('/{countrySlug}/landmarks', [LandmarkController::class, 'indexByCountry']);
+$router->get('/{countrySlug}/landmarks/{landmarkSlug}', [LandmarkController::class, 'show']);
+
+$router->get('/{countrySlug}/cities', [CityController::class, 'indexByCountry']);
+$router->get('/{countrySlug}/cities/{citySlug}', [CategoryController::class, 'categoriesShow']);
+$router->get('/{countrySlug}/cities/{citySlug}/{categories*}', [CategoryController::class, 'categoriesShow']);
 
 return $router;

@@ -123,20 +123,6 @@ $landmarkData = [
                 </div>
             </div>
             <?php View::component('card', 'admin/components', ['title' => 'Медия', 'slot' => ob_get_clean()]); ?>
-
-            <?php ob_start(); ?>
-            <?php View::component('toggle', 'admin/components', [
-                'name'  => 'is_active',
-                'label' => 'Показвай в сайта',
-                'value' => $item['is_active'] ?? true,
-            ]); ?>
-            <div class="mt-5 pt-5 border-t border-slate-100">
-                <?php View::component('submit-button', 'admin/components', [
-                    'text' => !$isEdit ? 'Създаване' : 'Запазване',
-                    'is_active' => $item['is_active'] ?? true
-                ]); ?>
-            </div>
-            <?php View::component('card', 'admin/components', ['title' => 'Статус', 'slot' => ob_get_clean()]); ?>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -237,6 +223,20 @@ $landmarkData = [
                 </div>
                 <?php View::component('card', 'admin/components', ['title' => 'Локация и Контакти', 'slot' => ob_get_clean()]); ?>
             </div>
+        </div>
+
+        <?php ob_start(); ?>
+        <?php View::component('toggle', 'admin/components', [
+            'name'  => 'is_active',
+            'label' => 'Показвай в сайта',
+            'value' => $item['is_active'] ?? true,
+        ]); ?>
+        <?php View::component('card', 'admin/components', ['title' => 'Статус', 'slot' => ob_get_clean()]); ?>
+        <div class="mt-5 pt-5 border-t border-slate-100">
+            <?php View::component('submit-button', 'admin/components', [
+                'text' => !$isEdit ? 'Създаване' : 'Запазване',
+                'is_active' => $item['is_active'] ?? true
+            ]); ?>
         </div>
     </form>
 </div>

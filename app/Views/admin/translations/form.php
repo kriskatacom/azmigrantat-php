@@ -65,12 +65,6 @@ $languages = HelperService::AVAILABLE_LANGUAGES;
                 </div>
             </div>
             <?php View::component('card', 'admin/components', ['title' => 'Настройки', 'slot' => ob_get_clean()]); ?>
-
-            <div class="mt-6">
-                <?php View::component('submit-button', 'admin/components', [
-                    'text' => $isEdit ? 'Обнови всички езици' : 'Създай за всички езици',
-                ]); ?>
-            </div>
         </div>
 
         <div class="lg:col-span-3">
@@ -94,6 +88,12 @@ $languages = HelperService::AVAILABLE_LANGUAGES;
             <?php View::component('card', 'admin/components', [
                 'title' => 'Езикови версии',
                 'slot' => ob_get_clean()
+            ]); ?>
+        </div>
+        
+        <div class="mt-6">
+            <?php View::component('submit-button', 'admin/components', [
+                'text' => $isEdit ? 'Обнови всички езици' : 'Създай за всички езици',
             ]); ?>
         </div>
     </div>

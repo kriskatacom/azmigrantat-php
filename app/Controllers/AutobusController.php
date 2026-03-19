@@ -157,6 +157,20 @@ class AutobusController extends BaseController
         ]);
     }
 
+    public function create()
+    {
+        $this->checkAccess('admin');
+
+        $groups = $this->bannerModel->getUniqueGroups();
+
+        return View::render('admin/autobuses/form', [
+            'title'      => 'Добавяне на автобусна гара',
+            'countries' => $this->countryModel->all(['order' => 'name ASC']),
+            'groups'  => $groups,
+            'layout'     => 'admin'
+        ]);
+    }
+
     public function edit($id)
     {
         $this->checkAccess('admin');

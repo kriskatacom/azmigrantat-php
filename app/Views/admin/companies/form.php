@@ -250,13 +250,16 @@ $companyData = [
         </div>
         <?php View::component('card', 'admin/components', ['title' => 'Администриране', 'slot' => ob_get_clean()]); ?>
 
+        <?php ob_start(); ?>
         <?php View::component('toggle', 'admin/components', [
             'name'  => 'is_active',
             'label' => 'Показвай в сайта',
             'value' => $company['is_active'] ?? true
         ]); ?>
 
-        <div class="pt-5">
+        <?php View::component('card', 'admin/components', ['title' => 'Статус и запис', 'slot' => ob_get_clean()]); ?>
+        
+        <div class="mt-5 pt-5 border-t border-slate-100">
             <?php View::component('submit-button', 'admin/components', [
                 'text' => !$isEdit ? 'Създаване' : 'Запазване',
                 'is_active' => $company['is_active'] ?? true
