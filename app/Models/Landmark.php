@@ -26,6 +26,35 @@ class Landmark extends Model
         return $stmt->fetchAll();
     }
 
+    public function getFilteredWithCountry(array $options = [])
+    {
+        $sql = "SELECT l.* FROM {$this->table} l 
+            JOIN countries c ON l.country_id = c.id 
+            WHERE l.country_id = :country_id AND l.is_active = 1";
+
+        $params = [
+            'country_id' => $options['where']['country_id']
+        ];
+
+        if (!empty($options['search'])) {
+            $sql .= " AND (l.name LIKE :search1 OR c.name LIKE :search2 OR l.content LIKE :search3)";
+
+            $searchTerm = "%{$options['search']}%";
+
+            $params['search1'] = $searchTerm;
+            $params['search2'] = $searchTerm;
+            $params['search3'] = $searchTerm;
+        }
+
+        $orderBy = $options['order'] ?? 'l.sort_order ASC';
+        $sql .= " ORDER BY {$orderBy}";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
+    }
+
     public function prepareData(array $data): array
     {
         if (empty($data['slug']) && !empty($data['name'])) {

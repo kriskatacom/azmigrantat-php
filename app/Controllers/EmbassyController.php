@@ -33,6 +33,8 @@ class EmbassyController extends BaseController
         }
         $country['entity_type'] = 'country';
 
+        $searchTerm = $_GET['search'] ?? null;
+
         $embassyElement = $this->elementModel->all([
             'where' => [
                 'country_id' => $country['id'],
@@ -41,28 +43,33 @@ class EmbassyController extends BaseController
             ]
         ])[0] ?? null;
 
-        if ($embassyElement) {
-            $embassyElement['entity_type'] = 'country_element';
-        }
+        $filterOptions = [
+            'where' => ['country_id' => $country['id']],
+            'search' => $searchTerm
+        ];
 
-        $embassies = $this->embassyModel->all([
-            'where' => [
-                'country_id' => $country['id'],
-                'is_active'  => 1
-            ],
-            'order' => 'sort_order ASC'
-        ]);
+        $embassies = $this->embassyModel->getFilteredWithCountry($filterOptions);
 
         foreach ($embassies as &$e) {
             $e['entity_type'] = 'embassy';
         }
 
         View::render('embassies/index', [
-            'title'   => HelperService::trans('embassies_in') . ' ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
+            'title'          => HelperService::trans('embassies_in') . ' ' . HelperService::getTranslation($country, 'name', 'country'),
             'country'        => $country,
             'embassyElement' => $embassyElement,
             'embassies'      => $embassies,
-            'layout'      => 'secondary'
+            'searchTerm'     => $searchTerm,
+            'breadcrumbs' => [
+                [
+                    'label' => HelperService::getTranslation($country, 'name', 'country'),
+                    'href'  => '/' . $country['slug']
+                ],
+                [
+                    'label' => HelperService::trans('embassies'),
+                ],
+            ],
+            'layout'         => 'secondary'
         ]);
     }
 
@@ -86,6 +93,7 @@ class EmbassyController extends BaseController
             'title'   => HelperService::getTranslation($embassy, 'heading', 'embassy') . ' - ' . HelperService::trans('i_the_migrant'),
             'embassy' => $embassy,
             'country' => $country,
+            'layout' => 'secondary'
         ]);
     }
 

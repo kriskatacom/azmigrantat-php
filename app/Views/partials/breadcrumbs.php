@@ -5,7 +5,7 @@ $hasLinkClasses = $hasLinkClasses ?? 'text-primary-light';
 $noLinkClasses = $noLinkClasses ?? 'text-white';
 ?>
 
-<div class="px-4 md:mt-2 flex flex-wrap gap-2 text-sm justify-center items-center">
+<div class="px-4 flex flex-wrap gap-2 text-sm justify-center items-center">
     <a href="<?= HelperService::url('/') ?>" class="md:text-lg hover:underline <?= $hasLinkClasses ?>">
         <?= HelperService::trans('home') ?>
     </a>

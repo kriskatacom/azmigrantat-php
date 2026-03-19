@@ -33,6 +33,8 @@ class LandmarkController extends BaseController
         }
         $country['entity_type'] = 'country';
 
+        $searchTerm = $_GET['search'] ?? null;
+
         $landmarkElement = $this->elementModel->all([
             'where' => [
                 'country_id' => $country['id'],
@@ -45,13 +47,25 @@ class LandmarkController extends BaseController
             $landmarkElement['entity_type'] = 'country_element';
         }
 
-        $landmarks = $this->landmarkModel->all([
+        $filterOptions = [
             'where' => [
                 'country_id' => $country['id'],
                 'is_active'  => 1
             ],
             'order' => 'sort_order ASC'
-        ]);
+        ];
+
+        if (!empty($searchTerm)) {
+            $filterOptions = [
+                'where' => ['country_id' => $country['id']],
+                'search' => $searchTerm,
+                'order' => 'l.sort_order ASC'
+            ];
+
+            $landmarks = $this->landmarkModel->getFilteredWithCountry($filterOptions);
+        } else {
+            $landmarks = $this->landmarkModel->all($filterOptions);
+        }
 
         foreach ($landmarks as &$l) {
             $l['entity_type'] = 'landmark';
@@ -61,7 +75,18 @@ class LandmarkController extends BaseController
             'title'    => HelperService::trans('landmarks_in') . ' ' . HelperService::getTranslation($country, 'name', 'country') . ' - ' . HelperService::trans('i_the_migrant'),
             'country'         => $country,
             'landmarkElement' => $landmarkElement,
-            'landmarks'       => $landmarks
+            'landmarks'       => $landmarks,
+            'searchTerm'      => $searchTerm,
+            'breadcrumbs' => [
+                [
+                    'label' => HelperService::getTranslation($country, 'name', 'country'),
+                    'href'  => '/' . $country['slug']
+                ],
+                [
+                    'label' => HelperService::trans('landmarks'),
+                ],
+            ],
+            'layout' => 'secondary'
         ]);
     }
 
@@ -84,7 +109,8 @@ class LandmarkController extends BaseController
         View::render('landmarks/show', [
             'title'    => HelperService::getTranslation($landmark, 'name', 'landmark') . ' - ' . HelperService::trans('i_the_migrant'),
             'landmark' => $landmark,
-            'country'  => $country
+            'country'  => $country,
+            'layout' => 'secondary'
         ]);
     }
 

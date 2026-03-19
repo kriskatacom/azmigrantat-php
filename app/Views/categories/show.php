@@ -8,6 +8,33 @@ use App\Services\HelperService;
 
 <?php $activeScope = $_GET['scope'] ?? ''; ?>
 
+<?php
+$countryName = HelperService::getTranslation($country, 'name', 'country');
+$cityName    = HelperService::getTranslation($city, 'name', 'city');
+$catName     = !empty($category) ? HelperService::getTranslation($category, 'name', 'category') : '';
+
+$mainTitle = !empty($category) ? "{$catName} " . HelperService::trans('in') . " {$cityName} - {$countryName}" : HelperService::trans('info_guide_of') . " {$cityName} - {$countryName}";
+$imageUrl = !empty($category) ? $category['image_url'] : $city['image_url'];
+
+ob_start(); ?>
+<div class="w-full md:w-auto mb-2 flex justify-center">
+    <a href="#" class="text-base text-primary-light hover:underline cursor-pointer"><?= HelperService::trans('municipal_cities') ?></a>
+</div>
+<?php $slotContent = ob_get_clean();
+
+View::component('search-hero', 'partials', [
+    'country'         => $country,
+    'backgroundImage' => $imageUrl,
+    'title'           => $mainTitle,
+    'formAction'      => '/' . $country['slug'] . '/' . $city['slug'] . '/search',
+    'placeholderKey'  => HelperService::trans('search_in_the_city'),
+    'searchValue'     => $_GET['search'] ?? '',
+    'breadcrumbKey'   => !empty($category) ? 'category' : 'city',
+    'breadcrumbs'     => $breadcrumbs,
+    'slot'            => $slotContent,
+]);
+?>
+
 <?php if ($category): ?>
     <?php if (!empty($offers)): ?>
         <div class="md:container md:mx-auto mt-5">
@@ -64,7 +91,7 @@ use App\Services\HelperService;
         </div>
     <?php endif; ?>
 
-    <div class="flex flex-wrap items-center justify-center gap-5 px-5 mb-5">
+    <div class="flex flex-wrap items-center justify-center gap-5 px-5">
         <?php
         $cityBtnClasses = "relative group flex items-center gap-3 md:gap-5 px-5 py-4 md:px-8 md:py-3 rounded-2xl border-2 transition-all duration-500 no-underline w-full md:w-auto ";
         $cityBtnClasses .= ($activeScope === 'city') ? "bg-primary-dark border-primary text-white shadow-lg" : "bg-white/5 border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-white";
@@ -103,45 +130,6 @@ use App\Services\HelperService;
     </div>
 <?php endif; ?>
 
-<section>
-    <div class="h-80 md:h-100 lg:h-120 w-full overflow-hidden">
-        <?php
-        $countryName = HelperService::getTranslation($country, 'name', 'country');
-        $cityName    = HelperService::getTranslation($city, 'name', 'city');
-        $catName     = !empty($category) ? HelperService::getTranslation($category, 'name', 'category') : '';
-
-        $mainTitle = !empty($category)
-            ? "{$catName} " . HelperService::trans('in') . " {$cityName} - {$countryName}"
-            : HelperService::trans('info_guide_of') . " {$cityName} - {$countryName}";
-
-        $imageUrl = !empty($category) ? $category['image_url'] : $city['image_url'];
-        ?>
-
-        <img src="<?= $imageUrl ?>"
-            class="w-full h-full object-cover object-center"
-            alt="<?= htmlspecialchars($mainTitle) ?>">
-    </div>
-
-    <div class="bg-primary-dark py-2 md:py-5 xl:py-10 text-white text-center">
-        <div class="container mx-auto px-4 flex flex-col-reverse md:flex-row gap-2 justify-between items-center">
-
-            <div class="flex flex-col items-center">
-                <h1 class="text-xl md:text-2xl xl:text-3xl font-semibold tracking-wide">
-                    <?= htmlspecialchars($mainTitle) ?>
-                </h1>
-                <?php View::component('breadcrumbs', 'partials', ['items' => $breadcrumbs]); ?>
-            </div>
-
-            <div class="w-full md:w-auto">
-                <button class="btn-primary bg-primary-light text-primary-dark max-md:mt-1 md:w-auto justify-center">
-                    <?= HelperService::trans('municipal_cities') ?>
-                </button>
-            </div>
-
-        </div>
-    </div>
-</section>
-
 <main>
     <?php if (!empty($items)): ?>
         <?php View::component('load-more-grid', 'partials', [
@@ -150,6 +138,7 @@ use App\Services\HelperService;
             'base_url'  => $base_url,
             'limit'     => 8,
             'show_excerpt' => true,
+            'show_search' => false,
         ]); ?>
     <?php else: ?>
         <div class="flex flex-col items-center justify-center py-20 text-center">

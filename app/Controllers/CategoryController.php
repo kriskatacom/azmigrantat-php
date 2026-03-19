@@ -128,6 +128,7 @@ class CategoryController extends BaseController
             'breadcrumbs'  => $breadcrumbs,
             'base_url'     => "/{$countrySlug}/cities/{$citySlug}/" . ($categoriesPath ? trim($categoriesPath, '/') . '/' : ''),
             'categoryPath' => $categoryPathArr,
+            'layout' => 'secondary'
         ]);
     }
 
