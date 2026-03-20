@@ -185,8 +185,12 @@ class HelperService
         return $text;
     }
 
-    public static function getTranslation(array $item, string $field, string $entity = null): string
+    public static function getTranslation(?array $item, string $field, string $entity = null): string
     {
+        if (!$item) {
+            return '';
+        }
+
         $lang = $_SESSION['lang'] ?? 'bg';
 
         if ($lang === 'bg') {
