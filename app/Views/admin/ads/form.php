@@ -18,15 +18,27 @@ $action = $isEdit ? "/admin/ads/update/{$ad['id']}" : "/admin/ads/store";
 <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
 
     <?php ob_start(); ?>
-    <?php View::component('image-upload', 'admin/components', [
-        'name'  => 'image_url',
-        'label' => 'Рекламен банер (Изображение)',
-        'value' => $ad['image_url'] ?? null,
-        'id'    => 'ad-image'
-    ]); ?>
-
-    <?php View::component('lightbox', 'admin/components'); ?>
-    <?php View::component('card', 'admin/components', ['title' => 'Медия', 'slot' => ob_get_clean()]); ?>
+    <div class="grid lg:grid-cols-3 gap-5">
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_url',
+            'label' => 'Основно изображение (Desktop)',
+            'value' => $ad['image_url'] ?? null,
+            'id'    => 'country-image'
+        ]); ?>
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_tablet_url',
+            'label' => 'Основно изображение (Tablet)',
+            'value' => $ad['image_tablet_url'] ?? null,
+            'id'    => 'country-tablet-image'
+        ]); ?>
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_mobile_url',
+            'label' => 'Основно изображение (Mobile)',
+            'value' => $ad['image_mobile_url'] ?? null,
+            'id'    => 'country-mobile-image'
+        ]); ?>
+    </div>
+    <?php View::component('card', 'admin/components', ['title' => 'Предно изображение', 'slot' => ob_get_clean()]); ?>
 
     <?php ob_start(); ?>
     <div class="space-y-4">
@@ -144,3 +156,4 @@ $action = $isEdit ? "/admin/ads/update/{$ad['id']}" : "/admin/ads/store";
         ]); ?>
     </div>
 </form>
+<?php View::component('lightbox', 'admin/components'); ?>

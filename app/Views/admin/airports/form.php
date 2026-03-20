@@ -1,4 +1,5 @@
 <?php
+
 use App\Core\View;
 
 $item = $airport ?? [];
@@ -92,8 +93,31 @@ $airportData = [
     </div>
 
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <?php ob_start(); ?>
+        <div class="grid lg:grid-cols-3 gap-5">
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_url',
+                'label' => 'Основно изображение (Desktop)',
+                'value' => $item['image_url'] ?? null,
+                'id'    => 'country-image'
+            ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_tablet_url',
+                'label' => 'Основно изображение (Tablet)',
+                'value' => $item['image_tablet_url'] ?? null,
+                'id'    => 'country-tablet-image'
+            ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_mobile_url',
+                'label' => 'Основно изображение (Mobile)',
+                'value' => $item['image_mobile_url'] ?? null,
+                'id'    => 'country-mobile-image'
+            ]); ?>
+        </div>
+        <?php View::component('card', 'admin/components', ['title' => 'Предно изображение', 'slot' => ob_get_clean()]); ?>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
+
             <div class="lg:col-span-2 space-y-6">
                 <?php ob_start(); ?>
                 <div class="grid md:grid-cols-2 gap-6">
@@ -108,7 +132,7 @@ $airportData = [
                         <input type="text" name="website_url" value="<?= htmlspecialchars($item['website_url'] ?? '') ?>" required
                             placeholder="напр. https://sofia-airport.eu" class="form-control">
                     </div>
-                    
+
                     <?php View::component('select-dropdown', 'admin/components', [
                         'name'       => 'country_id',
                         'label'      => 'Държава',
@@ -145,18 +169,6 @@ $airportData = [
                 ]); ?>
                 <?php View::component('card', 'admin/components', ['title' => 'Географска локация', 'slot' => ob_get_clean()]); ?>
             </div>
-
-            <div class="space-y-6">
-                <?php ob_start(); ?>
-                <?php View::component('image-upload', 'admin/components', [
-                    'name'  => 'image_url',
-                    'label' => 'Снимка на летището',
-                    'value' => $item['image_url'] ?? null,
-                    'id'    => 'airport-image'
-                ]); ?>
-                <?php View::component('lightbox', 'admin/components'); ?>
-                <?php View::component('card', 'admin/components', ['title' => 'Визия', 'slot' => ob_get_clean()]); ?>
-            </div>
         </div>
         <?php ob_start(); ?>
         <?php View::component('toggle', 'admin/components', [
@@ -166,7 +178,7 @@ $airportData = [
         ]); ?>
 
         <?php View::component('card', 'admin/components', ['title' => 'Статус и запис', 'slot' => ob_get_clean()]); ?>
-        
+
         <div class="mt-5 pt-5 border-t border-slate-100">
             <?php View::component('submit-button', 'admin/components', [
                 'text' => !$isEdit ? 'Създаване' : 'Запазване',
@@ -175,3 +187,4 @@ $airportData = [
         </div>
     </form>
 </div>
+<?php View::component('lightbox', 'admin/components'); ?>

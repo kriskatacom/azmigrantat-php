@@ -68,22 +68,22 @@ class CompanyOfferController extends BaseController
             $this->redirect($_SERVER['HTTP_REFERER']);
         }
 
-        $this->handleStore($this->offerModel, '/admin/offers', ['image_url'], 'offers');
+        $this->handleStore($this->offerModel, '/admin/offers', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'offers');
     }
 
     public function edit($id)
     {
         $this->checkAccess(['admin', 'entrepreneur']);
 
-        $ad = $this->offerModel->find((int)$id);
-        if (!$ad) {
+        $item = $this->offerModel->find((int)$id);
+        if (!$item) {
             $this->flash('error', 'Обявата не е намерена.');
             $this->redirect('/admin/offers');
         }
 
         $this->render('admin/offers/form', [
-            'title'     => 'Редакция на обява: ' . $ad['name'],
-            'ad'        => $ad,
+            'title'     => 'Редакция на обява: ' . $item['name'],
+            'item'      => $item,
             'companies' => $this->companyModel->all(['order' => 'name ASC']),
             'users'     => $this->userModel->all(),
             'layout'    => 'admin'
@@ -98,7 +98,7 @@ class CompanyOfferController extends BaseController
             $this->offerModel,
             (int)$id,
             '/admin/offers',
-            ['image_url'],
+            ['image_url', 'image_tablet_url', 'image_mobile_url'],
             'offers'
         );
     }
@@ -117,7 +117,7 @@ class CompanyOfferController extends BaseController
             $this->offerModel,
             (int)$id,
             '/admin/offers',
-            ['image_url']
+            ['image_url', 'image_tablet_url', 'image_mobile_url']
         );
     }
 }

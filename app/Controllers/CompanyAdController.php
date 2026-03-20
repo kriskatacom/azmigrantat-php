@@ -67,7 +67,7 @@ class CompanyAdController extends BaseController
             $this->redirect($_SERVER['HTTP_REFERER']);
         }
 
-        $this->handleStore($this->adModel, '/admin/ads', ['image_url'], 'ads');
+        $this->handleStore($this->adModel, '/admin/ads', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'ads');
     }
 
     public function edit($id)
@@ -97,7 +97,7 @@ class CompanyAdController extends BaseController
             $this->adModel,
             (int)$id,
             '/admin/ads',
-            ['image_url'],
+            ['image_url', 'image_tablet_url', 'image_mobile_url'],
             'ads'
         );
     }
@@ -116,7 +116,7 @@ class CompanyAdController extends BaseController
             $this->adModel,
             (int)$id,
             '/admin/ads',
-            ['image_url']
+            ['image_url', 'image_tablet_url', 'image_mobile_url']
         );
     }
 }

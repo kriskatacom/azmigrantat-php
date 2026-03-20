@@ -380,13 +380,13 @@ class CategoryController extends BaseController
     public function update(int $id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->categoryModel, $id, $this->baseRoute, ['image_url', 'companies_background_url'], 'categories');
+        $this->handleUpdate($this->categoryModel, $id, $this->baseRoute, ['image_url', 'image_tablet_url', 'image_mobile_url', 'companies_background_url'], 'categories');
     }
 
     public function delete(int $id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->categoryModel, $id, $this->baseRoute, ['image_url', 'companies_background_url']);
+        $this->handleDelete($this->categoryModel, $id, $this->baseRoute, ['image_url', 'image_tablet_url', 'image_mobile_url', 'companies_background_url']);
     }
 
     public function updateOrder()

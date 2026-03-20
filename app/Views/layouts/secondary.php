@@ -59,7 +59,7 @@ if ($currentUri == '/' || $currentUri == '/home') {
     </script>
 </head>
 
-<body class="antialiased text-gray-900 bg-white">
+<body class="antialiased text-gray-900 bg-blue-100">
     <?php View::loadPartial('partials/secondary-navbar'); ?>
 
     <main id="main-content" class="min-h-screen">

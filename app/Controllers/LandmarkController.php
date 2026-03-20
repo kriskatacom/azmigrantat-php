@@ -187,7 +187,7 @@ class LandmarkController extends BaseController
 
         $_POST['additional_images'] = $this->handleGalleryUpdate($landmark, $_POST, 'additional_images', 'landmarks/gallery');
 
-        $this->handleUpdate($this->landmarkModel, (int)$id, '/admin/landmarks', ['image_url'], 'images');
+        $this->handleUpdate($this->landmarkModel, (int)$id, '/admin/landmarks', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'images');
     }
 
     public function updateOrder()
@@ -199,6 +199,6 @@ class LandmarkController extends BaseController
     public function delete($id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->landmarkModel, (int)$id, null, ['image_url'], ['additional_images']);
+        $this->handleDelete($this->landmarkModel, (int)$id, null, ['image_url', 'image_tablet_url', 'image_mobile_url'], ['additional_images']);
     }
 }

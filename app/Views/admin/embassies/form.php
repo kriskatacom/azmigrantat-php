@@ -93,6 +93,29 @@ $embassyData = [
     </div>
 
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <?php ob_start(); ?>
+        <div class="grid lg:grid-cols-3 gap-5">
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_url',
+                'label' => 'Основно изображение (Desktop)',
+                'value' => $item['image_url'] ?? null,
+                'id'    => 'country-image'
+            ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_tablet_url',
+                'label' => 'Основно изображение (Tablet)',
+                'value' => $item['image_tablet_url'] ?? null,
+                'id'    => 'country-tablet-image'
+            ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_mobile_url',
+                'label' => 'Основно изображение (Mobile)',
+                'value' => $item['image_mobile_url'] ?? null,
+                'id'    => 'country-mobile-image'
+            ]); ?>
+        </div>
+        <?php View::component('card', 'admin/components', ['title' => 'Предно изображение', 'slot' => ob_get_clean()]); ?>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <div class="lg:col-span-2 space-y-6">
@@ -201,13 +224,6 @@ $embassyData = [
                         'value' => $item['right_heading_image'] ?? null,
                         'id'    => 'embassy-right-heading-image'
                     ]); ?>
-
-                    <?php View::component('image-upload', 'admin/components', [
-                        'name'  => 'image_url',
-                        'label' => 'Основна снимка (Сграда)',
-                        'value' => $item['image_url'] ?? null,
-                        'id'    => 'embassy-main-image'
-                    ]); ?>
                 </div>
                 <div class="mt-5 pt-5 border-t border-slate-100">
                     <?php View::component('gallery-upload', 'admin/components', [
@@ -216,7 +232,6 @@ $embassyData = [
                         'images' => !empty($item['additional_images']) ? json_decode($item['additional_images'], true) : []
                     ]); ?>
                 </div>
-                <?php View::component('lightbox', 'admin/components'); ?>
                 <?php View::component('card', 'admin/components', ['title' => 'Визуални елементи', 'slot' => ob_get_clean()]); ?>
 
             </div>
@@ -237,3 +252,4 @@ $embassyData = [
         </div>
     </form>
 </div>
+<?php View::component('lightbox', 'admin/components'); ?>

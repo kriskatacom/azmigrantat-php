@@ -64,7 +64,7 @@ class CompanyController extends BaseController
     public function store()
     {
         $this->checkAccess('admin');
-        $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
+        $fileFields = ['image_url', 'image_tablet_url', 'image_mobile_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
 
         $_POST['additional_images'] = $this->handleGalleryUpdate(['additional_images' => '[]'], $_POST, 'additional_images', 'landmarks/gallery');
 
@@ -105,7 +105,7 @@ class CompanyController extends BaseController
     public function update($id)
     {
         $this->checkAccess('admin');
-        $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
+        $fileFields = ['image_url', 'image_tablet_url', 'image_mobile_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
 
         $company = $this->companyModel->find((int)$id);
         if (!$company) $this->redirect('/admin/companies');
@@ -124,7 +124,7 @@ class CompanyController extends BaseController
     public function delete($id)
     {
         $this->checkAccess('admin');
-        $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
+        $fileFields = ['image_url', 'image_tablet_url', 'image_mobile_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
         $this->handleDelete($this->companyModel, (int)$id, null, $fileFields, ['additional_images']);
     }
 }

@@ -168,7 +168,7 @@ class TaxiController extends BaseController
     public function store()
     {
         $this->checkAccess('admin');
-        $this->handleStore($this->taxiModel, $this->baseRoute, ['image_url'], 'taxis');
+        $this->handleStore($this->taxiModel, $this->baseRoute, ['image_url', 'image_tablet_url', 'image_mobile_url'], 'taxis');
     }
 
     public function edit(int $id)
@@ -195,13 +195,13 @@ class TaxiController extends BaseController
     public function update(int $id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->taxiModel, $id, $this->baseRoute, ['image_url'], 'taxis');
+        $this->handleUpdate($this->taxiModel, $id, $this->baseRoute, ['image_url', 'image_tablet_url', 'image_mobile_url'], 'taxis');
     }
 
     public function delete(int $id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->taxiModel, $id, $this->baseRoute);
+        $this->handleDelete($this->taxiModel, $id, $this->baseRoute, ['image_url', 'image_tablet_url', 'image_mobile_url']);
     }
 
     public function updateOrder()

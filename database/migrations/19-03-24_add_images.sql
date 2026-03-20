@@ -1,0 +1,16 @@
+ALTER TABLE `countries` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_mobile_url`;
+ALTER TABLE `categories` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `cities` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `embassies` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `landmarks` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `cruises` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `ads` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `offers` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `autobuses` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `airlines` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `companies` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `airports` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `trains` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `taxi` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `country_elements` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;
+ALTER TABLE `banners` ADD `image_tablet_url` VARCHAR(255) NULL AFTER `image_url`, ADD `image_mobile_url` VARCHAR(255) NULL AFTER `image_tablet_url`;

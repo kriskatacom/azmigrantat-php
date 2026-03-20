@@ -98,6 +98,29 @@ $categoryData = [
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
 
         <?php ob_start(); ?>
+        <div class="grid lg:grid-cols-3 gap-5">
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_url',
+                'label' => 'Основно изображение (Desktop)',
+                'value' => $item['image_url'] ?? null,
+                'id'    => 'country-image'
+            ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_tablet_url',
+                'label' => 'Основно изображение (Tablet)',
+                'value' => $item['image_tablet_url'] ?? null,
+                'id'    => 'country-tablet-image'
+            ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_mobile_url',
+                'label' => 'Основно изображение (Mobile)',
+                'value' => $item['image_mobile_url'] ?? null,
+                'id'    => 'country-mobile-image'
+            ]); ?>
+        </div>
+        <?php View::component('card', 'admin/components', ['title' => 'Предно изображение', 'slot' => ob_get_clean()]); ?>
+
+        <?php ob_start(); ?>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <?php View::component('image-upload', 'admin/components', [
                 'name'  => 'image_url',
@@ -113,7 +136,6 @@ $categoryData = [
                 'id'    => 'cat-bg-img'
             ]); ?>
         </div>
-        <?php View::component('lightbox', 'admin/components'); ?>
         <?php View::component('card', 'admin/components', ['title' => 'Визуални елементи', 'slot' => ob_get_clean()]); ?>
 
         <?php ob_start(); ?>
@@ -178,3 +200,4 @@ $categoryData = [
         </div>
     </form>
 </div>
+<?php View::component('lightbox', 'admin/components'); ?>

@@ -122,7 +122,7 @@ class AirportController extends BaseController
     public function store()
     {
         $this->checkAccess('admin');
-        $this->handleStore($this->airportModel, '/admin/airports', ['image_url'], 'airports');
+        $this->handleStore($this->airportModel, '/admin/airports', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'airports');
     }
 
     public function edit($id)
@@ -154,13 +154,13 @@ class AirportController extends BaseController
     public function update($id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->airportModel, (int)$id, '/admin/airports', ['image_url'], 'airports');
+        $this->handleUpdate($this->airportModel, (int)$id, '/admin/airports', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'airports');
     }
 
     public function delete($id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->airportModel, (int)$id, '/admin/airports', ['image_url']);
+        $this->handleDelete($this->airportModel, (int)$id, '/admin/airports', ['image_url', 'image_tablet_url', 'image_mobile_url']);
     }
 
     public function updateOrder()

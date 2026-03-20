@@ -174,7 +174,7 @@ class TrainController extends BaseController
     public function store()
     {
         $this->checkAccess('admin');
-        $this->handleStore($this->trainModel, $this->baseRoute, ['image_url'], 'trains');
+        $this->handleStore($this->trainModel, $this->baseRoute, ['image_url', 'image_tablet_url', 'image_mobile_url'], 'trains');
     }
 
     public function edit(int $id)
@@ -201,13 +201,13 @@ class TrainController extends BaseController
     public function update(int $id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->trainModel, $id, $this->baseRoute, ['image_url'], 'trains');
+        $this->handleUpdate($this->trainModel, $id, $this->baseRoute, ['image_url', 'image_tablet_url', 'image_mobile_url'], 'trains');
     }
 
     public function delete(int $id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->trainModel, $id, $this->baseRoute);
+        $this->handleDelete($this->trainModel, $id, $this->baseRoute, ['image_url', 'image_tablet_url', 'image_mobile_url']);
     }
 
     public function updateOrder()

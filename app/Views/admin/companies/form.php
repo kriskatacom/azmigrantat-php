@@ -88,14 +88,30 @@ $companyData = [
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
 
         <?php ob_start(); ?>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid lg:grid-cols-3 gap-5">
             <?php View::component('image-upload', 'admin/components', [
                 'name'  => 'image_url',
-                'label' => 'Предно изображение',
+                'label' => 'Основно изображение (Desktop)',
                 'value' => $company['image_url'] ?? null,
-                'id'    => 'company-main-image'
+                'id'    => 'country-image'
             ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_tablet_url',
+                'label' => 'Основно изображение (Tablet)',
+                'value' => $company['image_tablet_url'] ?? null,
+                'id'    => 'country-tablet-image'
+            ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_mobile_url',
+                'label' => 'Основно изображение (Mobile)',
+                'value' => $company['image_mobile_url'] ?? null,
+                'id'    => 'country-mobile-image'
+            ]); ?>
+        </div>
+        <?php View::component('card', 'admin/components', ['title' => 'Предно изображение', 'slot' => ob_get_clean()]); ?>
 
+        <?php ob_start(); ?>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php View::component('image-upload', 'admin/components', [
                 'name'  => 'offer_image_url',
                 'label' => 'Изображение по за обявите',
@@ -118,7 +134,6 @@ $companyData = [
             ]); ?>
         </div>
 
-        <?php View::component('lightbox', 'admin/components'); ?>
         <?php View::component('card', 'admin/components', ['title' => 'Медия и Услуга', 'slot' => ob_get_clean()]); ?>
 
         <?php ob_start(); ?>
@@ -292,3 +307,4 @@ $companyData = [
         </div>
     </form>
 </div>
+<?php View::component('lightbox', 'admin/components'); ?>

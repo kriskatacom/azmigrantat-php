@@ -2,8 +2,8 @@
 
 use App\Core\View;
 
-$isEdit = isset($ad);
-$action = $isEdit ? "/admin/offers/update/{$ad['id']}" : "/admin/offers/store";
+$isEdit = isset($item);
+$action = $isEdit ? "/admin/offers/update/{$item['id']}" : "/admin/offers/store";
 ?>
 
 <div class="mb-5">
@@ -18,22 +18,34 @@ $action = $isEdit ? "/admin/offers/update/{$ad['id']}" : "/admin/offers/store";
 <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
 
     <?php ob_start(); ?>
-    <?php View::component('image-upload', 'admin/components', [
-        'name'  => 'image_url',
-        'label' => 'Рекламен банер (Изображение)',
-        'value' => $ad['image_url'] ?? null,
-        'id'    => 'ad-image'
-    ]); ?>
-
-    <?php View::component('lightbox', 'admin/components'); ?>
-    <?php View::component('card', 'admin/components', ['title' => 'Медия', 'slot' => ob_get_clean()]); ?>
+    <div class="grid lg:grid-cols-3 gap-5">
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_url',
+            'label' => 'Основно изображение (Desktop)',
+            'value' => $item['image_url'] ?? null,
+            'id'    => 'country-image'
+        ]); ?>
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_tablet_url',
+            'label' => 'Основно изображение (Tablet)',
+            'value' => $item['image_tablet_url'] ?? null,
+            'id'    => 'country-tablet-image'
+        ]); ?>
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_mobile_url',
+            'label' => 'Основно изображение (Mobile)',
+            'value' => $item['image_mobile_url'] ?? null,
+            'id'    => 'country-mobile-image'
+        ]); ?>
+    </div>
+    <?php View::component('card', 'admin/components', ['title' => 'Предно изображение', 'slot' => ob_get_clean()]); ?>
 
     <?php ob_start(); ?>
     <div class="space-y-4">
         <div class="space-y-2">
             <label class="text-sm font-semibold text-gray-600">Име/Заглавие на обявата</label>
             <input type="text" name="name" id="ad-name"
-                value="<?= htmlspecialchars($ad['name'] ?? '') ?>" required
+                value="<?= htmlspecialchars($item['name'] ?? '') ?>" required
                 class="form-control">
         </div>
 
@@ -41,17 +53,17 @@ $action = $isEdit ? "/admin/offers/update/{$ad['id']}" : "/admin/offers/store";
             <?php View::component('select-dropdown', 'admin/components', [
                 'name'        => 'company_id',
                 'label'       => 'Компания',
-                'selectedId'  => $ad['company_id'] ?? null,
+                'selectedId'  => $item['company_id'] ?? null,
                 'options'     => $companies,
                 'placeholder' => '-- Изберете компания --',
                 'attributes'  => 'id="company-select"'
             ]); ?>
 
-            <div id="user-selection-container" class="space-y-2 <?= (isset($ad) && !empty($ad['user_id'])) ? 'hidden' : '' ?>">
+            <div id="user-selection-container" class="space-y-2 <?= (isset($item) && !empty($item['user_id'])) ? 'hidden' : '' ?>">
                 <?php View::component('select-dropdown', 'admin/components', [
                     'name'        => 'user_id',
                     'label'       => 'Изберете собственик (ръчно)',
-                    'selectedId'  => $ad['user_id'] ?? null,
+                    'selectedId'  => $item['user_id'] ?? null,
                     'options'     => array_map(function ($u) {
                         return ['id' => $u['id'], 'name' => $u['name'] . ' (' . $u['email'] . ')'];
                     }, $users),
@@ -60,13 +72,13 @@ $action = $isEdit ? "/admin/offers/update/{$ad['id']}" : "/admin/offers/store";
                 ]); ?>
             </div>
 
-            <div id="user-auto-container" class="space-y-2 <?= (isset($ad) && !empty($ad['user_id'])) ? '' : 'hidden' ?>">
+            <div id="user-auto-container" class="space-y-2 <?= (isset($item) && !empty($item['user_id'])) ? '' : 'hidden' ?>">
                 <label class="text-sm font-semibold text-gray-600">Автоматичен собственик</label>
                 <div id="owner-display" class="form-control bg-gray-50 text-indigo-600 font-medium border-indigo-100 flex items-center gap-2">
                     <i class="fas fa-user-check text-xs"></i>
-                    <span><?= htmlspecialchars($ad['user_name'] ?? 'Зареден автоматично') ?></span>
+                    <span><?= htmlspecialchars($item['user_name'] ?? 'Зареден автоматично') ?></span>
                 </div>
-                <input type="hidden" name="auto_user_id" id="auto-user-id" value="<?= $ad['user_id'] ?? '' ?>">
+                <input type="hidden" name="auto_user_id" id="auto-user-id" value="<?= $item['user_id'] ?? '' ?>">
             </div>
         </div>
     </div>
@@ -130,7 +142,7 @@ $action = $isEdit ? "/admin/offers/update/{$ad['id']}" : "/admin/offers/store";
                     'canceled' => 'Отказана'
                 ];
                 foreach ($statuses as $val => $label): ?>
-                    <option value="<?= $val ?>" <?= (isset($ad) && $ad['status'] == $val) ? 'selected' : '' ?>><?= $label ?></option>
+                    <option value="<?= $val ?>" <?= (isset($item) && $item['status'] == $val) ? 'selected' : '' ?>><?= $label ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -144,3 +156,4 @@ $action = $isEdit ? "/admin/offers/update/{$ad['id']}" : "/admin/offers/store";
         ]); ?>
     </div>
 </form>
+<?php View::component('lightbox', 'admin/components'); ?>

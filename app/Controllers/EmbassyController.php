@@ -163,7 +163,7 @@ class EmbassyController extends BaseController
     public function update($id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->embassyModel, (int)$id, '/admin/embassies', ['image_url', 'logo', 'right_heading_image'], 'embassies');
+        $this->handleUpdate($this->embassyModel, (int)$id, '/admin/embassies', ['image_url', 'image_tablet_url', 'image_mobile_url', 'logo', 'right_heading_image'], 'embassies');
     }
 
     public function updateOrder()
@@ -175,6 +175,6 @@ class EmbassyController extends BaseController
     public function delete($id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->embassyModel, (int)$id, null, ['logo', 'image_url', 'right_heading_image']);
+        $this->handleDelete($this->embassyModel, (int)$id, null, ['image_url', 'image_tablet_url', 'image_mobile_url', 'logo', 'right_heading_image']);
     }
 }

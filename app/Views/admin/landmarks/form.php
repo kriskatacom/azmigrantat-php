@@ -99,30 +99,42 @@ $landmarkData = [
     </div>
 
     <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <?php ob_start(); ?>
+        <div class="grid lg:grid-cols-3 gap-5">
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_url',
+                'label' => 'Основно изображение (Desktop)',
+                'value' => $item['image_url'] ?? null,
+                'id'    => 'country-image'
+            ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_tablet_url',
+                'label' => 'Основно изображение (Tablet)',
+                'value' => $item['image_tablet_url'] ?? null,
+                'id'    => 'country-tablet-image'
+            ]); ?>
+            <?php View::component('image-upload', 'admin/components', [
+                'name'  => 'image_mobile_url',
+                'label' => 'Основно изображение (Mobile)',
+                'value' => $item['image_mobile_url'] ?? null,
+                'id'    => 'country-mobile-image'
+            ]); ?>
+        </div>
+        <?php View::component('card', 'admin/components', ['title' => 'Предно изображение', 'slot' => ob_get_clean()]); ?>
+        
         <div class="space-y-6">
             <?php ob_start(); ?>
             <div class="space-y-5">
-                <?php View::component('image-upload', 'admin/components', [
-                    'name'  => 'image_url',
-                    'label' => 'Основно изображение',
-                    'value' => $item['image_url'] ?? null,
-                    'id'    => 'landmark-image'
-                ]); ?>
-
-                <?php View::component('lightbox', 'admin/components'); ?>
-
                 <div class="pt-5 border-t border-slate-100">
-                    <?php
-                    $gallery = !empty($item['additional_images']) ? json_decode($item['additional_images'], true) : [];
+                    <?php $gallery = !empty($item['additional_images']) ? json_decode($item['additional_images'], true) : [];
                     View::component('multi-image-upload', 'admin/components', [
                         'name'   => 'additional_images[]',
                         'label'  => 'Фотогалерия на обекта',
                         'images' => $gallery
-                    ]);
-                    ?>
+                    ]); ?>
                 </div>
             </div>
-            <?php View::component('card', 'admin/components', ['title' => 'Медия', 'slot' => ob_get_clean()]); ?>
+            <?php View::component('card', 'admin/components', ['title' => 'Галерия', 'slot' => ob_get_clean()]); ?>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -240,3 +252,4 @@ $landmarkData = [
         </div>
     </form>
 </div>
+<?php View::component('lightbox', 'admin/components'); ?>

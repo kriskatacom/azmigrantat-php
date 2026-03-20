@@ -17,17 +17,28 @@ $action = $isEdit ? "/admin/trains/update/{$train['id']}" : "/admin/trains/store
 
 <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
 
-    <?php ob_start(); ?>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<?php ob_start(); ?>
+    <div class="grid lg:grid-cols-3 gap-5">
         <?php View::component('image-upload', 'admin/components', [
             'name'  => 'image_url',
-            'label' => 'Лого / Изображение на компанията',
+            'label' => 'Основно изображение (Desktop)',
             'value' => $train['image_url'] ?? null,
-            'id'    => 'train-logo'
+            'id'    => 'country-image'
+        ]); ?>
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_tablet_url',
+            'label' => 'Основно изображение (Tablet)',
+            'value' => $train['image_tablet_url'] ?? null,
+            'id'    => 'country-tablet-image'
+        ]); ?>
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_mobile_url',
+            'label' => 'Основно изображение (Mobile)',
+            'value' => $train['image_mobile_url'] ?? null,
+            'id'    => 'country-mobile-image'
         ]); ?>
     </div>
-    <?php View::component('lightbox', 'admin/components'); ?>
-    <?php View::component('card', 'admin/components', ['title' => 'Медия', 'slot' => ob_get_clean()]); ?>
+    <?php View::component('card', 'admin/components', ['title' => 'Предно изображение', 'slot' => ob_get_clean()]); ?>
 
     <?php ob_start(); ?>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -80,3 +91,4 @@ $action = $isEdit ? "/admin/trains/update/{$train['id']}" : "/admin/trains/store
         ]); ?>
     </div>
 </form>
+<?php View::component('lightbox', 'admin/components'); ?>

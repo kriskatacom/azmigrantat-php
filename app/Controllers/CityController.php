@@ -162,7 +162,7 @@ class CityController extends BaseController
     public function update(int $id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->cityModel, (int)$id, '/admin/cities', ['image_url'], 'cities');
+        $this->handleUpdate($this->cityModel, (int)$id, '/admin/cities', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'cities');
     }
 
     public function getByCountry(int $countryId)
@@ -182,6 +182,6 @@ class CityController extends BaseController
     public function delete(int $id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->cityModel, (int)$id, null, ['image_url']);
+        $this->handleDelete($this->cityModel, (int)$id, null, ['image_url', 'image_tablet_url', 'image_mobile_url']);
     }
 }

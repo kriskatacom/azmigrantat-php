@@ -17,18 +17,28 @@ $action = $isEdit ? "/admin/taxis/update/{$taxi['id']}" : "/admin/taxis/store";
 
 <form action="<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-5 space-y-5">
-        <h4 class="text-xs font-bold uppercase tracking-wider border-b pb-2 text-primary-dark">Медия</h4>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <?php View::component('image-upload', 'admin/components', [
-                'name'  => 'image_url',
-                'label' => 'Изображение',
-                'value' => $taxi['image_url'] ?? null,
-                'id'    => 'taxi-logo'
-            ]); ?>
-        </div>
-        <?php View::component('lightbox', 'admin/components'); ?>
+    <?php ob_start(); ?>
+    <div class="grid lg:grid-cols-3 gap-5">
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_url',
+            'label' => 'Основно изображение (Desktop)',
+            'value' => $taxi['image_url'] ?? null,
+            'id'    => 'country-image'
+        ]); ?>
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_tablet_url',
+            'label' => 'Основно изображение (Tablet)',
+            'value' => $taxi['image_tablet_url'] ?? null,
+            'id'    => 'country-tablet-image'
+        ]); ?>
+        <?php View::component('image-upload', 'admin/components', [
+            'name'  => 'image_mobile_url',
+            'label' => 'Основно изображение (Mobile)',
+            'value' => $taxi['image_mobile_url'] ?? null,
+            'id'    => 'country-mobile-image'
+        ]); ?>
     </div>
+    <?php View::component('card', 'admin/components', ['title' => 'Предно изображение', 'slot' => ob_get_clean()]); ?>
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-5 space-y-5">
         <h4 class="text-xs font-bold uppercase tracking-wider border-b pb-2 text-primary-dark">Обща информация</h4>
@@ -80,3 +90,4 @@ $action = $isEdit ? "/admin/taxis/update/{$taxi['id']}" : "/admin/taxis/store";
         ]); ?>
     </div>
 </form>
+<?php View::component('lightbox', 'admin/components'); ?>

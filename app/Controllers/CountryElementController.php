@@ -75,7 +75,7 @@ class CountryElementController extends BaseController
         $countryId = $_POST['country_id'] ?? 0;
         $redirectUrl = "/admin/countries/country-elements?country_id=" . $countryId;
 
-        $this->handleStore($this->elementModel, $redirectUrl, ['image_url'], 'country_elements');
+        $this->handleStore($this->elementModel, $redirectUrl, ['image_url', 'image_tablet_url', 'image_mobile_url'], 'country_elements');
     }
 
     public function edit($id)
@@ -110,7 +110,7 @@ class CountryElementController extends BaseController
         $countryId = $_POST['country_id'] ?? 0;
         $redirectUrl = "/admin/countries/country-elements?country_id=" . $countryId;
 
-        $this->handleUpdate($this->elementModel, (int)$id, $redirectUrl, ['image_url'], 'country_elements');
+        $this->handleUpdate($this->elementModel, (int)$id, $redirectUrl, ['image_url', 'image_tablet_url', 'image_mobile_url'], 'country_elements');
     }
 
     public function delete($id)
@@ -120,7 +120,7 @@ class CountryElementController extends BaseController
         $element = $this->elementModel->find((int)$id);
         $redirectUrl = $element ? "/admin/countries/country-elements?country_id={$element['country_id']}" : "/admin/countries";
 
-        $this->handleDelete($this->elementModel, (int)$id, $redirectUrl, ['image_url']);
+        $this->handleDelete($this->elementModel, (int)$id, $redirectUrl, ['image_url', 'image_tablet_url', 'image_mobile_url']);
     }
 
     public function updateOrder()

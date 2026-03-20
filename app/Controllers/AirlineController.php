@@ -91,7 +91,7 @@ class AirlineController extends BaseController
     public function store()
     {
         $this->checkAccess('admin');
-        $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
+        $fileFields = ['image_url', 'image_tablet_url', 'image_mobile_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
         $this->handleStore($this->airlineModel, '/admin/airlines', $fileFields, 'airlines');
     }
 
@@ -120,7 +120,7 @@ class AirlineController extends BaseController
     public function update($id)
     {
         $this->checkAccess('admin');
-        $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
+        $fileFields = ['image_url', 'image_tablet_url', 'image_mobile_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
         $this->handleUpdate($this->airlineModel, (int)$id, '/admin/airlines', $fileFields, 'airlines');
     }
 
@@ -133,7 +133,7 @@ class AirlineController extends BaseController
     public function delete($id)
     {
         $this->checkAccess('admin');
-        $fileFields = ['image_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
+        $fileFields = ['image_url', 'image_tablet_url', 'image_mobile_url', 'offer_image_url', 'ads_image_url', 'bottom_image_url'];
         $this->handleDelete($this->airlineModel, (int)$id, null, $fileFields);
     }
 }

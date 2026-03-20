@@ -108,7 +108,7 @@ class CruiseController extends BaseController
     public function update($id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->cruiseModel, (int)$id, '/admin/cruises', ['image_url'], 'cruises');
+        $this->handleUpdate($this->cruiseModel, (int)$id, '/admin/cruises', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'cruises');
     }
 
     public function updateOrder()
@@ -120,6 +120,6 @@ class CruiseController extends BaseController
     public function delete(int $id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->cruiseModel, (int)$id, null, ['image_url']);
+        $this->handleDelete($this->cruiseModel, (int)$id, null, ['image_url', 'image_tablet_url', 'image_mobile_url']);
     }
 }

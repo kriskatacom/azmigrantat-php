@@ -129,10 +129,10 @@ $user = User::auth();
 
 <div class="container mx-auto px-2 md:px-5">
     <div class="grid md:grid-cols-2 gap-x-2 md:gap-x-5">
-        <div class="group flex flex-col bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto mt-5">
-            <h3 class="text-center font-semibold my-2 md:my-5 text-xl md:text-2xl"><?= HelperService::trans('services') ?></h3>
+        <div class="group flex flex-col bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden mt-5">
+            <h3 class="text-center font-semibold md:my-5 text-2xl md:text-2xl -tracking-tighter"><?= HelperService::trans('services') ?></h3>
 
-            <div class="relative h-auto rounded-xl shadow-md overflow-hidden">
+            <div class="relative h-100 md:h-120 rounded-xl shadow-md overflow-hidden">
                 <?php if (!empty($ads)): ?>
                     <div class="swiper adsSwiper h-full w-full">
                         <div class="swiper-wrapper">
@@ -144,7 +144,7 @@ $user = User::auth();
 
                                     <?php if ($ad['name']): ?>
                                         <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent z-10"></div>
-                                        
+
                                         <h3 class="absolute bottom-0 left-0 z-20 p-4 md:p-6 text-white font-bold text-lg md:text-2xl drop-shadow-md">
                                             <?= htmlspecialchars($ad['name']) ?>
                                         </h3>
@@ -184,17 +184,17 @@ $user = User::auth();
             <?php endif; ?>
         </div>
 
-        <div class="group flex flex-col bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-auto mt-5">
-            <h3 class="text-center font-semibold my-2 md:my-5 text-xl md:text-2xl"><?= HelperService::trans('live_offers_and_ads') ?></h3>
+        <div class="group flex flex-col bg-white border border-gray-200 rounded md:rounded-xl shadow-sm overflow-hidden h-fit mt-5">
+            <h3 class="text-center font-semibold my-2 md:my-5 text-2xl md:text-2xl"><?= HelperService::trans('live_offers_and_ads') ?></h3>
 
-            <div class="relative h-auto rounded-xl shadow-md overflow-hidden">
+            <div class="relative h-80 md:h-120 rounded-xl shadow-md overflow-hidden">
                 <?php if (!empty($offers)): ?>
                     <div class="swiper offersSwiper h-full w-full">
                         <div class="swiper-wrapper">
                             <?php foreach ($offers as $ad): ?>
                                 <div class="swiper-slide">
                                     <img src="<?= HelperService::getImage($ad['image_url']) ?>"
-                                        class="w-full h-auto object-contain"
+                                        class="w-full h-full object-cover"
                                         alt="<?= htmlspecialchars($ad['name']) ?>">
                                 </div>
                             <?php endforeach; ?>
@@ -234,30 +234,21 @@ $user = User::auth();
         <?php if (!empty($ads) || !empty($offers)): ?>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    const swiperOptions = {
-                        effect: 'cube',
-                        grabCursor: true,
-                        loop: true,
-                        observer: true,
-                        observeParents: true,
-                        cubeEffect: {
-                            shadow: true,
-                            slideShadows: true,
-                            shadowOffset: 20,
-                            shadowScale: 0.94,
-                        },
-                        autoplay: {
-                            delay: 3500,
-                            disableOnInteraction: false,
-                        },
-                        pagination: {
-                            clickable: true,
-                        },
-                    };
-
                     if (document.querySelector('.adsSwiper')) {
                         new Swiper('.adsSwiper', {
-                            ...swiperOptions,
+                            effect: 'cube',
+                            grabCursor: true,
+                            loop: true,
+                            loopedSlides: 2,
+                            cubeEffect: {
+                                shadow: false,
+                                slideShadows: true,
+                                shadowOffset: 20,
+                                shadowScale: 0.94,
+                            },
+                            autoplay: {
+                                delay: 3500
+                            },
                             pagination: {
                                 el: '.adsSwiper .swiper-pagination',
                                 clickable: true
@@ -267,7 +258,9 @@ $user = User::auth();
 
                     if (document.querySelector('.offersSwiper')) {
                         new Swiper('.offersSwiper', {
-                            ...swiperOptions,
+                            effect: 'slide',
+                            grabCursor: true,
+                            loop: true,
                             autoplay: {
                                 delay: 4000
                             },
@@ -285,27 +278,18 @@ $user = User::auth();
                 .offersSwiper {
                     width: 100%;
                     height: 100%;
-                    position: relative;
-                    overflow: hidden !important;
-                    transform: translate3d(0, 0, 0);
-                    perspective: 1200px;
                 }
 
                 .swiper-slide {
-                    width: 100% !important;
-                    height: 100% !important;
-                    backface-visibility: hidden;
-                    -webkit-backface-visibility: hidden;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    width: 100%;
+                    height: 100%;
                 }
 
-                .swiper-slide img {
-                    width: 100% !important;
-                    height: 100% !important;
-                    object-fit: cover !important;
-                    display: block;
+                .adsSwiper .swiper-slide {
+                    backface-visibility: hidden;
                 }
             </style>
         <?php endif; ?>

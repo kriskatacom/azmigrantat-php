@@ -199,18 +199,18 @@ class AutobusController extends BaseController
     public function store()
     {
         $this->checkAccess('admin');
-        $this->handleStore($this->autobusModel, '/admin/autobuses', ['image_url'], 'autobuses');
+        $this->handleStore($this->autobusModel, '/admin/autobuses', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'autobuses');
     }
 
     public function update($id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->autobusModel, (int)$id, '/admin/autobuses', ['image_url'], 'autobuses');
+        $this->handleUpdate($this->autobusModel, (int)$id, '/admin/autobuses', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'autobuses');
     }
 
     public function delete($id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->autobusModel, (int)$id, null, ['image_url']);
+        $this->handleDelete($this->autobusModel, (int)$id, null, ['image_url', 'image_tablet_url', 'image_mobile_url']);
     }
 }

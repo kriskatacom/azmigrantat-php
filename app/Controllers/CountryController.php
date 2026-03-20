@@ -119,7 +119,7 @@ class CountryController extends BaseController
     public function update($id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->countryModel, (int)$id, '/admin/countries', ['image_url', 'image_mobile_url'], 'countries');
+        $this->handleUpdate($this->countryModel, (int)$id, '/admin/countries', ['image_url', 'image_mobile_url', 'image_tablet_url'], 'countries');
     }
 
     public function updateOrder()
@@ -131,6 +131,6 @@ class CountryController extends BaseController
     public function delete($id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->countryModel, (int)$id, null, ['image_url']);
+        $this->handleDelete($this->countryModel, (int)$id, null, ['image_url', 'image_tablet_url', 'image_mobile_url']);
     }
 }
