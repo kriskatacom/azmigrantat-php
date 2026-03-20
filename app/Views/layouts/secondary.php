@@ -72,25 +72,6 @@ if ($currentUri == '/' || $currentUri == '/home') {
         </div>
     </footer>
 
-    <div id="loading-screen">
-        <div class="loader"></div>
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const links = document.querySelectorAll("a");
-
-            links.forEach(link => {
-                link.addEventListener("click", function(e) {
-                    if (link.target === "_blank") return;
-                    if (link.getAttribute("href").startsWith("#")) return;
-
-                    document.getElementById("loading-screen").style.display = "flex";
-                });
-            });
-        });
-    </script>
-
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="/assets/js/min/alpinejs-intersect.min.js" defer></script>
     <script src="/assets/js/min/alpine.cdn.min.js" defer></script>

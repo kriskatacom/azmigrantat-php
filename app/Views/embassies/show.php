@@ -14,7 +14,7 @@ $breadcrumbs = [
     ['label' => $embassyName, 'href' => '']
 ];
 ?>
-<div class="aspect-video max-h-100 w-full">
+<div class="h-120 w-full">
     <img src="<?= HelperService::getImage($embassy['image_url']) ?>" class="w-full h-full object-cover">
 </div>
 

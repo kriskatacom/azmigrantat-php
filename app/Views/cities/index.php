@@ -31,8 +31,8 @@ $breadcrumbs = [
     'showSearch'        => $country['slug'] === 'bulgaria' ? false : true,
 ]); ?>
 
-<main class="py-5">
-    <div class="container mx-auto px-4">
+<main>
+    <div class="container mx-auto">
         <?php if ($isBulgaria): ?>
             <?php View::component('bulgaria-map', 'cities/components', [
                 'cities' => $cities,
