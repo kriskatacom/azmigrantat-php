@@ -205,11 +205,24 @@ class CategoryController extends BaseController
     {
         if (!$category) return [];
 
-        $allCompanies = $this->companyModel->all([
+        $categoryIds = [(int)$category['id']];
+
+        $childCategories = $this->categoryModel->all([
             'where' => [
-                'category_id' => (int)$category['id'],
-                'is_active'   => 1
+                'parent_id' => (int)$category['id'],
+                'is_active' => 1
             ]
+        ]);
+
+        if (!empty($childCategories)) {
+            foreach ($childCategories as $child) {
+                $categoryIds[] = (int)$child['id'];
+            }
+        }
+
+        $allCompanies = $this->companyModel->all([
+            'where_in' => ['category_id' => $categoryIds],
+            'where'    => ['is_active' => 1]
         ]);
 
         if (empty($allCompanies)) return [];

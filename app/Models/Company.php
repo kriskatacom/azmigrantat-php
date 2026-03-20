@@ -86,4 +86,56 @@ class Company extends Model
 
         return $data;
     }
+
+    public function all(array $options = []): array
+    {
+        $columns = isset($options['columns']) ? implode(', ', $options['columns']) : '*';
+        $sql = "SELECT {$columns} FROM {$this->table}";
+        $params = [];
+        $whereClauses = [];
+
+        if (isset($options['where']) && is_array($options['where'])) {
+            foreach ($options['where'] as $column => $value) {
+                if ($value === null) {
+                    $whereClauses[] = "{$column} IS NULL";
+                } else {
+                    $paramKey = "w_" . str_replace('.', '_', $column);
+                    $whereClauses[] = "{$column} = :{$paramKey}";
+                    $params[$paramKey] = $value;
+                }
+            }
+        }
+
+        if (isset($options['where_in']) && is_array($options['where_in'])) {
+            foreach ($options['where_in'] as $column => $values) {
+                if (!empty($values) && is_array($values)) {
+                    $placeholders = [];
+                    foreach ($values as $index => $val) {
+                        $paramKey = "in_" . str_replace('.', '_', $column) . "_" . $index;
+                        $placeholders[] = ":{$paramKey}";
+                        $params[$paramKey] = $val;
+                    }
+                    $whereClauses[] = "{$column} IN (" . implode(', ', $placeholders) . ")";
+                }
+            }
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        }
+
+        $orderBy = $options['order'] ?? 'id DESC';
+        $sql .= " ORDER BY {$orderBy}";
+
+        if (isset($options['limit'])) {
+            $sql .= " LIMIT " . (int)$options['limit'];
+            if (isset($options['offset'])) {
+                $sql .= " OFFSET " . (int)$options['offset'];
+            }
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
 }

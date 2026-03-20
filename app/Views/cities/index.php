@@ -21,14 +21,14 @@ $breadcrumbs = [
 ?>
 
 <?php View::component('search-hero', 'partials', [
-    'country'         => $country,
-    'backgroundImage' => $cityElement['image_url'] ?? '',
-    'title'           => $cityElement['name'],
-    'formAction'      => '/' . $country['slug'] . '/cities',
-    'placeholderKey'  => 'search_cities',
-    'breadcrumbs'   => $breadcrumbs,
-    'searchValue'     => $searchTerm ?? '',
-    'showSearch'     => true,
+    'country'           => $country,
+    'backgroundImage'   => $cityElement['image_url'] ?? '',
+    'title'             => $cityElement['name'],
+    'formAction'        => '/' . $country['slug'] . '/cities',
+    'placeholderKey'    => 'search_cities',
+    'breadcrumbs'       => $breadcrumbs,
+    'searchValue'       => $searchTerm ?? '',
+    'showSearch'        => $country['slug'] === 'bulgaria' ? false : true,
 ]); ?>
 
 <main class="py-5">
@@ -36,7 +36,8 @@ $breadcrumbs = [
         <?php if ($isBulgaria): ?>
             <?php View::component('bulgaria-map', 'cities/components', [
                 'cities' => $cities,
-                'base_url' => $country['slug'] . '/cities/'
+                'base_url' => $country['slug'] . '/cities/',
+                'show_search' => false,
             ]); ?>
         <?php else: ?>
             <?php View::component('load-more-grid', 'partials', [
