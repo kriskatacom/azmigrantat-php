@@ -325,7 +325,7 @@ $nextId = $nextId ?? "";
                                 this.formData[lang][key] = translated;
                                 if (this.isShow) this.updateUI();
                             }
-                            await new Promise(r => setTimeout(r, 400));
+                            await new Promise(r => setTimeout(r, 800));
                         }
                     }
                 }

@@ -241,4 +241,14 @@ class HelperService
 
         return $linkHost !== $myHost;
     }
+
+    public static function isCityMainPage(string $citySlug): bool
+    {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        $segments = explode('/', trim($path, '/'));
+        $lastSegment = end($segments);
+
+        return $lastSegment === $citySlug;
+    }
 }

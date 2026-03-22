@@ -45,7 +45,7 @@ $final_url = $is_external_link ? $url : HelperService::url($url);
 
         <div class="absolute bottom-0 left-0 p-5 w-full z-20 pointer-events-none duration-300">
 
-            <h3 class="text-white text-xl md:text-2xl font-bold drop-shadow-lg truncate mb-3">
+            <h3 class="text-white text-xl md:text-2xl font-bold drop-shadow-lg mb-3">
                 <?= htmlspecialchars($name) ?>
             </h3>
 
@@ -76,7 +76,7 @@ $final_url = $is_external_link ? $url : HelperService::url($url);
 
         <div class="w-7/12 xl:w-8/12 p-5 flex flex-col justify-between overflow-hidden">
             <div>
-                <h3 class="text-gray-900 text-xl font-bold mb-2 truncate">
+                <h3 class="text-gray-900 text-xl font-bold mb-2">
                     <?= htmlspecialchars($name) ?>
                 </h3>
 

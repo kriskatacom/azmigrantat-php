@@ -3,143 +3,67 @@
 use App\Core\View;
 use App\Services\HelperService;
 
-?>
-
-
-<?php $activeScope = $_GET['scope'] ?? ''; ?>
-
-<?php
+$activeScope = $_GET['scope'] ?? '';
 $countryName = HelperService::getTranslation($country, 'name', 'country');
 $cityName    = HelperService::getTranslation($city, 'name', 'city');
 $catName     = !empty($category) ? HelperService::getTranslation($category, 'name', 'category') : '';
 
-$mainTitle = !empty($category) ? "{$catName} " . HelperService::trans('in') . " {$cityName} - {$countryName}" : HelperService::trans('info_guide_of') . " {$cityName} - {$countryName}";
+$mainTitle = !empty($category) ? "{$catName} " . HelperService::trans('in') . " {$cityName} - {$countryName}" : HelperService::trans('info_guide_of') . " {$cityName}";
 $imageUrl = !empty($category) ? $category['image_url'] : $city['image_url'];
 
-ob_start(); ?>
-<div class="w-full md:w-auto mb-4 flex justify-center">
-    <a href="#" class="text-base bg-primary-light/80 py-1 px-2 rounded hover:underline cursor-pointer"><?= HelperService::trans('municipal_cities') ?></a>
-</div>
-<?php $slotContent = ob_get_clean();
+$isMainCityPage = HelperService::isCityMainPage($city['slug']);
+$isShowMainCityItems = $isMainCityPage && empty($_GET['show-categories']);
+
+$mainCityItems = [
+    [
+        'name' => HelperService::trans('info_guide_of') . ' ' . $city['name'],
+        'image_url' => $city['image_url'],
+        'slug' => '/?show-categories=1'
+    ],
+    [
+        'name' => HelperService::trans('municipal_cities'),
+        'image_url' => $city['image_url'],
+        'slug' => '/municipalities'
+    ]
+];
 
 View::component('search-hero', 'partials', [
     'country'         => $country,
     'backgroundImage' => $imageUrl,
-    'title'           => $mainTitle,
-    'formAction'      => '/' . $country['slug'] . '/' . $city['slug'] . '/search',
+    'title'           => $isShowMainCityItems ? HelperService::getTranslation($city, 'name', 'city') : $mainTitle,
+    'formAction'      => '/' . $country['slug'] . '/cities/' . $city['slug'],
     'placeholderKey'  => HelperService::trans('search_in_the_city'),
     'searchValue'     => $_GET['search'] ?? '',
     'breadcrumbKey'   => !empty($category) ? 'category' : 'city',
     'breadcrumbs'     => $breadcrumbs,
-    'slot'            => $slotContent,
-    'showSearch'     => true,
+    'showSearch'      => !$isShowMainCityItems,
 ]);
+
+if ($category) {
+    View::component('category-offers', 'categories/partials', [
+        'offers'      => $offers,
+        'category'    => $category,
+        'activeScope' => $activeScope,
+        'base_url'    => $base_url
+    ]);
+
+    View::component('category-filters', 'categories/partials', [
+        'activeScope' => $activeScope,
+        'cityName'    => $cityName,
+        'countryName' => $countryName
+    ]);
+}
 ?>
-
-<?php if ($category): ?>
-    <?php if (!empty($offers)): ?>
-        <div class="md:container md:mx-auto mt-5">
-            <h2 class="text-2xl font-bold uppercase max-md:border-l-4 max-md:border-primary max-md:pl-4 mb-2 md:text-center">
-                <?= HelperService::trans('promotions_and_ads_in') ?> <?= htmlspecialchars($category['name']) ?>
-            </h2>
-
-            <?php ob_start(); ?>
-            <?php foreach ($offers as $offer): ?>
-                <div class="w-screen md:w-[320px] shrink-0 px-2 py-4">
-                    <div class="bg-primary-dark rounded-2xl overflow-hidden border border-white/10 shadow-lg flex flex-col h-full">
-                        <div class="relative h-40 overflow-hidden">
-                            <img src="<?= HelperService::getImage($offer['image_url']) ?>" class="w-full h-full object-cover grayscale-30 hover:grayscale-0 transition-all duration-500">
-                        </div>
-                        <div class="p-5 flex flex-col grow text-white">
-                            <h3 class="font-bold text-base mb-1 line-clamp-1"><?= htmlspecialchars($offer['name']) ?></h3>
-                            <p class="text-primary-light mb-3 uppercase text-xs font-semibold tracking-wider">
-                                <?= htmlspecialchars($offer['company_name']) ?>
-                                <?php if (!empty($offer['city_name'])): ?>
-                                    <span class="text-white/30 ml-1 font-normal">| <?= htmlspecialchars($offer['city_name']) ?></span>
-                                <?php endif; ?>
-                            </p>
-                            <a href="<?= $base_url . $offer['company_slug'] ?>" class="btn-primary hover:bg-primary-light hover:text-primary-dark text-center block">Детайли</a>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-            <?php
-            $my_content = ob_get_clean();
-
-            View::component('ping-pong-slider', 'partials', [
-                'unique_id' => 'offers_slider',
-                'content'   => $my_content
-            ]);
-            ?>
-        </div>
-    <?php else: ?>
-        <div class="md:container md:mx-auto my-5 px-5">
-            <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-3xl p-10 text-center">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa-solid fa-calendar-day text-2xl text-gray-400"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">
-                    <?= $activeScope ? 'Няма активни обяви за избрания филтър' : 'Няма нови обяви за днес' ?>
-                </h3>
-                <p class="text-gray-500 max-w-md mx-auto">
-                    <?php if ($activeScope): ?>
-                        Опитайте да изчистите филтрите или проверете друга локация, за да видите актуалните предложения.
-                    <?php else: ?>
-                        В момента няма нови промоции в категория <strong><?= htmlspecialchars($category['name']) ?></strong> за последните 24 часа. Проверете филтрите за целия месец по-долу.
-                    <?php endif; ?>
-                </p>
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <div class="flex flex-wrap items-center justify-center gap-5 px-5">
-        <?php
-        $cityBtnClasses = "relative group flex items-center gap-3 md:gap-5 px-5 py-4 md:px-8 md:py-3 rounded-2xl border-2 transition-all duration-500 no-underline w-full md:w-auto ";
-        $cityBtnClasses .= ($activeScope === 'city') ? "bg-primary-dark border-primary text-white shadow-lg" : "bg-white/5 border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-white";
-
-        $countryBtnClasses = "relative group flex items-center gap-3 md:gap-5 px-5 py-4 md:px-8 md:py-3 rounded-2xl border-2 transition-all duration-500 no-underline w-full md:w-auto ";
-        $countryBtnClasses .= ($activeScope === 'country') ? "bg-primary-dark border-primary text-white shadow-lg" : "bg-white/5 border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-white";
-        ?>
-
-        <a href="?scope=city" class="<?= $cityBtnClasses ?>">
-            <div class="flex items-center justify-center w-12 h-12 md:w-10 md:h-10 shrink-0 rounded-full <?= $activeScope === 'city' ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-primary/10' ?>">
-                <i class="fa-solid fa-location-dot <?= $activeScope === 'city' ? 'text-white' : 'text-gray-500 group-hover:text-primary' ?>"></i>
-            </div>
-            <div class="flex flex-col text-left">
-                <span class="text-[10px] md:text-[9px] uppercase tracking-[0.15em] font-bold opacity-70">Филтър: Месец</span>
-                <span class="text-base md:text-sm lg:text-base font-extrabold whitespace-nowrap"><?= htmlspecialchars($cityName) ?></span>
-            </div>
-        </a>
-
-        <a href="?scope=country" class="<?= $countryBtnClasses ?>">
-            <div class="flex items-center justify-center w-12 h-12 md:w-10 md:h-10 shrink-0 rounded-full <?= $activeScope === 'country' ? 'bg-white/10' : 'bg-gray-100 group-hover:bg-primary-dark/10' ?>">
-                <i class="fa-solid fa-globe <?= $activeScope === 'country' ? 'text-white' : 'text-gray-500 group-hover:text-primary-dark' ?>"></i>
-            </div>
-            <div class="flex flex-col text-left">
-                <span class="text-[10px] md:text-[9px] uppercase tracking-[0.15em] font-bold opacity-70">Филтър: Месец</span>
-                <span class="text-base md:text-sm lg:text-base font-extrabold whitespace-nowrap"><?= htmlspecialchars($countryName) ?></span>
-            </div>
-        </a>
-
-        <?php if ($activeScope): ?>
-            <div class="w-full flex justify-center">
-                <a href="<?= strtok($_SERVER["REQUEST_URI"], '?') ?>" class="btn-primary bg-red-500 hover:bg-red-600 border-none">
-                    <i class="fa-solid fa-xmark mr-2"></i>Изчисти филтрите
-                </a>
-            </div>
-        <?php endif; ?>
-    </div>
-<?php endif; ?>
 
 <main>
     <?php if (!empty($items)): ?>
         <?php View::component('load-more-grid', 'partials', [
-            'items'     => $items,
-            'card_name' => 'item-card',
-            'base_url'  => $base_url,
-            'limit'     => 8,
+            'items'        => $isShowMainCityItems ? $mainCityItems : $items,
+            'card_name'    => 'item-card',
+            'base_url'     => $base_url,
+            'limit'        => 8,
             'show_excerpt' => true,
-            'show_search' => false,
+            'show_search'  => false,
         ]); ?>
     <?php else: ?>
         <div class="flex flex-col items-center justify-center py-20 text-center">
