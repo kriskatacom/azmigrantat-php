@@ -24,6 +24,7 @@ use App\Controllers\CountryElementController;
 use App\Controllers\TaxiController;
 use App\Controllers\DriverController;
 use App\Controllers\TravelController;
+use App\Controllers\VillageController;
 
 $router = new Router();
 
@@ -244,5 +245,7 @@ $router->get('/{countrySlug}/landmarks/{landmarkSlug}', [LandmarkController::cla
 $router->get('/{countrySlug}/cities', [CityController::class, 'indexByCountry']);
 $router->get('/{countrySlug}/cities/{citySlug}', [CategoryController::class, 'categoriesShow']);
 $router->get('/{countrySlug}/cities/{citySlug}/{categories*}', [CategoryController::class, 'categoriesShow']);
+
+$router->get('/{countrySlug}/{citySlug}/villages/{vallageSlug}', [VillageController::class, 'show']);
 
 return $router;
