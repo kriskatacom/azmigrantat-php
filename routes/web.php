@@ -16,6 +16,7 @@ use App\Controllers\CountryController;
 use App\Controllers\CruiseController;
 use App\Controllers\EmbassyController;
 use App\Controllers\AutobusController;
+use App\Controllers\BusCompanyController;
 use App\Controllers\CategoryController;
 use App\Controllers\CompanyController;
 use App\Controllers\CompanyAdController;
@@ -126,6 +127,15 @@ $router->post('/admin/autobuses/update/{id}', [AutobusController::class, 'update
 $router->post('/admin/autobuses/delete/{id}', [AutobusController::class, 'delete']);
 $router->post('/admin/autobuses/update-order', [AutobusController::class, 'updateOrder']);
 
+// Автобусни компании (Bus companies)
+$router->get('/admin/bus-companies', [BusCompanyController::class, 'adminIndex']);
+$router->get('/admin/bus-companies/create', [BusCompanyController::class, 'create']);
+$router->post('/admin/bus-companies/store', [BusCompanyController::class, 'store']);
+$router->get('/admin/bus-companies/edit/{id}', [BusCompanyController::class, 'edit']);
+$router->post('/admin/bus-companies/update/{id}', [BusCompanyController::class, 'update']);
+$router->post('/admin/bus-companies/delete/{id}', [BusCompanyController::class, 'delete']);
+$router->post('/admin/bus-companies/update-order', [BusCompanyController::class, 'updateOrder']);
+
 // Авиокомпании (Airlines)
 $router->get('/admin/airlines', [AirlineController::class, 'index']);
 $router->get('/admin/airlines/create', [AirlineController::class, 'create']);
@@ -230,6 +240,9 @@ $router->get('/travel/autobuses', [TravelController::class, 'autobuses']);
 $router->get('/travel/autobuses/countries', [AutobusController::class, 'showCountries']);
 $router->get('/travel/autobuses/countries/{countrySlug}', [AutobusController::class, 'showCitiesByCountry']);
 $router->get('/travel/autobuses/countries/{countrySlug}/{citySlug}', [AutobusController::class, 'showByCityAndCountry']);
+
+$router->get('/travel/autobuses/bus-companies-countries', [BusCompanyController::class, 'showCountries']);
+$router->get('/travel/autobuses/bus-companies-countries/{countrySlug}', [BusCompanyController::class, 'showByCountry']);
 
 $router->get('/travel/trains', [TravelController::class, 'trains']);
 $router->get('/travel/trains/countries', [TrainController::class, 'showCountries']);

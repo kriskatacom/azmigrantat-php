@@ -10,6 +10,7 @@ $userRole = $currentUser['role'] ?? 'user';
 
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,9 +20,18 @@ $userRole = $currentUser['role'] ?? 'user';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
     </style>
 </head>
 
@@ -51,6 +61,7 @@ $userRole = $currentUser['role'] ?? 'user';
                 ['label' => 'Забележителности', 'url' => '/admin/landmarks', 'icon' => 'fas fa-monument', 'roles' => ['admin']],
                 ['label' => 'Круизи', 'url' => '/admin/cruises', 'icon' => 'fas fa-ship', 'roles' => ['admin']],
                 ['label' => 'Автобуси', 'url' => '/admin/autobuses', 'icon' => 'fas fa-bus', 'roles' => ['admin']],
+                ['label' => 'Автобусни компании', 'url' => '/admin/bus-companies', 'icon' => 'fas fa-bus', 'roles' => ['admin']],
                 ['label' => 'Авиокомпании', 'url' => '/admin/airlines', 'icon' => 'fas fa-plane', 'roles' => ['admin']],
                 ['label' => 'Компании', 'url' => '/admin/companies', 'icon' => 'fas fa-building', 'roles' => ['admin']],
                 ['label' => 'Услуги', 'url' => '/admin/ads', 'icon' => 'fas fa-rectangle-ad', 'roles' => ['admin', 'entrepreneur']],
@@ -66,12 +77,12 @@ $userRole = $currentUser['role'] ?? 'user';
                 if (!in_array($userRole, $item['roles'])) continue;
 
                 $isActive = (strpos($currentPath, $item['url']) === 0);
-                $activeClass = $isActive 
-                    ? 'bg-blue-600 text-white shadow-lg' 
+                $activeClass = $isActive
+                    ? 'bg-blue-600 text-white shadow-lg'
                     : 'text-gray-400 hover:bg-gray-800 hover:text-white';
             ?>
-                <a href="<?= $item['url'] ?>" 
-                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group <?= $activeClass ?>">
+                <a href="<?= $item['url'] ?>"
+                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group <?= $activeClass ?>">
                     <div class="w-6 flex justify-center items-center">
                         <i class="<?= $item['icon'] ?> text-lg transition-transform group-hover:scale-110"></i>
                     </div>
@@ -96,7 +107,7 @@ $userRole = $currentUser['role'] ?? 'user';
     <main class="flex-1 flex flex-col min-w-0">
         <header class="bg-white shadow-sm h-16 flex items-center justify-between px-8 shrink-0">
             <h1 class="text-xl font-semibold text-gray-800 truncate"><?= $title ?? 'Управление' ?></h1>
-            
+
             <div class="flex items-center gap-4">
                 <div class="text-right hidden sm:block">
                     <p class="text-sm font-medium text-gray-900"><?= $currentUser['name'] ?></p>
@@ -119,4 +130,5 @@ $userRole = $currentUser['role'] ?? 'user';
     <script src="/assets/js/min/alpine.cdn.min.js" defer></script>
 
 </body>
+
 </html>

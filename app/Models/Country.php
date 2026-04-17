@@ -31,6 +31,9 @@ class Country extends Model
         
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
+
+        $data['country_id'] = (int)($data['country_id'] ?? 0);
+        $data['city_id'] = (int)($data['city_id'] ?? 0);
         
         return $data;
     }
