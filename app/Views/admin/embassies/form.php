@@ -189,6 +189,12 @@ $embassyData = [
                         'value' => $item['google_map'] ?? ''
                     ]); ?>
                 </div>
+                <div class="mt-5">
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-gray-600">Вашето местоположение</label>
+                        <input type="text" name="your_location" value="<?= htmlspecialchars($item['your_location'] ?? '') ?>" class="form-control">
+                    </div>
+                </div>
                 <?php View::component('card', 'admin/components', ['title' => 'Контакти и Локация', 'slot' => ob_get_clean()]); ?>
 
                 <?php ob_start(); ?>

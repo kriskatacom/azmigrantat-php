@@ -66,6 +66,11 @@ if ($currentUri == '/' || $currentUri == '/home') {
         <?= $content ?>
     </main>
 
+    <div class="text-white bg-primary-dark py-2 text-center">
+        <strong>Важно!</strong>
+        <p>„В момента сайтът ни е в процес на обработка. Ако имате идеи, предложения или смятате, че липсва важна информация, ще се радваме да ни пишете на: <a href="mailto:i.the.migrant@gmail.com">i.the.migrant@gmail.com</a>“</p>
+    </div>
+
     <footer class="mt-auto border-t border-gray-100">
         <div class="container mx-auto py-6 text-center">
             <p>&copy; <?= date('Y') ?> <strong>Аз Мигрантът</strong>. Всички права запазени.</p>

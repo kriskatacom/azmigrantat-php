@@ -150,7 +150,7 @@ class LandmarkController extends BaseController
         $this->checkAccess('admin');
         $_POST['additional_images'] = $this->handleGalleryUpdate(['additional_images' => '[]'], $_POST, 'additional_images', 'landmarks/gallery');
 
-        $this->handleStore($this->landmarkModel, '/admin/landmarks', ['image_url'], 'landmarks');
+        $this->handleStore($this->landmarkModel, '/admin/landmarks', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'landmarks');
     }
 
     public function edit($id)

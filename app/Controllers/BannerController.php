@@ -56,7 +56,7 @@ class BannerController extends BaseController
     public function store()
     {
         $this->checkAccess('admin');
-        $this->handleStore($this->bannerModel, '/admin/banners', ['image', 'image_tablet_url', 'image_mobile_url'], 'banners');
+        $this->handleStore($this->bannerModel, '/admin/banners', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'banners');
     }
 
     public function edit($id)
@@ -87,7 +87,7 @@ class BannerController extends BaseController
     public function update($id)
     {
         $this->checkAccess('admin');
-        $this->handleUpdate($this->bannerModel, (int)$id, '/admin/banners', ['image', 'image_tablet_url', 'image_mobile_url'], 'banners');
+        $this->handleUpdate($this->bannerModel, (int)$id, '/admin/banners', ['image_url', 'image_tablet_url', 'image_mobile_url'], 'banners');
     }
 
     public function updateOrder()
@@ -99,7 +99,7 @@ class BannerController extends BaseController
     public function delete($id)
     {
         $this->checkAccess('admin');
-        $this->handleDelete($this->bannerModel, (int)$id, null, ['image', 'image_tablet_url', 'image_mobile_url']);
+        $this->handleDelete($this->bannerModel, (int)$id, null, ['image_url', 'image_tablet_url', 'image_mobile_url']);
     }
 
     private function getPositions(): array

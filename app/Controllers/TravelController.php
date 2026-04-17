@@ -47,6 +47,8 @@ class TravelController extends BaseController
         $airports = $this->airportModel->all();
         foreach ($airports as &$airport) {
             $airport['entity_type'] = 'airport';
+            $airport['name'] = HelperService::getTranslation($airport, 'name', 'airport');
+            $airport['description'] = HelperService::getTranslation($airport, 'description', 'airport');
         }
 
         $seo = new MetaTagsService([

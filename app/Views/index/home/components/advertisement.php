@@ -1,10 +1,13 @@
 <?php
+
+use App\Services\HelperService;
+
 $title = $title ?? 'Рекламирайте своя бизнес!';
 $description = $description ?? 'Искате повече видимост за своя продукт или услуга? Нашият сайт ви позволява лесно да създавате и управлявате рекламни кампании, които достигат точно до вашата целева аудитория. Независимо дали сте малък локален бизнес или развивате онлайн търговия – тук можете да представите своята марка пред реални хора, които търсят това, което предлагате.';
 $image = $image ?? '/assets/images/advertisement.webp';
 $buttons = $buttons ?? [
-    ['text' => 'Показване на услугите', 'href' => '/ads'],
-    ['text' => 'Рекламиране', 'href' => '/ads']
+    ['text' => HelperService::trans('advertisement_button_1'), 'href' => '/ads'],
+    ['text' => HelperService::trans('advertisement_button_2'), 'href' => '/ads']
 ];
 ?>
 
@@ -73,11 +76,11 @@ $buttons = $buttons ?? [
             data-aos-duration="1000">
 
             <h2 class="text-4xl lg:text-6xl font-extrabold tracking-tight leading-tight bg-clip-text text-transparent bg-linear-to-br from-white to-gray-400">
-                <?= htmlspecialchars($title) ?>
+                <?= HelperService::trans('advertisement_title') ?>
             </h2>
 
             <p class="text-lg lg:text-xl leading-relaxed text-gray-300 font-light">
-                <?= htmlspecialchars($description) ?>
+                <?= HelperService::trans('advertisement_description') ?>
             </p>
 
             <div class="flex flex-wrap gap-4 pt-6">
@@ -86,7 +89,7 @@ $buttons = $buttons ?? [
                         class="btn-primary relative overflow-hidden group px-8 py-4 rounded-xl shadow-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 bg-blue-600 hover:bg-blue-500"
                         data-aos="fade-up"
                         data-aos-delay="<?= 400 + ($index * 100) ?>">
-                        <span class="relative z-10"><?= htmlspecialchars($btn['text']) ?></span>
+                        <span class="relative z-10"><?= HelperService::trans($btn['text']) ?></span>
                         <div class="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-[-25deg] -translate-x-full group-hover:translate-x-[250%] transition-transform duration-700"></div>
                     </a>
                 <?php endforeach; ?>

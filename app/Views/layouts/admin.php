@@ -46,6 +46,7 @@ $userRole = $currentUser['role'] ?? 'user';
                 ['label' => 'Категории', 'url' => '/admin/categories', 'icon' => 'fas fa-layer-group', 'roles' => ['admin']],
                 ['label' => 'Държави', 'url' => '/admin/countries', 'icon' => 'fas fa-globe-europe', 'roles' => ['admin']],
                 ['label' => 'Градове', 'url' => '/admin/cities', 'icon' => 'fas fa-city', 'roles' => ['admin']],
+                ['label' => 'Села', 'url' => '/admin/villages', 'icon' => 'fas fa-city', 'roles' => ['admin']],
                 ['label' => 'Посолства', 'url' => '/admin/embassies', 'icon' => 'fas fa-landmark-flag', 'roles' => ['admin']],
                 ['label' => 'Забележителности', 'url' => '/admin/landmarks', 'icon' => 'fas fa-monument', 'roles' => ['admin']],
                 ['label' => 'Круизи', 'url' => '/admin/cruises', 'icon' => 'fas fa-ship', 'roles' => ['admin']],

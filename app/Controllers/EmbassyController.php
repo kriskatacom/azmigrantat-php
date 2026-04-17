@@ -131,7 +131,7 @@ class EmbassyController extends BaseController
     public function store()
     {
         $this->checkAccess('admin');
-        $this->handleStore($this->embassyModel, '/admin/embassies', ['image_url', 'logo', 'right_heading_image'], 'embassies');
+        $this->handleStore($this->embassyModel, '/admin/embassies', ['image_url', 'image_tablet_url', 'image_mobile_url', 'logo', 'right_heading_image'], 'embassies');
     }
 
     public function edit($id)

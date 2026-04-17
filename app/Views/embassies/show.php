@@ -21,7 +21,7 @@ $breadcrumbs = [
 <div class="flex items-center justify-center gap-5 p-5">
     <img src="<?= HelperService::getImage($embassy['logo']) ?>" class="h-20">
     <h1 class="text-xl md:text-2xl lg:text-3xl font-semibold text-primary-dark text-center">
-        <?= HelperService::trans('embassy_of') ?> <?= $embassyName ?>
+        <?= $embassyName ?>
     </h1>
     <img src="<?= HelperService::getImage($embassy['right_heading_image']) ?>" class="h-20">
 </div>

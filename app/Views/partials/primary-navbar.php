@@ -61,7 +61,15 @@ use App\Services\HelperService;
 
     <div class="container mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar">
         <?php
-        $links = ['/' => 'home', '/travel' => 'travel', '/services' => 'services', '/jobs' => 'jobs', '/ads' => 'ads', '/music' => 'music'];
+        $links = [
+            'https://azmigrantat.com' => 'home',
+            '/travel' => 'travel',
+            'https://gradove-i-sela.azmigrantat.com' => 'cities_and_villages',
+            'https://business.azmigrantat.com' => 'business_partnership',
+            '/jobs' => 'jobs',
+            '/ads' => 'ads',
+            '/music' => 'music'
+        ];
         foreach ($links as $path => $langKey): ?>
             <a href="<?= HelperService::url($path) ?>" class="<?= HelperService::navLinkClasses($path) ?>">
                 <?= HelperService::trans($langKey) ?>

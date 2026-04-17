@@ -31,7 +31,6 @@ class HelperService
         'fi' => ['name' => 'Suomi', 'flag' => '🇫🇮'],
         'se' => ['name' => 'Svenska', 'flag' => '🇸🇪'],
         'no' => ['name' => 'Norsk', 'flag' => '🇳🇴'],
-        'ie' => ['name' => 'Gaeilge', 'flag' => '🇮🇪'],
         'ch' => ['name' => 'Schweiz', 'flag' => '🇨🇭'],
         'ua' => ['name' => 'Українська', 'flag' => '🇺🇦'],
         'hr' => ['name' => 'Hrvatski', 'flag' => '🇭🇷'],
@@ -135,6 +134,10 @@ class HelperService
 
     public static function url(string $path): string
     {
+        if (preg_match('/^(http|https):|^\/\//i', $path)) {
+            return $path;
+        }
+
         $lang = $_SESSION['lang'] ?? 'bg';
         $path = ltrim($path, '/');
 

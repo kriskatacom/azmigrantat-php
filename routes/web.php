@@ -106,6 +106,17 @@ $router->post('/admin/cities/delete/{id}', [CityController::class, 'delete']);
 $router->get('/api/cities-by-country/{id}', [CityController::class, 'getByCountry']);
 $router->post('/admin/cities/update-order', [CityController::class, 'updateOrder']);
 
+// Села (Villages)
+$router->get('/admin/villages', [VillageController::class, 'index']);
+$router->get('/admin/villages/create', [VillageController::class, 'create']);
+$router->post('/admin/villages/store', [VillageController::class, 'store']);
+$router->get('/admin/villages/edit/{id}', [VillageController::class, 'edit']);
+$router->post('/admin/villages/update/{id}', [VillageController::class, 'update']);
+$router->post('/admin/villages/delete/{id}', [VillageController::class, 'delete']);
+$router->get('/api/villages-by-country/{id}', [VillageController::class, 'getByCountry']);
+$router->get('/api/villages-by-city/{id}', [VillageController::class, 'getByCity']);
+$router->post('/admin/villages/update-order', [VillageController::class, 'updateOrder']);
+
 // Автобуси (Autobuses)
 $router->get('/admin/autobuses', [AutobusController::class, 'index']);
 $router->get('/admin/autobuses/create', [AutobusController::class, 'create']);

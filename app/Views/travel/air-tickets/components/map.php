@@ -137,7 +137,7 @@ $marker_img = $marker_img ?? "/assets/images/marker-icon.png";
                         </div>
                         <div class="flex flex-col justify-center overflow-hidden">
                             <h4 class="font-bold text-gray-900 text-sm truncate" x-text="airport.name"></h4>
-                            <p class="text-gray-500 text-xs line-clamp-2 mt-1 leading-relaxed" x-text="airport.description"></p>
+                            <p class="text-gray-500 text-xs line-clamp-2 mt-1 leading-relaxed" x-html="airport.description"></p>
                         </div>
                     </div>
                 </template>
@@ -167,7 +167,7 @@ $marker_img = $marker_img ?? "/assets/images/marker-icon.png";
                 </div>
                 <div class="p-8 md:w-1/2 bg-white flex flex-col justify-center">
                     <h2 class="text-2xl font-bold mb-3" x-text="selectedAirport?.name"></h2>
-                    <p class="text-gray-600 mb-6 text-sm leading-relaxed overflow-y-auto max-h-40" x-text="selectedAirport?.description"></p>
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed overflow-y-auto max-h-40" x-html="selectedAirport?.description"></p>
                     <div class="grid grid-cols-1 gap-3">
                         <a :href="selectedAirport?.website_url || '#'" target="_blank" class="w-full text-center bg-blue-600 text-white font-bold py-3.5 rounded-xl uppercase text-xs tracking-wider hover:bg-blue-700 transition-colors">Официален Сайт</a>
                         <a :href="`https://www.google.com/maps/dir/?api=1&destination=${selectedAirport?.latitude},${selectedAirport?.longitude}`" target="_blank" class="w-full text-center bg-gray-100 text-gray-700 font-bold py-3.5 rounded-xl uppercase text-xs tracking-wider hover:bg-gray-200 transition-colors">Упътване до там</a>

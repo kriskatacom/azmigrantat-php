@@ -44,6 +44,7 @@ use App\Services\HelperService;
             '/' => ['icon' => 'fa-house', 'label' => 'nav_home'],
             '/terms' => ['icon' => 'fa-file-lines', 'label' => 'terms_of_use'],
             '/privacy' => ['icon' => 'fa-file-shield', 'label' => 'privacy_policy'],
+            '/services' => ['icon' => 'fa-phone', 'label' => 'services'],
             '/contacts' => ['icon' => 'fa-phone-volume', 'label' => 'contacts'],
             '/about' => ['icon' => 'fa-building-user', 'label' => 'about_us'],
         ];
